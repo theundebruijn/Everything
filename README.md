@@ -22,5 +22,5 @@
 ```
 #### Everything
 <sup>monorepo _git_  
-love sparse checkouts —  
+sparse checkouts give breath —  
 perforce lite</sup>
