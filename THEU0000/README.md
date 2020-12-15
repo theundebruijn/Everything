@@ -21,3 +21,5 @@
 ////////////////////                     ///////////////////
 ```
 #### THEU0000
+<sup>concerned with _all_ organisational aspects  
+McKinsey 7S's but less verbose</sup>  
