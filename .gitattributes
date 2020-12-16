@@ -2,24 +2,21 @@
 
 *.7z filter=lfs diff=lfs merge=lfs -text
 *.7z linguist-detectable=false
-*.7z linguist-vendored
-
-*.blend filter=lfs diff=lfs merge=lfs -text
-*.blend linguist-detectable=false
-*.blend linguist-vendored
 
 *.afphoto filter=lfs diff=lfs merge=lfs -text
 *.afphoto linguist-detectable=false
-*.afphoto linguist-vendored
 
 *.afpub filter=lfs diff=lfs merge=lfs -text
 *.afpub linguist-detectable=false
-*.afpub linguist-vendored
+
+*.blend filter=lfs diff=lfs merge=lfs -text
+*.blend linguist-detectable=false
+
+*.jpg filter=lfs diff=lfs merge=lfs -text
+*.jpg linguist-detectable=false
 
 *.stl filter=lfs diff=lfs merge=lfs -text
 *.stl linguist-detectable=false
-*.stl linguist-vendored
 
 *.tiff filter=lfs diff=lfs merge=lfs -text
 *.tiff linguist-detectable=false
-*.tiff linguist-vendored
