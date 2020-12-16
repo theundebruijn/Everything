@@ -21,7 +21,7 @@
 ////////////////////                     ///////////////////
 ```
 #### Everything
-<sub><sup>_date: 20201213 / git lfs size: 2.211412270553 GiB_</sup></sub>
+<sub><sup>20201213 — 2.211412270553 GiB LFS</sup></sub>
 <br/>
 <br/>
 <br/>
