@@ -31,8 +31,8 @@ perforce lite</sup>
 <br/>
 <br/>
 <br/>
-<sup>[devops guide](DEVOPS.md)\
-[monorepo guide](MONOREPO.md)
+<sup>[devops readme](DEVOPS.md)\
+[monorepo readme](MONOREPO.md)
 </sup>
 <br/>
 <br/>
