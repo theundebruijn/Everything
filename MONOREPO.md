@@ -26,7 +26,7 @@ we get close by utilising git's sparse checkouts, combined with gcp cloud storag
 <br/>
 <sup><b>_prerequisites:_</b>\
 \
-the wsl2 vm configures through the [devops readme](DEVOPS.md)
+a wsl2 vm configured using the [devops readme](DEVOPS.md)
 </sup>
 
 ##### monorepo setup
