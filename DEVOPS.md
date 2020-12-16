@@ -21,3 +21,5 @@
 ////////////////////                     ///////////////////
 ```
 #### DEVOPS
+<br/>
+<sub><sup>copyright © 2020-present, Theun de Bruijn. all rights reserved.</sup></sub>
