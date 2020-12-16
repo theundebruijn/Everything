@@ -76,5 +76,191 @@ dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /nores
 # powershell (regular user)
 wsl --set-default-version 2
 ```  
+<sup>11 / download the latest `ubuntu-20.04-server-cloudimg-amd64-wsl.rootfs.tar.gz` — https://cloud-images.ubuntu.com/releases/focal/release/</sup>  
+<sup>12 / create the wsl2 vm
+```powershell
+# powershell (regular user)
+mkdir "C:\Users\Theun de Bruijn\.wsl\"
+cp "<path to file>\ubuntu-20.04-server-cloudimg-amd64-wsl.rootfs.tar.gz" "C:\Users\Theun de Bruijn\.wsl\"
+cd "C:\Users\Theun de Bruijn\.wsl\"
+wsl --import ubuntu-2004-wsl ubuntu-2004-wsl ubuntu-20.04-server-cloudimg-amd64-wsl.rootfs.tar.gz
+wsl -l -v
+```  
+<sup>13 / configure vm : add user
+```powershell
+# powershell (regular user)
+wsl -d ubuntu-2004-wsl
+```  
+```bash
+# bash (root user)
+adduser theundebruijn
+usermod -aG sudo theundebruijn
+exit
+``` 
+<sup>14 / configure vm : wsl config
+```powershell
+# powershell (regular user)
+wsl -d ubuntu-2004-wsl -u theundebruijn
+```  
+```bash
+# bash (theundebruijn)
+sudo nano /etc/wsl.conf
+
+    # add the following : 
+    [network]
+    generateResolvConf = false
+
+    [automount]
+    options = metadata
+    
+sudo rm /etc/resolv.conf
+sudo nano /etc/resolv.conf
+
+    # add the following :
+    nameserver 1.1.1.1
+    nameserver 1.0.0.1
+
+exit
+```
+<sup>15 / configure vm : updates
+```powershell
+# powershell (regular user)
+wsl -d ubuntu-2004-wsl -u theundebruijn
+```  
+```bash
+# bash (theundebruijn)
+udo apt update
+sudo apt upgrade
+sudo apt install git
+sudo apt install git-lfs
+sudo apt install zsh
+sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+# make zsh default when it asks to (if it fails run `chsh -s $(which zsh)`)
+git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/.oh-my-zsh/custom/themes/powerlevel10k
+nano ~/.zshrc
+-> ZSH_THEME="powerlevel10k/powerlevel10k"
+exit
+exit
+``` 
+```powershell
+# powershell (regular user)
+wsl -d ubuntu-2004-wsl -u theundebruijn
+```  
+```zsh
+# zsh (theundebruijn)
+# (run `p10k configure` if needed)
+code .
+```
+<sup>16 / configure vm : ssh
+```powershell
+# powershell (regular user)
+wsl -d ubuntu-2004-wsl -u theundebruijn
+```  
+```zsh
+# zsh (theundebruijn)
+mkdir ~/.ssh
+nano ~/.ssh/config
+
+    # add the following :
+    AddKeysToAgent yes
+
+    # GitHub
+    Host github.com-theundebruijn
+        HostName github.com
+        User git
+        IdentitiesOnly yes
+        IdentityFile /home/theundebruijn/.ssh/id_ed25519_github.com_theun@theundebruijn.com
+
+cp /mnt/c/<path to folder with downloaded ssh keys>/SSH/* ~/.ssh/
+chmod 600 ~/.ssh/id_ed25519_github.com_theun@theundebruijn.com
+nano ~/.zshrc
+    
+    # add the following : 
+    { eval $(ssh-agent) } &>/dev/null
+    { ssh-add ~/.ssh/id_ed25519_github.com_theun@theundebruijn.com } &>/dev/null
+
+exit
+``` 
+```powershell
+# powershell (regular user)
+wsl -d ubuntu-2004-wsl -u theundebruijn
+```  
+```zsh
+# zsh (theundebruijn)
+# check if our keys have loaded successfully
+ssh-add -l
+# add the remotes to our known_hosts (warning: potential mitm attack possible)
+# this will prevent the fingerprint errors popping up when git cloning
+ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+``` 
+<sup>17 / install docker engine + docker-compose
+```powershell
+# powershell (regular user)
+wsl -d ubuntu-2004-wsl -u theundebruijn
+```  
+```zsh
+# zsh (theundebruijn)
+sudo apt remove docker docker-engine docker.io containerd runc
+sudo apt install apt-transport-https ca-certificates curl gnupg-agent software-properties-common
+sudo apt-key fingerprint 0EBFCD88
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+sudo apt update
+sudo apt install docker-ce docker-ce-cli containerd.io
+sudo apt remove mdadm # https://github.com/microsoft/WSL/issues/4903
+sudo usermod -aG docker $USER
+exit
+```
+```powershell
+# powershell (regular user)
+wsl -d ubuntu-2004-wsl -u theundebruijn
+```  
+```zsh
+# zsh (theundebruijn)
+sudo systemctl enable docker
+exit
+```
+```powershell
+# powershell (regular user)
+wsl --shutdown
+wsl -d ubuntu-2004-wsl -u theundebruijn
+```    
+ ```zsh
+# zsh (theundebruijn)
+sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+
+# set dockerd to autostart without sudo pw
+(see: https://blog.nillsf.com/index.php/2020/06/29/how-to-automatically-start-the-docker-daemon-on-wsl2/)
+sudo visudo
+    
+    # add the following :
+    theundebruijn ALL=(ALL) NOPASSWD: /usr/bin/dockerd
+
+nano ~/.zshrc
+
+    # add the following :
+    # Start Docker daemon automatically when logging in if not running.
+    RUNNING=`ps aux | grep dockerd | grep -v grep`
+    if [ -z "$RUNNING" ]; then
+        sudo dockerd > /dev/null 2>&1 &
+        disown
+    fi
+
+exit   
+```
+<sup>18 / install additional software
+```powershell
+# powershell (regular user)
+wsl -d ubuntu-2004-wsl -u theundebruijn
+```  
+```zsh
+# zsh (theundebruijn)
+sudo ln -s /usr/bin/python3.8 /usr/local/bin/python
+sudo apt install ffmpeg
+sudo curl -L https://yt-dl.org/downloads/latest/youtube-dl -o /usr/local/bin/youtube-dl
+sudo chmod a+rx /usr/local/bin/youtube-dl
+
+sudo apt install p7zip-full p7zip-rar
+```
 <br/>
 <sub><sup>copyright © 2020-present, Theun de Bruijn. all rights reserved.</sup></sub>
