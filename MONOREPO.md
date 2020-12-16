@@ -21,11 +21,12 @@
 ////////////////////                     ///////////////////
 ```
 #### MONOREPO
-
+<sup>inspired by the perforce workspace workflow — https://www.perforce.com/video-tutorials/vcs/setting-workspaces-p4v  
+we get close by utilising git's sparse checkouts, combined with gcp cloud storage for our lfs needs</sup>\
+<br/>
 <sup><b>_prerequisites:_</b>\
 \
-inspired by the perforce workspace workflow — https://www.perforce.com/video-tutorials/vcs/setting-workspaces-p4v  
-we get close by utilising git's sparse checkouts, combined with gcp cloud storage for our lfs needs  
+the wsl2 vm configures through the [devops readme](DEVOPS.md)
 </sup>
 
 ##### monorepo setup
