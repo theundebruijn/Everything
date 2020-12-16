@@ -108,5 +108,26 @@ lfs-folderstore --version
 cd "/mnt/c/Users/Theun de Bruijn/Everything"
 git sparse-checkout set THEU0001/Output/Publishing THEU0001/Output/3D
 ```
+<sup>howto / sparce-checkout in wsl2</sup>  
+```zsh
+# zsh (theundebruijn)
+# mount the gcp storage bucket — https://cloud.google.com/storage
+gcsfuse everything-storage-bucket-uswest1-0001 ~/.gcsfuse_mountpoint
+
+# make sure lfs-folderstore is available on the PATH
+lfs-folderstore --version
+
+# make a sparse checkout</sup>  
+mkdir ~/Everything
+git clone --no-checkout git@github.com-theundebruijn:theundebruijn/Everything.git ~/Everything
+cd ~/Everything
+git config user.name "Theun de Bruijn" && git config user.email "theun@theundebruijn.com"
+git lfs install
+git config --add lfs.customtransfer.lfs-folder.path lfs-folderstore
+git config --add lfs.customtransfer.lfs-folder.args "/home/theundebruijn/.gcsfuse_mountpoint"
+git config --add lfs.standalonetransferagent lfs-folder
+git sparse-checkout init --cone
+git sparse-checkout set THEU0000/Input/Tools/Studio
+```
 <br/>
 <sub><sup>copyright © 2020-present, Theun de Bruijn. all rights reserved.</sup></sub>
