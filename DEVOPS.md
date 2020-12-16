@@ -24,7 +24,7 @@
 
 <sup><b>_prerequisites:_</b>\
 \
-Windows 10 64-bit (enterprise) — `version 20H2`, `build 19042.685`
+Microsoft Windows 10 `(x64)` `(enterprise)` — `version 20H2`, `build 19042.685`
 </sup>
 
 ##### Windows 10 Features
