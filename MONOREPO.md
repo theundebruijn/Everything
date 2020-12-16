@@ -72,7 +72,7 @@ rm ~/lfs-folderstore-linux-amd64-v1.0.0.zip
 ```
 ##### monorepo workflow
 <sup>based on — https://github.blog/2020-01-17-bring-your-monorepo-down-to-size-with-sparse-checkout/</sup>  
-<sup>1 / perform a sparse checkout of an existing repo</sup>  
+<sup>howto / perform a sparse checkout of an existing repo</sup>  
 ```zsh
 # zsh (theundebruijn)
 # mount the gcp storage bucket — https://cloud.google.com/storage
@@ -95,6 +95,18 @@ git config --add lfs.standalonetransferagent lfs-folder
 git sparse-checkout init --cone
 git sparse-checkout set THEU0000 THEU0001/Output/Publishing THEU0001/Output/3D
 ```
-<sub><sup>fin.</sup></sub>
+<sup>howto / update the sparse-checkout mapping (post checkout)</sup>  
+```zsh
+# zsh (theundebruijn)
+# mount the gcp storage bucket — https://cloud.google.com/storage
+gcsfuse everything-storage-bucket-uswest1-0001 ~/.gcsfuse_mountpoint
+
+# make sure lfs-folderstore is available on the PATH
+lfs-folderstore --version
+
+# make a sparse checkout</sup>  
+cd "/mnt/c/Users/Theun de Bruijn/Everything"
+git sparse-checkout set THEU0001/Output/Publishing THEU0001/Output/3D
+```
 <br/>
 <sub><sup>copyright © 2020-present, Theun de Bruijn. all rights reserved.</sup></sub>
