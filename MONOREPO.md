@@ -111,3 +111,5 @@ git sparse-checkout init --cone
 git sparse-checkout set THEU0000 THEU0001/Output/Publishing THEU0001/Output/3D
 ```
 <sub><sup>fin.</sup></sub>
+<br/>
+<sub><sup>copyright © 2020-present, Theun de Bruijn. all rights reserved.</sup></sub>
