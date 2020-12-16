@@ -71,9 +71,10 @@ rm ~/lfs-folderstore-linux-amd64-v1.0.0.zip
 ```
 ##### monorepo workflow
 <sup>based on — https://github.blog/2020-01-17-bring-your-monorepo-down-to-size-with-sparse-checkout/</sup>  
-<sup>1 / mount the gcp storage bucket — https://cloud.google.com/storage</sup>  
+<sup>1 / perform a sparse checkout of an existing repo</sup>  
 ```zsh
 # zsh (theundebruijn)
+# mount the gcp storage bucket — https://cloud.google.com/storage
 mkdir ~/.gcsfuse_mountpoint
 gcsfuse everything-storage-bucket-uswest1-0001 ~/.gcsfuse_mountpoint
 ls ~/.gcsfuse_mountpoint
