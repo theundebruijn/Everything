@@ -21,6 +21,10 @@
 ////////////////////                     ///////////////////
 ```
 #### Everything
+<sub><sup>_date: 20201213 / git lfs size: 2.211412270553 GiB_</sup></sub>
+<br/>
+<br/>
+<br/>
 <sup>monorepo _git_\
 sparse checkouts give breath —\
 perforce lite</sup>
@@ -31,9 +35,6 @@ perforce lite</sup>
 [monorepo guide](MONOREPO.md)
 </sup>
 <br/>
-<br/>
-<br/>
-<sub><sup>_date: 20201213 / git lfs size: 2.211412270553 GiB_</sup></sub>
 <br/>
 <br/>
 <sub><sup>copyright © 2020-present, Theun de Bruijn. all rights reserved.</sup></sub>
