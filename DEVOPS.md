@@ -38,7 +38,7 @@ dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /nores
 <sup>3 / install linux kernel update package `wsl_update_x64.exe` — https://docs.microsoft.com/en-us/windows/wsl/install-win10</sup>  
 <sup>4 / install latest `(stable)` microsoft terminal release — https://github.com/microsoft/terminal/releases</sup>  
 <sup>5 / install latest visual studio code release `(x64)` `(user installer)` — https://code.visualstudio.com/download</sup>  
-<sup>6 / install the `Fira Code Regular Nerd Font Complete Mono Windows Compatible.otf` fontface — https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/FiraCode/Regular/complete</sup>  
+<sup>6 / install the `Fira Code Regular Nerd Font Complete Mono Windows Compatible.otf` fontface — https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/FiraCode/Retina/complete/</sup>  
 <sup>6 / install the  visual studio code `City Lights` theme — https://marketplace.visualstudio.com/items?itemName=Yummygum.city-lights-theme</sup>  
 <sup>7 / configure visual studio code to use `"FiraCode NF Retina"` at `12px`</sup>  
 <sup>8 / configure microsoft terminal `settings.json` -> `schemes` :</sup>  
