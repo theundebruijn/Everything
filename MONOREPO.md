@@ -89,7 +89,6 @@ ls ~/.gcsfuse_mountpoint
 lfs-folderstore --version
 
 # make a sparse checkout</sup>  
-mkdir -p "/mnt/c/Users/Theun de Bruijn/Everything"
 git clone --no-checkout git@github.com-theundebruijn:theundebruijn/Everything.git "/mnt/c/Users/Theun de Bruijn/Everything"
 cd "/mnt/c/Users/Theun de Bruijn/Everything"
 git config user.name "Theun de Bruijn" && git config user.email "theun@theundebruijn.com"
@@ -99,7 +98,7 @@ git config --add lfs.customtransfer.lfs-folder.args "/home/theundebruijn/.gcsfus
 git config --add lfs.standalonetransferagent lfs-folder
 git sparse-checkout init --cone
 git sparse-checkout set THEU0000/Input/Resources THEU0001/Output/Publishing THEU0001/Output/3D
-git lfs pull
+git reset --hard main
 ```
 <sup>howto / update the sparse-checkout mapping (post checkout)</sup>  
 ```zsh
@@ -124,7 +123,6 @@ gcsfuse everything-storage-bucket-uswest1-0001 ~/.gcsfuse_mountpoint
 lfs-folderstore --version
 
 # make a sparse checkout</sup>  
-mkdir ~/Everything
 git clone --no-checkout git@github.com-theundebruijn:theundebruijn/Everything.git ~/Everything
 cd ~/Everything
 git config user.name "Theun de Bruijn" && git config user.email "theun@theundebruijn.com"
@@ -134,6 +132,7 @@ git config --add lfs.customtransfer.lfs-folder.args "/home/theundebruijn/.gcsfus
 git config --add lfs.standalonetransferagent lfs-folder
 git sparse-checkout init --cone
 git sparse-checkout set THEU0000/Input/Tools/Studio
+git reset --hard main
 ```
 <br/>
 <sub><sup>copyright © 2020-present, Theun de Bruijn. all rights reserved.</sup></sub>
