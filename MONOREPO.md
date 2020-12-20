@@ -114,7 +114,7 @@ lfs-folderstore --version
 cd "/mnt/c/Users/Theun de Bruijn/Everything"
 git sparse-checkout set THEU0001/Output/Publishing THEU0001/Output/3D
 ```
-<sup>howto / sparce-checkout in wsl2</sup>  
+<sup>howto / sparse-checkout in wsl2</sup>  
 ```zsh
 # zsh (theundebruijn)
 # mount the gcp storage bucket — https://cloud.google.com/storage
