@@ -97,7 +97,7 @@ git config --add lfs.customtransfer.lfs-folder.path lfs-folderstore
 git config --add lfs.customtransfer.lfs-folder.args "/home/theundebruijn/.gcsfuse_mountpoint"
 git config --add lfs.standalonetransferagent lfs-folder
 git sparse-checkout init --cone
-git sparse-checkout set THEU0000/Input/Resources THEU0001/Output/Publishing THEU0001/Output/3D
+git sparse-checkout set THEU0000/Input/Resources THEU0001/Input/Resources THEU0001/Output/Publishing THEU0001/Output/3D
 git reset --hard main
 ```
 <sup>howto / update the sparse-checkout mapping (post checkout)</sup>  
@@ -111,7 +111,7 @@ lfs-folderstore --version
 
 # make a sparse checkout</sup>  
 cd "/mnt/c/Users/Theun de Bruijn/Everything"
-git sparse-checkout set THEU0001/Output/Publishing THEU0001/Output/3D
+git sparse-checkout set THEU0000/Input/Resources
 ```
 <sup>howto / sparse-checkout in wsl2</sup>  
 ```zsh
