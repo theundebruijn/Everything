@@ -76,20 +76,20 @@ dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /nores
 # powershell (regular user)
 wsl --set-default-version 2
 ```  
-<sup>11 / download the latest `ubuntu-20.04-server-cloudimg-amd64-wsl.rootfs.tar.gz` — https://cloud-images.ubuntu.com/releases/focal/release/</sup>  
+<sup>11 / download the latest `ubuntu-20.10-server-cloudimg-amd64-wsl.rootfs.tar.gz` — https://cloud-images.ubuntu.com/releases/groovy/release/</sup>  
 <sup>12 / create the wsl2 vm
 ```powershell
 # powershell (regular user)
 mkdir "C:\Users\Theun de Bruijn\.wsl\"
-cp "<path to file>\ubuntu-20.04-server-cloudimg-amd64-wsl.rootfs.tar.gz" "C:\Users\Theun de Bruijn\.wsl\"
+cp "<path to file>\ubuntu-20.10-server-cloudimg-amd64-wsl.rootfs.tar.gz" "C:\Users\Theun de Bruijn\.wsl\"
 cd "C:\Users\Theun de Bruijn\.wsl\"
-wsl --import ubuntu-2004-wsl ubuntu-2004-wsl ubuntu-20.04-server-cloudimg-amd64-wsl.rootfs.tar.gz
+wsl --import ubuntu-2010-wsl ubuntu-2010-wsl ubuntu-20.10-server-cloudimg-amd64-wsl.rootfs.tar.gz
 wsl -l -v
 ```  
 <sup>13 / configure vm : add user
 ```powershell
 # powershell (regular user)
-wsl -d ubuntu-2004-wsl
+wsl -d ubuntu-2010-wsl
 ```  
 ```bash
 # bash (root user)
@@ -100,7 +100,7 @@ exit
 <sup>14 / configure vm : wsl config
 ```powershell
 # powershell (regular user)
-wsl -d ubuntu-2004-wsl -u theundebruijn
+wsl -d ubuntu-2010-wsl -u theundebruijn
 ```  
 ```bash
 # bash (theundebruijn)
@@ -125,7 +125,7 @@ exit
 <sup>15 / configure vm : updates
 ```powershell
 # powershell (regular user)
-wsl -d ubuntu-2004-wsl -u theundebruijn
+wsl -d ubuntu-2010-wsl -u theundebruijn
 ```  
 ```bash
 # bash (theundebruijn)
@@ -144,7 +144,7 @@ exit
 ``` 
 ```powershell
 # powershell (regular user)
-wsl -d ubuntu-2004-wsl -u theundebruijn
+wsl -d ubuntu-2010-wsl -u theundebruijn
 ```  
 ```zsh
 # zsh (theundebruijn)
@@ -154,7 +154,7 @@ code .
 <sup>16 / configure vm : ssh
 ```powershell
 # powershell (regular user)
-wsl -d ubuntu-2004-wsl -u theundebruijn
+wsl -d ubuntu-2010-wsl -u theundebruijn
 ```  
 ```zsh
 # zsh (theundebruijn)
@@ -183,7 +183,7 @@ exit
 ``` 
 ```powershell
 # powershell (regular user)
-wsl -d ubuntu-2004-wsl -u theundebruijn
+wsl -d ubuntu-2010-wsl -u theundebruijn
 ```  
 ```zsh
 # zsh (theundebruijn)
@@ -196,7 +196,7 @@ ssh-keyscan -H github.com >> ~/.ssh/known_hosts
 <sup>17 / install docker engine + docker-compose
 ```powershell
 # powershell (regular user)
-wsl -d ubuntu-2004-wsl -u theundebruijn
+wsl -d ubuntu-2010-wsl -u theundebruijn
 ```  
 ```zsh
 # zsh (theundebruijn)
@@ -212,7 +212,7 @@ exit
 ```
 ```powershell
 # powershell (regular user)
-wsl -d ubuntu-2004-wsl -u theundebruijn
+wsl -d ubuntu-2010-wsl -u theundebruijn
 ```  
 ```zsh
 # zsh (theundebruijn)
@@ -222,7 +222,7 @@ exit
 ```powershell
 # powershell (regular user)
 wsl --shutdown
-wsl -d ubuntu-2004-wsl -u theundebruijn
+wsl -d ubuntu-2010-wsl -u theundebruijn
 ```    
  ```zsh
 # zsh (theundebruijn)
@@ -251,7 +251,7 @@ exit
 <sup>18 / install additional software
 ```powershell
 # powershell (regular user)
-wsl -d ubuntu-2004-wsl -u theundebruijn
+wsl -d ubuntu-2010-wsl -u theundebruijn
 ```  
 ```zsh
 # zsh (theundebruijn)
