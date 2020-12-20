@@ -33,7 +33,7 @@ a wsl2 vm configured using the [devops readme](DEVOPS.md)
 <sup>1/ install Cloud SDK — https://cloud.google.com/sdk/docs/install#deb</sup>  
 ```powershell
 # powershell (regular user)
-wsl -d ubuntu-2004-wsl -u theundebruijn
+wsl -d ubuntu-2010-wsl -u theundebruijn
 ``` 
 ```zsh
 # zsh (theundebruijn)
@@ -53,11 +53,15 @@ gcloud auth application-default login # handle flow via an authenticated browser
 <sup>2/ install gcsfuse — https://github.com/GoogleCloudPlatform/gcsfuse/blob/master/docs/installing.md</sup>  
 ```zsh
 # zsh (theundebruijn)
-export GCSFUSE_REPO=gcsfuse-`lsb_release -c -s`
+# todo : update this to ubuntu 20.10 (groovy) when available
+# for now we downgrade the lsb_release to ubuntu 20.04 (focal)
+# export GCSFUSE_REPO=gcsfuse-`lsb_release -c -s`
+export GCSFUSE_REPO=gcsfuse-focal
 echo "deb http://packages.cloud.google.com/apt $GCSFUSE_REPO main" | sudo tee /etc/apt/sources.list.d/gcsfuse.list
 curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
 sudo apt update
 sudo apt install gcsfuse
+gcsfuse --version
 ```
 <sup>3/ install lfs-folderstore — https://github.com/sinbad/lfs-folderstore</sup>  
 ```zsh
@@ -69,6 +73,7 @@ sudo mv ./lfs-folderstore-linux-amd64/lfs-folderstore /usr/local/bin/
 sudo chmod +x /usr/local/bin/lfs-folderstore
 rm -rf ~/lfs-folderstore-linux-amd64
 rm ~/lfs-folderstore-linux-amd64-v1.0.0.zip
+lfs-folderstore --version
 ```
 ##### monorepo workflow
 <sup>based on — https://github.blog/2020-01-17-bring-your-monorepo-down-to-size-with-sparse-checkout/</sup>  
@@ -94,6 +99,7 @@ git config --add lfs.customtransfer.lfs-folder.args "/home/theundebruijn/.gcsfus
 git config --add lfs.standalonetransferagent lfs-folder
 git sparse-checkout init --cone
 git sparse-checkout set THEU0000/Input/Resources THEU0001/Output/Publishing THEU0001/Output/3D
+git lfs pull
 ```
 <sup>howto / update the sparse-checkout mapping (post checkout)</sup>  
 ```zsh
