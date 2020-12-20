@@ -121,6 +121,7 @@ sudo nano /etc/resolv.conf
     nameserver 1.0.0.1
 
 exit
+wsl --shutdown
 ```
 <sup>15 / configure vm : updates
 ```powershell
@@ -129,7 +130,7 @@ wsl -d ubuntu-2010-wsl -u theundebruijn
 ```  
 ```bash
 # bash (theundebruijn)
-udo apt update
+sudo apt update
 sudo apt upgrade
 sudo apt install git
 sudo apt install git-lfs
@@ -152,10 +153,6 @@ wsl -d ubuntu-2010-wsl -u theundebruijn
 code .
 ```
 <sup>16 / configure vm : ssh
-```powershell
-# powershell (regular user)
-wsl -d ubuntu-2010-wsl -u theundebruijn
-```  
 ```zsh
 # zsh (theundebruijn)
 mkdir ~/.ssh
@@ -193,29 +190,15 @@ ssh-add -l
 # this will prevent the fingerprint errors popping up when git cloning
 ssh-keyscan -H github.com >> ~/.ssh/known_hosts
 ``` 
-<sup>17 / install docker engine + docker-compose
-```powershell
-# powershell (regular user)
-wsl -d ubuntu-2010-wsl -u theundebruijn
-```  
+<sup>17 / install docker engine + docker-compose — https://docs.docker.com/engine/install/ubuntu/ + https://github.com/docker/compose/releases/
 ```zsh
 # zsh (theundebruijn)
-sudo apt remove docker docker-engine docker.io containerd runc
 sudo apt install apt-transport-https ca-certificates curl gnupg-agent software-properties-common
-sudo apt-key fingerprint 0EBFCD88
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
 sudo apt update
 sudo apt install docker-ce docker-ce-cli containerd.io
-sudo apt remove mdadm # https://github.com/microsoft/WSL/issues/4903
 sudo usermod -aG docker $USER
-exit
-```
-```powershell
-# powershell (regular user)
-wsl -d ubuntu-2010-wsl -u theundebruijn
-```  
-```zsh
-# zsh (theundebruijn)
 sudo systemctl enable docker
 exit
 ```
@@ -257,9 +240,11 @@ wsl -d ubuntu-2010-wsl -u theundebruijn
 # zsh (theundebruijn)
 sudo ln -s /usr/bin/python3.8 /usr/local/bin/python
 sudo apt install ffmpeg
+
 sudo curl -L https://yt-dl.org/downloads/latest/youtube-dl -o /usr/local/bin/youtube-dl
 sudo chmod a+rx /usr/local/bin/youtube-dl
 
+sudo apt install gifsicle
 sudo apt install p7zip-full p7zip-rar
 ```
 <br/>
