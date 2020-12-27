@@ -54,9 +54,9 @@ gcloud auth application-default login # handle flow via an authenticated browser
 ```zsh
 # zsh (theundebruijn)
 # todo : update this to ubuntu 20.10 (groovy) when available
-# for now we downgrade the lsb_release to ubuntu 20.04 (focal)
-# export GCSFUSE_REPO=gcsfuse-`lsb_release -c -s`
-export GCSFUSE_REPO=gcsfuse-focal
+# for now we downgrade the lsb_release to ubuntu 18.04 (bionic)
+# as the 20.04 (focal) release doesn't offer the latest build — https://github.com/GoogleCloudPlatform/gcsfuse/issues/477
+export GCSFUSE_REPO=gcsfuse-bionic
 echo "deb http://packages.cloud.google.com/apt $GCSFUSE_REPO main" | sudo tee /etc/apt/sources.list.d/gcsfuse.list
 curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
 sudo apt update
