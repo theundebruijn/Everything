@@ -225,9 +225,14 @@ nano ~/.zshrc
     # Start Docker daemon automatically when logging in if not running.
     RUNNING=`ps aux | grep dockerd | grep -v grep`
     if [ -z "$RUNNING" ]; then
-        sudo dockerd --iptables=false > /dev/null 2>&1 &
+        sudo dockerd > /dev/null 2>&1 &
         disown
     fi
+    
+# workaround for iptables issue
+(see: https://forums.docker.com/t/failing-to-start-dockerd-failed-to-create-nat-chain-docker/78269)
+sudo update-alternatives --set iptables /usr/sbin/iptables-legacy
+sudo update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
 
 exit   
 ```
