@@ -131,7 +131,7 @@ git config --add lfs.customtransfer.lfs-folder.path lfs-folderstore
 git config --add lfs.customtransfer.lfs-folder.args "/home/theundebruijn/.gcsfuse_mountpoint"
 git config --add lfs.standalonetransferagent lfs-folder
 git sparse-checkout init --cone
-git sparse-checkout set THEU0000/Input/Tools/Studio
+git sparse-checkout set THEU0000/Output/Code THEU0000/Input/Tools/Studio
 git reset --hard main
 ```
 <br/>
