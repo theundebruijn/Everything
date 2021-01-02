@@ -80,9 +80,25 @@ lfs-folderstore --version
 <sup>howto / perform a sparse checkout of an existing repo</sup>  
 ```zsh
 # zsh (theundebruijn)
-# mount the gcp storage bucket — https://cloud.google.com/storage
+# setup automounting of the gcp storage bucket — https://cloud.google.com/storage
+
 mkdir ~/.gcsfuse_mountpoint
-gcsfuse everything-storage-bucket-uswest1-0001 ~/.gcsfuse_mountpoint
+
+nano ~/.zshrc
+
+# add the following :
+# Mount gcsfuse endpoint automatically when logging in if not running.
+RUNNING=`ps aux | grep gcsfuse | grep -v grep`
+if [ -z "$RUNNING" ]; then
+  gcsfuse everything-storage-bucket-uswest1-0001 ~/.gcsfuse_mountpoint > /dev/null 2>&1 &
+  disown
+fi
+
+exit
+```
+```zsh
+# zsh (theundebruijn)
+# make sure the fuse mount is available
 ls ~/.gcsfuse_mountpoint
 
 # make sure lfs-folderstore is available on the PATH
