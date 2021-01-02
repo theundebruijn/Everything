@@ -216,18 +216,17 @@ sudo chmod +x /usr/local/bin/docker-compose
 (see: https://blog.nillsf.com/index.php/2020/06/29/how-to-automatically-start-the-docker-daemon-on-wsl2/)
 sudo visudo
     
-    # add the following :
-    theundebruijn ALL=(ALL) NOPASSWD: /usr/bin/dockerd
+# add the following :
+theundebruijn ALL=(ALL) NOPASSWD: /usr/bin/dockerd
 
 nano ~/.zshrc
 
-    # add the following :
-    # Start Docker daemon automatically when logging in if not running.
-    RUNNING=`ps aux | grep dockerd | grep -v grep`
-    if [ -z "$RUNNING" ]; then
-        sudo dockerd > /dev/null 2>&1 &
-        disown
-    fi
+# add the following :
+RUNNING=`ps aux | grep dockerd | grep -v grep`
+if [ -z "$RUNNING" ]; then
+  sudo dockerd > /dev/null 2>&1 &
+  disown
+fi
     
 # workaround for iptables issue
 (see: https://forums.docker.com/t/failing-to-start-dockerd-failed-to-create-nat-chain-docker/78269)
