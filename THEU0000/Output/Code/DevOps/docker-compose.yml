@@ -1,0 +1,27 @@
+version: '3.7'
+
+networks:
+
+  static-network:
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.10.12.0/24
+
+services:
+
+  theu0000-output-code-web:
+
+    container_name: theu0000-output-code-web
+    build:
+      context: ../Web/
+      dockerfile: local.dockerfile
+    volumes:
+      - type: bind
+        source: ../Web/
+        target: /usr/src/app
+    networks:
+      static-network:
+        ipv4_address: 10.10.12.10
+    ports:
+      - "11210:11210"

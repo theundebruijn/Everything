@@ -1,0 +1,24 @@
+{
+  "home": {
+    "document": {
+      "title": "Theun de Bruijn"
+    },
+    "meta": {
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      "og:locale": "en_AU",
+      "og:locale:alternate": "en_GB",
+      "og:site_name": "Theun de Bruijn",
+      "og:title": "Theun de Bruijn",
+      "og:type": "website",
+      "og:url": "https://theundebruijn.com",
+      "og:description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      "og:image": "",
+      "og:image:type": "",
+      "og:image:width": "",
+      "og:image:height": "",
+      "twitter:card": "summary_large_image",
+      "twitter:site": "@theundebruijn",
+      "twitter:creator": "@theundebruijn"
+    }
+  }
+}
