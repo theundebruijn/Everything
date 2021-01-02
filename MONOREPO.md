@@ -87,7 +87,6 @@ mkdir ~/.gcsfuse_mountpoint
 nano ~/.zshrc
 
 # add the following :
-# Mount gcsfuse endpoint automatically when logging in if not running.
 RUNNING=`ps aux | grep gcsfuse | grep -v grep`
 if [ -z "$RUNNING" ]; then
   gcsfuse everything-storage-bucket-uswest1-0001 ~/.gcsfuse_mountpoint > /dev/null 2>&1 &
