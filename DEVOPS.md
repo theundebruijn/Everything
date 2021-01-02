@@ -106,19 +106,19 @@ wsl -d ubuntu-2010-wsl -u theundebruijn
 # bash (theundebruijn)
 sudo nano /etc/wsl.conf
 
-    # add the following : 
-    [network]
-    generateResolvConf = false
+# add the following : 
+[network]
+generateResolvConf = false
 
-    [automount]
-    options = metadata
+[automount]
+options = metadata
     
 sudo rm /etc/resolv.conf
 sudo nano /etc/resolv.conf
 
-    # add the following :
-    nameserver 1.1.1.1
-    nameserver 1.0.0.1
+# add the following :
+nameserver 1.1.1.1
+nameserver 1.0.0.1
 
 exit
 wsl --shutdown
@@ -158,23 +158,23 @@ code .
 mkdir ~/.ssh
 nano ~/.ssh/config
 
-    # add the following :
-    AddKeysToAgent yes
+# add the following :
+AddKeysToAgent yes
 
-    # GitHub
-    Host github.com-theundebruijn
-        HostName github.com
-        User git
-        IdentitiesOnly yes
-        IdentityFile /home/theundebruijn/.ssh/id_ed25519_github.com_theun@theundebruijn.com
+# GitHub
+Host github.com-theundebruijn
+    HostName github.com
+    User git
+    IdentitiesOnly yes
+    IdentityFile /home/theundebruijn/.ssh/id_ed25519_github.com_theun@theundebruijn.com
 
 cp /mnt/c/<path to folder with downloaded ssh keys>/SSH/* ~/.ssh/
 chmod 600 ~/.ssh/id_ed25519_github.com_theun@theundebruijn.com
 nano ~/.zshrc
     
-    # add the following : 
-    { eval $(ssh-agent) } &>/dev/null
-    { ssh-add ~/.ssh/id_ed25519_github.com_theun@theundebruijn.com } &>/dev/null
+# add the following : 
+{ eval $(ssh-agent) } &>/dev/null
+{ ssh-add ~/.ssh/id_ed25519_github.com_theun@theundebruijn.com } &>/dev/null
 
 exit
 ``` 
