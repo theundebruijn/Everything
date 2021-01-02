@@ -106,19 +106,19 @@ wsl -d ubuntu-2010-wsl -u theundebruijn
 # bash (theundebruijn)
 sudo nano /etc/wsl.conf
 
-    # add the following : 
-    [network]
-    generateResolvConf = false
+# add the following : 
+[network]
+generateResolvConf = false
 
-    [automount]
-    options = metadata
+[automount]
+options = metadata
     
 sudo rm /etc/resolv.conf
 sudo nano /etc/resolv.conf
 
-    # add the following :
-    nameserver 1.1.1.1
-    nameserver 1.0.0.1
+# add the following :
+nameserver 1.1.1.1
+nameserver 1.0.0.1
 
 exit
 wsl --shutdown
@@ -158,23 +158,23 @@ code .
 mkdir ~/.ssh
 nano ~/.ssh/config
 
-    # add the following :
-    AddKeysToAgent yes
+# add the following :
+AddKeysToAgent yes
 
-    # GitHub
-    Host github.com-theundebruijn
-        HostName github.com
-        User git
-        IdentitiesOnly yes
-        IdentityFile /home/theundebruijn/.ssh/id_ed25519_github.com_theun@theundebruijn.com
+# GitHub
+Host github.com-theundebruijn
+    HostName github.com
+    User git
+    IdentitiesOnly yes
+    IdentityFile /home/theundebruijn/.ssh/id_ed25519_github.com_theun@theundebruijn.com
 
 cp /mnt/c/<path to folder with downloaded ssh keys>/SSH/* ~/.ssh/
 chmod 600 ~/.ssh/id_ed25519_github.com_theun@theundebruijn.com
 nano ~/.zshrc
     
-    # add the following : 
-    { eval $(ssh-agent) } &>/dev/null
-    { ssh-add ~/.ssh/id_ed25519_github.com_theun@theundebruijn.com } &>/dev/null
+# add the following : 
+{ eval $(ssh-agent) } &>/dev/null
+{ ssh-add ~/.ssh/id_ed25519_github.com_theun@theundebruijn.com } &>/dev/null
 
 exit
 ``` 
@@ -216,18 +216,22 @@ sudo chmod +x /usr/local/bin/docker-compose
 (see: https://blog.nillsf.com/index.php/2020/06/29/how-to-automatically-start-the-docker-daemon-on-wsl2/)
 sudo visudo
     
-    # add the following :
-    theundebruijn ALL=(ALL) NOPASSWD: /usr/bin/dockerd
+# add the following :
+theundebruijn ALL=(ALL) NOPASSWD: /usr/bin/dockerd
 
 nano ~/.zshrc
 
-    # add the following :
-    # Start Docker daemon automatically when logging in if not running.
-    RUNNING=`ps aux | grep dockerd | grep -v grep`
-    if [ -z "$RUNNING" ]; then
-        sudo dockerd > /dev/null 2>&1 &
-        disown
-    fi
+# add the following :
+RUNNING=`ps aux | grep dockerd | grep -v grep`
+if [ -z "$RUNNING" ]; then
+  sudo dockerd > /dev/null 2>&1 &
+  disown
+fi
+    
+# workaround for iptables issue
+(see: https://forums.docker.com/t/failing-to-start-dockerd-failed-to-create-nat-chain-docker/78269)
+sudo update-alternatives --set iptables /usr/sbin/iptables-legacy
+sudo update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
 
 exit   
 ```

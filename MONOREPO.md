@@ -80,9 +80,24 @@ lfs-folderstore --version
 <sup>howto / perform a sparse checkout of an existing repo</sup>  
 ```zsh
 # zsh (theundebruijn)
-# mount the gcp storage bucket — https://cloud.google.com/storage
+# setup automounting of the gcp storage bucket — https://cloud.google.com/storage
+
 mkdir ~/.gcsfuse_mountpoint
-gcsfuse everything-storage-bucket-uswest1-0001 ~/.gcsfuse_mountpoint
+
+nano ~/.zshrc
+
+# add the following :
+RUNNING=`ps aux | grep gcsfuse | grep -v grep`
+if [ -z "$RUNNING" ]; then
+  gcsfuse everything-storage-bucket-uswest1-0001 ~/.gcsfuse_mountpoint > /dev/null 2>&1 &
+  disown
+fi
+
+exit
+```
+```zsh
+# zsh (theundebruijn)
+# make sure the fuse mount is available
 ls ~/.gcsfuse_mountpoint
 
 # make sure lfs-folderstore is available on the PATH
@@ -131,7 +146,7 @@ git config --add lfs.customtransfer.lfs-folder.path lfs-folderstore
 git config --add lfs.customtransfer.lfs-folder.args "/home/theundebruijn/.gcsfuse_mountpoint"
 git config --add lfs.standalonetransferagent lfs-folder
 git sparse-checkout init --cone
-git sparse-checkout set THEU0000/Output/Code THEU0000/Input/Tools/Studio
+git sparse-checkout set _meta/Workspaces THEU0000/Output/Code THEU0000/Input/Tools/Studio
 git reset --hard main
 ```
 <br/>
