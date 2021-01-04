@@ -17,7 +17,7 @@
     "@rollup/plugin-json": "4.1.0",
     "@rollup/plugin-node-resolve": "11.0.1",
     "@rollup/plugin-url": "6.0.0",
-    "eslint": "7.16.0",
+    "eslint": "7.17.0",
     "html-minifier": "4.0.0",
     "npm-check-updates": "10.2.5",
     "rollup": "2.35.1",
@@ -25,7 +25,8 @@
     "rollup-plugin-copy": "3.3.0",
     "rollup-plugin-serve": "1.1.0",
     "rollup-plugin-string": "3.0.0",
-    "rollup-plugin-terser": "7.0.2"
+    "rollup-plugin-terser": "7.0.2",
+    "uuid": "8.3.2"
   },
   "license": "",
   "engines": {

@@ -22,7 +22,7 @@ export default {
     sourcemap: true,
   },
   manualChunks: {
-    vendor: [ 'gsap', 'three', 'resource-loader' ],
+    vendor: [ 'gsap' ],
   },
   cache: true,
   watch: {
@@ -54,18 +54,6 @@ export default {
           src: './_meta/assets/templates/index.html',
           dest: './_dev',
         },
-        {
-          src: './_meta/assets/draco/1.3.6/draco_decoder.js',
-          dest: './_dev/static/draco',
-        },
-        {
-          src: './_meta/assets/draco/1.3.6/draco_decoder.wasm',
-          dest: './_dev/static/draco',
-        },
-        {
-          src: './_meta/assets/draco/1.3.6/draco_wasm_wrapper.js',
-          dest: './_dev/static/draco',
-        }
       ],
     }),
     serve({
@@ -73,7 +61,7 @@ export default {
       verbose: true,
       historyApiFallback: true,
       host: '0.0.0.0',
-      public: 'studio.giantesque.com',
+      public: 'local.theundebruijn.com',
       port: 11210,
     }),
   ],

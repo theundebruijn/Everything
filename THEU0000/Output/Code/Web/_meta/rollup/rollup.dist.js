@@ -29,7 +29,7 @@ export default {
     sourcemap: false,
   },
   manualChunks: {
-    vendor: ['gsap', 'three', 'resource-loader'],
+    vendor: ['gsap'],
   },
   cache: false,
   watch: {
@@ -63,21 +63,6 @@ export default {
         {
           src: './_meta/assets/templates/index.html',
           dest: './_dist',
-        },
-        {
-          src: './_meta/assets/draco/1.3.6/draco_decoder.js',
-          dest: './_dist/static/draco',
-          rename: 'draco_decoder-'+ global.UUID + '.js',
-        },
-        {
-          src: './_meta/assets/draco/1.3.6/draco_decoder.wasm',
-          dest: './_dist/static/draco',
-          rename: 'draco_decoder-'+ global.UUID  +'.wasm',
-        },
-        {
-          src: './_meta/assets/draco/1.3.6/draco_wasm_wrapper.js',
-          dest: './_dist/static/draco',
-          rename: 'draco_wasm_wrapper-'+ global.UUID +'.js',
         },
       ],
     }),

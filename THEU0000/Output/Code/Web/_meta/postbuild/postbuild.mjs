@@ -116,51 +116,51 @@ const generateStaticPage = function(callback, path) {
   });
 };
 
-const revertDracoFilenames = function(callback) {
-  fs.readFile('node_modules/three/examples/jsm/loaders/DRACOLoader.js', 'utf8', function (err, data) {
-    if (err) { return console.log(err); }
+// const revertDracoFilenames = function(callback) {
+//   fs.readFile('node_modules/three/examples/jsm/loaders/DRACOLoader.js', 'utf8', function (err, data) {
+//     if (err) { return console.log(err); }
 
-    // TODO?: should we convert this file to a class based scope?
-    // Here we revert the rewrites made in the prebuild step.
-    // LINK: https://regex101.com/r/lB36Ef/1
-    global.modifiedDraco = data.replace(/_loadLibrary\( 'draco_decoder.*\.js/, '_loadLibrary( \'draco_decoder.js');
-    global.modifiedDraco = global.modifiedDraco.replace(/_loadLibrary\( 'draco_wasm_wrapper.*\.js/, '_loadLibrary( \'draco_wasm_wrapper.js');
-    global.modifiedDraco = global.modifiedDraco.replace(/_loadLibrary\( 'draco_decoder.*\.wasm/, '_loadLibrary( \'draco_decoder.wasm');
+//     // TODO?: should we convert this file to a class based scope?
+//     // Here we revert the rewrites made in the prebuild step.
+//     // LINK: https://regex101.com/r/lB36Ef/1
+//     global.modifiedDraco = data.replace(/_loadLibrary\( 'draco_decoder.*\.js/, '_loadLibrary( \'draco_decoder.js');
+//     global.modifiedDraco = global.modifiedDraco.replace(/_loadLibrary\( 'draco_wasm_wrapper.*\.js/, '_loadLibrary( \'draco_wasm_wrapper.js');
+//     global.modifiedDraco = global.modifiedDraco.replace(/_loadLibrary\( 'draco_decoder.*\.wasm/, '_loadLibrary( \'draco_decoder.wasm');
 
-    if (callback) callback();
-  });
-};
+//     if (callback) callback();
+//   });
+// };
 
-const writeModifiedDraco = function(callback) {
-  fs.writeFile('node_modules/three/examples/jsm/loaders/DRACOLoader.js', global.modifiedDraco, function (err) {
-    if (err) throw err;
+// const writeModifiedDraco = function(callback) {
+//   fs.writeFile('node_modules/three/examples/jsm/loaders/DRACOLoader.js', global.modifiedDraco, function (err) {
+//     if (err) throw err;
 
-    if (callback) callback();
-  });
-};
+//     if (callback) callback();
+//   });
+// };
 
-const compressGlbFiles = function(callback) {
-  // fs.writeFile('node_modules/three/examples/jsm/loaders/DRACOLoader.js', global.modifiedDraco, function (err) {
-  //   if (err) throw err;
+// const compressGlbFiles = function(callback) {
+//   // fs.writeFile('node_modules/three/examples/jsm/loaders/DRACOLoader.js', global.modifiedDraco, function (err) {
+//   //   if (err) throw err;
 
-  //   if (callback) callback();
-  // });
+//   //   if (callback) callback();
+//   // });
 
-  fs.readdir('./_dist/assets', function(err, files) {
-    const aGlbFiles = files.filter(function(e){
-      return path.extname(e).toLowerCase() === '.glb';
-    });
+//   fs.readdir('./_dist/assets', function(err, files) {
+//     const aGlbFiles = files.filter(function(e){
+//       return path.extname(e).toLowerCase() === '.glb';
+//     });
 
-    for (let i = 0; i < aGlbFiles.length; i++) {
+//     for (let i = 0; i < aGlbFiles.length; i++) {
 
-      // TODO: build async callback handling for multiuple files
-      exec('./node_modules/.bin/gltf-pipeline -i ./_dist/assets/'+ aGlbFiles[i] +' -o ./_dist/assets/'+ aGlbFiles[i] +' -d --draco.compressionLevel 10', function() {
+//       // TODO: build async callback handling for multiuple files
+//       exec('./node_modules/.bin/gltf-pipeline -i ./_dist/assets/'+ aGlbFiles[i] +' -o ./_dist/assets/'+ aGlbFiles[i] +' -d --draco.compressionLevel 10', function() {
 
-        callback();
-      });
-    };
-  });
-};
+//         callback();
+//       });
+//     };
+//   });
+// };
 
 
 // TODO: shall we make this work or not?
@@ -196,22 +196,22 @@ async.series([
   function(callback) { getMetadataFile(callback); },
   function(callback) { generateStaticPage(callback, ''); },
   // function(callback) { removeAdditionalComments(callback) },
-  function(callback) { revertDracoFilenames(callback); },
-  function(callback) { writeModifiedDraco(callback); },
-  function(callback) { compressGlbFiles(callback); },
+  // function(callback) { revertDracoFilenames(callback); },
+  // function(callback) { writeModifiedDraco(callback); },
+  // function(callback) { compressGlbFiles(callback); },
   function(callback) { cleanTmp(callback); },
 
 ], function(err, results) {
   if (err) { return console.log(err); }
 
-  console.log('postbuild done. serving build preview on: http://studio.giantesque.com:11210');
+  console.log('postbuild done. serving build preview on: http://local.theundebruijn.com:11210');
 
   serve({
     contentBase: './_dist',
     verbose: true,
     historyApiFallback: false, // important to test static builds
     host: '0.0.0.0',
-    public: 'studio.giantesque.com',
+    public: 'local.theundebruijn.com',
     port: 11210,
   });
 });
