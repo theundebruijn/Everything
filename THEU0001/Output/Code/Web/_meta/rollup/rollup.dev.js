@@ -22,7 +22,7 @@ export default {
     sourcemap: true,
   },
   manualChunks: {
-    vendor: [ 'gsap' ],
+    vendor: ['gsap', 'three'],
   },
   cache: true,
   watch: {
@@ -61,8 +61,8 @@ export default {
       verbose: true,
       historyApiFallback: true,
       host: '0.0.0.0',
-      public: 'local.theundebruijn.com',
-      port: 10110,
+      public: 'local.giantesque.com',
+      port: 11110,
     }),
   ],
 };

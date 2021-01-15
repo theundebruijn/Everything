@@ -204,15 +204,15 @@ async.series([
 ], function(err, results) {
   if (err) { return console.log(err); }
 
-  console.log('postbuild done. serving build preview on: http://local.theundebruijn.com:10110');
+  console.log('postbuild done. serving build preview on: http://local.giantesque.com:11110');
 
   serve({
     contentBase: './_dist',
     verbose: true,
     historyApiFallback: false, // important to test static builds
     host: '0.0.0.0',
-    public: 'local.theundebruijn.com',
-    port: 10110,
+    public: 'local.giantesque.com',
+    port: 11110,
   });
 });
 

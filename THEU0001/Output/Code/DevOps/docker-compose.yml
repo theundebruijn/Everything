@@ -11,13 +11,13 @@ networks:
        # e.g. THEU0000  ->  10.10.10.0
        # e.g. THEU0001  ->  10.10.11.0
        # e.g. THEU0055  ->  10.10.155.0
-       - subnet: 10.10.10.0/24
+       - subnet: 10.10.11.0/24
 
 services:
 
-  theu0000-output-code-web:
+  theu0001-output-code-web:
 
-    container_name: theu0000-output-code-web
+    container_name: theu0001-output-code-web
     build:
       context: ../Web/
       dockerfile: local.dockerfile
@@ -32,11 +32,11 @@ services:
         # THEU0000 vm1   ->  10.10.10.11
         # THEU0000 vm8   ->  10.10.10.18
         # THEU0000 vm33  ->  10.10.10.133
-        ipv4_address: 10.10.10.11
+        ipv4_address: 10.10.11.11
     ports:
       # 5 digit port numbers based on 10.10.<project>.<vm>
       # we pad with 0's to get to 5 digits
       # e.g. 10.10.10.11  ->  10110
       # e.g. 10.10.11.18  ->  11180
       # e.g. 10.10.222.66 ->  22266
-      - "10110:10110"
+      - "11110:11110"
