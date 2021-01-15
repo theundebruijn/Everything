@@ -116,29 +116,30 @@ const generateStaticPage = function(callback, path) {
   });
 };
 
-// const revertDracoFilenames = function(callback) {
-//   fs.readFile('node_modules/three/examples/jsm/loaders/DRACOLoader.js', 'utf8', function (err, data) {
-//     if (err) { return console.log(err); }
+const revertDracoFilenames = function(callback) {
+  fs.readFile('node_modules/three/examples/jsm/loaders/DRACOLoader.js', 'utf8', function (err, data) {
+    if (err) { return console.log(err); }
 
-//     // TODO?: should we convert this file to a class based scope?
-//     // Here we revert the rewrites made in the prebuild step.
-//     // LINK: https://regex101.com/r/lB36Ef/1
-//     global.modifiedDraco = data.replace(/_loadLibrary\( 'draco_decoder.*\.js/, '_loadLibrary( \'draco_decoder.js');
-//     global.modifiedDraco = global.modifiedDraco.replace(/_loadLibrary\( 'draco_wasm_wrapper.*\.js/, '_loadLibrary( \'draco_wasm_wrapper.js');
-//     global.modifiedDraco = global.modifiedDraco.replace(/_loadLibrary\( 'draco_decoder.*\.wasm/, '_loadLibrary( \'draco_decoder.wasm');
+    // TODO?: should we convert this file to a class based scope?
+    // Here we revert the rewrites made in the prebuild step.
+    // LINK: https://regex101.com/r/lB36Ef/1
+    global.modifiedDraco = data.replace(/_loadLibrary\( 'draco_decoder.*\.js/, '_loadLibrary( \'draco_decoder.js');
+    global.modifiedDraco = global.modifiedDraco.replace(/_loadLibrary\( 'draco_wasm_wrapper.*\.js/, '_loadLibrary( \'draco_wasm_wrapper.js');
+    global.modifiedDraco = global.modifiedDraco.replace(/_loadLibrary\( 'draco_decoder.*\.wasm/, '_loadLibrary( \'draco_decoder.wasm');
 
-//     if (callback) callback();
-//   });
-// };
+    if (callback) callback();
+  });
+};
 
-// const writeModifiedDraco = function(callback) {
-//   fs.writeFile('node_modules/three/examples/jsm/loaders/DRACOLoader.js', global.modifiedDraco, function (err) {
-//     if (err) throw err;
+const writeModifiedDraco = function(callback) {
+  fs.writeFile('node_modules/three/examples/jsm/loaders/DRACOLoader.js', global.modifiedDraco, function (err) {
+    if (err) throw err;
 
-//     if (callback) callback();
-//   });
-// };
+    if (callback) callback();
+  });
+};
 
+// TODO: not needed using blenders compression ? if so no need for gltf-pipeline
 // const compressGlbFiles = function(callback) {
 //   // fs.writeFile('node_modules/three/examples/jsm/loaders/DRACOLoader.js', global.modifiedDraco, function (err) {
 //   //   if (err) throw err;
@@ -196,8 +197,8 @@ async.series([
   function(callback) { getMetadataFile(callback); },
   function(callback) { generateStaticPage(callback, ''); },
   // function(callback) { removeAdditionalComments(callback) },
-  // function(callback) { revertDracoFilenames(callback); },
-  // function(callback) { writeModifiedDraco(callback); },
+  function(callback) { revertDracoFilenames(callback); },
+  function(callback) { writeModifiedDraco(callback); },
   // function(callback) { compressGlbFiles(callback); },
   function(callback) { cleanTmp(callback); },
 
