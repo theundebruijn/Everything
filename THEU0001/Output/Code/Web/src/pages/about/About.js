@@ -1,19 +1,16 @@
 // npm
 import { DOM } from '~/utils/dom.js';
 
-//
-import WebGL from './components/webgl/WebGL.js';
-
 // assets
-import jpg from './assets/test.jpg';
+// import jpg from './assets/test.jpg';
 
 // style sheet
-import css from './Home.css';
+import css from './About.css';
 
 // TODO: abstract this into a little 'css loader' method
-const mycss = css.replace(/.\/assets\/test.jpg/g, jpg);
+// const mycss = css.replace(/.\/assets\/test.jpg/g, jpg);
 
-class Home extends HTMLElement  {
+class About extends HTMLElement  {
   constructor() {
     super();
 
@@ -21,7 +18,8 @@ class Home extends HTMLElement  {
     this.shadow = this.attachShadow({ mode: 'open' });
 
     const domStyle = DOM.create('style');
-    domStyle.innerHTML = mycss;
+    domStyle.innerHTML = css;
+    // domStyle.innerHTML = mycss;
 
     DOM.append(domStyle, this.shadow);
   };
@@ -35,8 +33,8 @@ class Home extends HTMLElement  {
     // TODO: test for FOUC
     //this.styles.replace(mycss);
 
-    // const testMessage = DOM.create('h1', { className: 'testMessage' }, 'welcome home');
-    // DOM.append(testMessage, this.shadow);
+    const testMessage = DOM.create('h1', { className: 'testMessage' }, 'welcome to about');
+    DOM.append(testMessage, this.shadow);
 
     // const testDiv = DOM.create('div', { className: 'testDiv' });
     // DOM.append(testDiv, this.shadow);
@@ -51,8 +49,8 @@ class Home extends HTMLElement  {
     // });
     // DOM.append(renderButton, this.shadow);
 
-    const _webgl = new WebGL();
-    DOM.append(_webgl, this.shadow);
+    // const _webgl = new WebGL();
+    // DOM.append(_webgl, this.shadow);
 
   };
 
@@ -62,8 +60,8 @@ class Home extends HTMLElement  {
   };
 };
 
-customElements.define('theu0001-home', Home);
-export default Home;
+customElements.define('theu0001-about', About);
+export default About;
 
 ////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////

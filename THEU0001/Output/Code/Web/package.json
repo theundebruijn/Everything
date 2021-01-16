@@ -10,6 +10,7 @@
   "dependencies": {
     "async": "3.2.0",
     "dat.gui": "0.7.7",
+    "flyd": "0.2.8",
     "gsap": "3.6.0",
     "resource-loader": "3.0.1",
     "three": "0.124.0"
@@ -18,12 +19,12 @@
     "@rollup/plugin-alias": "3.1.1",
     "@rollup/plugin-commonjs": "17.0.0",
     "@rollup/plugin-json": "4.1.0",
-    "@rollup/plugin-node-resolve": "11.0.1",
+    "@rollup/plugin-node-resolve": "11.1.0",
     "@rollup/plugin-url": "6.0.0",
-    "eslint": "7.17.0",
+    "eslint": "7.18.0",
     "html-minifier": "4.0.0",
     "npm-check-updates": "10.2.5",
-    "rollup": "2.36.1",
+    "rollup": "2.36.2",
     "rollup-plugin-cleaner": "1.0.0",
     "rollup-plugin-copy": "3.3.0",
     "rollup-plugin-serve": "1.1.0",

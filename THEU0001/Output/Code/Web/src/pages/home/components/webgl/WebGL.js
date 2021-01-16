@@ -62,6 +62,7 @@ class WebGL extends HTMLElement {
     this.removeDomObservers();
     this.removeLoaders();
     this.removeTweens();
+    this.removeGui();
     this.removeThree();
   };
 
@@ -101,6 +102,7 @@ class WebGL extends HTMLElement {
         this.createBundledEntities();
         this.createHelpers();
         this.createBundledEntityTweens();
+        this.createGui();
         this.createAnimationLoop();
 
         callback();
@@ -123,133 +125,6 @@ class WebGL extends HTMLElement {
       this.createLoadedEntityTweens();
 
 
-
-
-      const gui = new dat.GUI({name: 'Studio GUI'});
-
-      const folder_printTarget = gui.addFolder('Print Target');
-      folder_printTarget.open();
-
-      const printTargetOptions = {
-        trimWidth_mm: 220,
-        trimHeight_mm: 290,
-        bleed_mm: 3,
-        DPI: 812,
-      };
-
-      folder_printTarget.add(printTargetOptions, 'trimWidth_mm').min(1).max(1000).step(1).onChange(function(value) {
-        // this.domCanvasWrapper.style.width = value + 'px';
-      }.bind(this));
-
-      folder_printTarget.add(printTargetOptions, 'trimHeight_mm').min(1).max(1000).step(1).onChange(function(value) {
-        // this.domCanvasWrapper.style.width = value + 'px';
-      }.bind(this));
-
-      folder_printTarget.add(printTargetOptions, 'bleed_mm').min(1).max(1000).step(1).onChange(function(value) {
-        // this.domCanvasWrapper.style.width = value + 'px';
-      }.bind(this));
-
-      folder_printTarget.add(printTargetOptions, 'DPI').min(1).max(5000).step(1).onChange(function(value) {
-        // this.domCanvasWrapper.style.height = value + 'px';
-      }.bind(this));
-
-
-
-      const folder_renderSettings = gui.addFolder('Render Settings');
-      folder_renderSettings.open();
-
-      const renderSettingsOptions = {
-        canvasWidth: 903,
-        canvasHeight: 1183,
-        pixelRatio: 1,
-      };
-
-      folder_renderSettings.add(renderSettingsOptions, 'canvasWidth').min(1).max(5120).step(1).onChange(function(value) {
-        this.domCanvasWrapper.style.width = value + 'px';
-      }.bind(this));
-
-      folder_renderSettings.add(renderSettingsOptions, 'canvasHeight').min(1).max(2160).step(1).onChange(function(value) {
-        this.domCanvasWrapper.style.height = value + 'px';
-      }.bind(this));
-
-      folder_renderSettings.add(renderSettingsOptions, 'pixelRatio').min(1).max(10).step(1).onChange(function(value) {
-        this.renderer.setPixelRatio(value);
-      }.bind(this));
-
-
-
-
-
-
-      const folder_cameraSettings = gui.addFolder('Camera Settings');
-      folder_cameraSettings.open();
-
-      // make this global, so we can update it from the render loop
-      // to make this work we also need to call .listen() on the property
-      this.cameraSettingsOptions = {
-        pos_x: 0,
-        pos_y: 0,
-        pos_z: 15,
-        // lookat ?
-        fov: 60,
-      };
-
-      folder_cameraSettings.add(this.cameraSettingsOptions, 'fov').name('FOV').min(1).max(250).step(1).onChange(function(value) {
-        this.camera.fov = value;
-        this.camera.updateProjectionMatrix();
-      }.bind(this));
-
-      folder_cameraSettings.add(this.cameraSettingsOptions, 'pos_x').name('pos X').min(-250).max(250).step(1).listen().onChange(function(value) {
-        this.camera.position.x = value;
-      }.bind(this));
-
-      folder_cameraSettings.add(this.cameraSettingsOptions, 'pos_y').name('pos Y').min(-250).max(250).step(1).listen().onChange(function(value) {
-        this.camera.position.y = value;
-      }.bind(this));
-
-      folder_cameraSettings.add(this.cameraSettingsOptions, 'pos_z').name('pos Z').min(-250).max(250).step(1).listen().onChange(function(value) {
-        this.camera.position.z = value;
-      }.bind(this));
-
-
-
-
-
-      const folder_studioSettings = gui.addFolder('Studio Settings');
-      folder_studioSettings.open();
-
-      const studioSettingsOptions = {
-        show_helpers: true,
-        bgColour: '#464646',
-        bgOpacity: 0,
-      };
-
-      folder_studioSettings.add(studioSettingsOptions, 'show_helpers').name('THREE Helpers').onChange(function(value) {
-        for (const helper in this.entities.helpers) {
-          this.entities.helpers[helper].visible = value;
-        }
-      }.bind(this));
-
-      folder_studioSettings.addColor(studioSettingsOptions, 'bgColour').onChange(function(value) {
-        this.renderer.setClearColor(value, studioSettingsOptions.bgOpacity);
-      }.bind(this));
-
-      folder_studioSettings.add(studioSettingsOptions, 'bgOpacity').min(0).max(1).step(0.001).onChange(function(value) {
-        this.renderer.setClearColor(studioSettingsOptions.bgColour, value);
-      }.bind(this));
-
-
-
-
-
-      const obj = { grab_frameBuffer: function() {
-        const dataURL = this.domCanvas.toDataURL('image/png');
-        const newTab = window.open();
-        newTab.document.body.style.margin = 0;
-        newTab.document.body.innerHTML = '<img src="'+ dataURL +'">';
-      }.bind(this)};
-
-      gui.add(obj, 'grab_frameBuffer').name('grab framebuffer');
 
 
 
@@ -305,8 +180,9 @@ class WebGL extends HTMLElement {
     // this.renderer.setPixelRatio(window.devicePixelRatio * 1.25);
 
     // this.renderer.setPixelRatio(window.devicePixelRatio);
+
     // this.renderer.setPixelRatio(300/72); // take our 72dpi base and approximate 300dpi print
-    this.renderer.setPixelRatio(1);
+    this.renderer.setPixelRatio(window.devicePixelRatio);
 
     this.renderer.outputEncoding = THREE.sRGBEncoding;
     this.renderer.toneMapping = THREE.ReinhardToneMapping;
@@ -491,25 +367,154 @@ class WebGL extends HTMLElement {
 
   };
 
+  createGui() {
+    this.gui = new dat.GUI({name: 'Studio GUI'});
+
+    const folder_printTarget = this.gui.addFolder('Print Target');
+    folder_printTarget.open();
+
+    const printTargetOptions = {
+      trimWidth_mm: 220,
+      trimHeight_mm: 290,
+      bleed_mm: 3,
+      DPI: 812,
+    };
+
+    folder_printTarget.add(printTargetOptions, 'trimWidth_mm').min(1).max(1000).step(1).onChange(function(value) {
+      // this.domCanvasWrapper.style.width = value + 'px';
+    }.bind(this));
+
+    folder_printTarget.add(printTargetOptions, 'trimHeight_mm').min(1).max(1000).step(1).onChange(function(value) {
+      // this.domCanvasWrapper.style.width = value + 'px';
+    }.bind(this));
+
+    folder_printTarget.add(printTargetOptions, 'bleed_mm').min(1).max(1000).step(1).onChange(function(value) {
+      // this.domCanvasWrapper.style.width = value + 'px';
+    }.bind(this));
+
+    folder_printTarget.add(printTargetOptions, 'DPI').min(1).max(5000).step(1).onChange(function(value) {
+      // this.domCanvasWrapper.style.height = value + 'px';
+    }.bind(this));
+
+
+
+    const folder_renderSettings = this.gui.addFolder('Render Settings');
+    folder_renderSettings.open();
+
+    const renderSettingsOptions = {
+      canvasWidth: 903,
+      canvasHeight: 1183,
+      pixelRatio: window.devicePixelRatio,
+    };
+
+    folder_renderSettings.add(renderSettingsOptions, 'canvasWidth').min(1).max(5120).step(1).onChange(function(value) {
+      this.domCanvasWrapper.style.width = value + 'px';
+    }.bind(this));
+
+    folder_renderSettings.add(renderSettingsOptions, 'canvasHeight').min(1).max(2160).step(1).onChange(function(value) {
+      this.domCanvasWrapper.style.height = value + 'px';
+    }.bind(this));
+
+    folder_renderSettings.add(renderSettingsOptions, 'pixelRatio').min(1).max(10).step(1).onChange(function(value) {
+      this.renderer.setPixelRatio(value);
+    }.bind(this));
+
+
+
+
+
+
+    const folder_cameraSettings = this.gui.addFolder('Camera Settings');
+    folder_cameraSettings.open();
+
+    // make this global, so we can update it from the render loop
+    // to make this work we also need to call .listen() on the property
+    this.cameraSettingsOptions = {
+      pos_x: 0,
+      pos_y: 0,
+      pos_z: 15,
+      // lookat ?
+      fov: 60,
+    };
+
+    folder_cameraSettings.add(this.cameraSettingsOptions, 'fov').name('FOV').min(1).max(250).step(1).onChange(function(value) {
+      this.camera.fov = value;
+      this.camera.updateProjectionMatrix();
+    }.bind(this));
+
+    folder_cameraSettings.add(this.cameraSettingsOptions, 'pos_x').name('pos X').min(-250).max(250).step(1).listen().onChange(function(value) {
+      this.camera.position.x = value;
+    }.bind(this));
+
+    folder_cameraSettings.add(this.cameraSettingsOptions, 'pos_y').name('pos Y').min(-250).max(250).step(1).listen().onChange(function(value) {
+      this.camera.position.y = value;
+    }.bind(this));
+
+    folder_cameraSettings.add(this.cameraSettingsOptions, 'pos_z').name('pos Z').min(-250).max(250).step(1).listen().onChange(function(value) {
+      this.camera.position.z = value;
+    }.bind(this));
+
+
+
+
+
+    const folder_studioSettings = this.gui.addFolder('Studio Settings');
+    folder_studioSettings.open();
+
+    const studioSettingsOptions = {
+      show_helpers: false,
+      bgColour: '#464646',
+      bgOpacity: 0,
+    };
+
+    folder_studioSettings.add(studioSettingsOptions, 'show_helpers').name('THREE Helpers').onChange(function(value) {
+      for (const helper in this.entities.helpers) {
+        this.entities.helpers[helper].visible = value;
+      }
+    }.bind(this));
+
+    folder_studioSettings.addColor(studioSettingsOptions, 'bgColour').onChange(function(value) {
+      this.renderer.setClearColor(value, studioSettingsOptions.bgOpacity);
+    }.bind(this));
+
+    folder_studioSettings.add(studioSettingsOptions, 'bgOpacity').min(0).max(1).step(0.001).onChange(function(value) {
+      this.renderer.setClearColor(studioSettingsOptions.bgColour, value);
+    }.bind(this));
+
+
+
+
+
+    const obj = { grab_frameBuffer: function() {
+      const dataURL = this.domCanvas.toDataURL('image/png');
+      const newTab = window.open();
+      newTab.document.body.style.margin = 0;
+      newTab.document.body.innerHTML = '<img src="'+ dataURL +'">';
+    }.bind(this)};
+
+    this.gui.add(obj, 'grab_frameBuffer').name('grab framebuffer');
+
+  };
+
   createHelpers() {
     this.entities.helpers['axesHelper'] = new THREE.AxesHelper(25);
-    this.entities.helpers['axesHelper'].visible = true;
+    this.entities.helpers['axesHelper'].visible = false;
     this.scene.add(this.entities.helpers['axesHelper']);
 
     this.entities.helpers['gridHelper'] = new THREE.GridHelper(100, 10, 0x808080, 0x808080);
     this.entities.helpers['gridHelper'].position.y = 0;
     this.entities.helpers['gridHelper'].position.x = 0;
-    this.entities.helpers['gridHelper'].visible = true;
+    this.entities.helpers['gridHelper'].visible = false;
     this.scene.add(this.entities.helpers['gridHelper']);
 
     this.entities.helpers['polarGridHelper'] = new THREE.PolarGridHelper(200, 16, 8, 64, 0x808080, 0x808080);
     this.entities.helpers['polarGridHelper'].position.y = 0;
     this.entities.helpers['polarGridHelper'].position.x = 0;
-    this.entities.helpers['polarGridHelper'].visible = true;
+    this.entities.helpers['polarGridHelper'].visible = false;
     this.scene.add(this.entities.helpers['polarGridHelper']);
 
     this.entities.helpers['pointLightHelper'] = new THREE.PointLightHelper(this.entities.lights['pointLight'], 1, 0x808080);
-    this.entities.helpers['pointLightHelper'].visible = true;
+    this.entities.helpers['pointLightHelper'].visible = false;
     this.scene.add(this.entities.helpers['pointLightHelper']);
   };
 
@@ -560,11 +565,17 @@ class WebGL extends HTMLElement {
     };
   };
 
+  removeGui() {
+    this.gui.destroy();
+  };
+
+
   removeLoaders() {
     this.dracoLoader.dispose();
   };
 
   removeThree() {
+    console.warn('removeThree');
     if (this.scene) {
       for (let i = this.scene.children.length - 1; i >= 0; i--) {
         if (this.scene.children[i] instanceof THREE.Mesh) {
