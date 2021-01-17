@@ -223,8 +223,8 @@ class WebGL extends HTMLElement {
   createBundledEntities() {
     // LINK: https://en.wikipedia.org/wiki/Lux
 
-    this.entities.lights['pointLight'] = new THREE.PointLight(0xffffff, 500000.0, 500, 2.0);
-    this.entities.lights['pointLight'].position.set(100, 25, 0);
+    this.entities.lights['pointLight'] = new THREE.PointLight(0xffffff, 1500000.0, 500, 2.0);
+    this.entities.lights['pointLight'].position.set(275, 25, 0);
     this.entities.lights['pointLight'].castShadow = true;
     // Slight value tweak to help the depth sorting to prevent artifacts.
     // LINK: https://threejs.org/docs/#api/en/lights/shadows/LightShadow.bias
@@ -248,10 +248,10 @@ class WebGL extends HTMLElement {
   };
 
   createBundledEntityTweens() {
-    this.tweens['pointLightPosition'] = TweenMax.fromTo(this.entities.lights['pointLight'].position, 3, {
+    this.tweens['pointLightPosition'] = TweenMax.fromTo(this.entities.lights['pointLight'].position, 10, {
       x: this.entities.lights['pointLight'].position.x,
     }, {
-      x: -100,
+      x: -275,
       repeat: -1, yoyo: true, ease: Sine.easeInOut, onComplete: function() {},
     });
 
