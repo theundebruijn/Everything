@@ -1,6 +1,4 @@
 import { Flyd } from '~/utils/flyd.js';
-import { DOM } from './dom';
-// import flyd from 'flyd';
 
 /**
  * Router object (Singleton).
@@ -44,9 +42,17 @@ class Router {
       const x = Flyd.returnStream('router:determinePage');
       x('home');
 
-    } else if (pathName === 'about/') {
+    } else if (pathName === 'the-veil/') {
       const x = Flyd.returnStream('router:determinePage');
-      x('about');
+      x('the-veil');
+
+    } else if (pathName === 'the-man-in-the-wall/') {
+      const x = Flyd.returnStream('router:determinePage');
+      x('the-man-in-the-wall');
+
+    } else if (pathName === 'another-world-awaits/') {
+      const x = Flyd.returnStream('router:determinePage');
+      x('another-world-awaits');
 
     } else {
       const x = Flyd.returnStream('router:determinePage');

@@ -7,11 +7,14 @@ import { Flyd } from '~/utils/flyd.js';
 import { DOM } from '~/utils/dom.js';
 import Router from '~/utils/Router.js';
 
-import Navigation from '~/common/navigation/Navigation.js';
-import Container from '~/common/container/Container.js';
+import Navigation from '~/common/components/navigation/Navigation.js';
+import Container from '~/common/components/container/Container.js';
 
 import Home from '~/pages/home/Home.js';
-import About from '~/pages/about/About.js';
+import TheVeil from '~/pages/theVeil/TheVeil.js';
+import TheManInTheWall from '~/pages/theManInTheWall/TheManInTheWall.js';
+import AnotherWorldAwaits from '~/pages/anotherWorldAwaits/AnotherWorldAwaits.js';
+
 // import Error from '~/pages/error/Error.js';
 
 // // assets
@@ -40,12 +43,12 @@ class Main {
   constructor() {
 
 
-    Flyd.createStream('main:onclick');
-    Flyd.addEventListenerToStream('main:onclick', document, 'click');
-    Flyd.listenToStream('main:onclick', function(data) {
-      console.log('BOOM');
-      console.log(data);
-    });
+    // Flyd.createStream('main:onclick');
+    // Flyd.addEventListenerToStream('main:onclick', document, 'click');
+    // Flyd.listenToStream('main:onclick', function(data) {
+    //   console.log('BOOM');
+    //   console.log(data);
+    // });
 
 
 
@@ -86,11 +89,19 @@ class Main {
       const _home = new Home();
       DOM.append(_home, this._container.shadow);
 
-    } else if (pageName === 'about') {
-      const _about = new About();
-      DOM.append(_about, this._container.shadow);
+    } else if (pageName === 'the-veil') {
+      const _theVeil = new TheVeil();
+      DOM.append(_theVeil, this._container.shadow);
 
-    } else if (pageName === '404') {
+    } else if (pageName === 'the-man-in-the-wall') {
+      const _theManInTheWall = new TheManInTheWall();
+      DOM.append(_theManInTheWall, this._container.shadow);
+
+    } else if (pageName === 'another-world-awaits') {
+      const _anotherWorldAwairs = new AnotherWorldAwaits();
+      DOM.append(_anotherWorldAwairs, this._container.shadow);
+
+    }else if (pageName === '404') {
       const _error = new Error('404');
       DOM.append(_error, this._container.shadow);
     };

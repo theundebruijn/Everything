@@ -18,7 +18,10 @@ import * as dat from 'dat.gui';
 
 // assets
 // import sushi from './assets/sushi-compressed.glb';
-import test from './assets/3d_print_test_0001_compressed.glb';
+// import test from './assets/3d_print_test_0001_compressed.glb';
+import TheMainInTheWall from './assets/the-man-in-the-wall.glb';
+import TheVeil from './assets/the-veil.glb';
+import AnotherWorldAwaits from './assets/another-world-awaits.glb';
 // import texture_paint_test_001 from './assets/texture_paint_test_001.glb';
 // import nili_fossae_test_001 from './assets/nili_fossae_test_001.glb';
 // import SCENE000X_LOD0 from './assets/SCENE000X_LOD0.glb';
@@ -31,8 +34,11 @@ import css from './WebGL.css';
 /////////////////////////
 
 class WebGL extends HTMLElement {
-  constructor() {
+  constructor(page) {
     super();
+
+    console.log(page);
+    this.activePage = page;
 
     // Create and attach the Shadow DOM wrapper.
     // NOTE: This isolates our Web Component's elements into the Shadow DOM context.
@@ -156,10 +162,10 @@ class WebGL extends HTMLElement {
     this.scene = new THREE.Scene();
 
     this.camera = new THREE.PerspectiveCamera(60, this.domCanvas.clientWidth / this.domCanvas.clientHeight, 1, 10000);
-    this.camera.position.x = 0;
-    this.camera.position.y = 0;
-    this.camera.position.z = 15;
-    this.camera.lookAt(0, 0, 0);
+    this.camera.position.x = -300;
+    this.camera.position.y = 300;
+    this.camera.position.z = 600;
+    this.camera.lookAt(0, 0, 0); // overridden in the render tick
   };
 
   createRenderer() {
@@ -172,7 +178,7 @@ class WebGL extends HTMLElement {
       antialias: false,
       alpha: true,
     });
-    console.log(this.renderer);
+
     this.renderer.setSize(this.domCanvas.clientWidth, this.domCanvas.clientHeight);
 
     // Here we brute force 25% supersampling in addition to the device's resolution scaling.
@@ -217,8 +223,8 @@ class WebGL extends HTMLElement {
   createBundledEntities() {
     // LINK: https://en.wikipedia.org/wiki/Lux
 
-    this.entities.lights['pointLight'] = new THREE.PointLight(0xffffff, 800.0, 500, 2.0);
-    this.entities.lights['pointLight'].position.set(10, 10, 10);
+    this.entities.lights['pointLight'] = new THREE.PointLight(0xffffff, 500000.0, 500, 2.0);
+    this.entities.lights['pointLight'].position.set(100, 25, 0);
     this.entities.lights['pointLight'].castShadow = true;
     // Slight value tweak to help the depth sorting to prevent artifacts.
     // LINK: https://threejs.org/docs/#api/en/lights/shadows/LightShadow.bias
@@ -228,25 +234,35 @@ class WebGL extends HTMLElement {
     this.entities.lights['pointLight'].updateMatrixWorld(true);
     this.scene.add(this.entities.lights['pointLight']);
 
-    this.entities.lights['hemiLight'] = new THREE.HemisphereLight(0xddeeff, 0x0f0e0d, 0.02);
-    this.entities.lights['hemiLight'].intensity = 20;
-    this.scene.add(this.entities.lights['hemiLight']);
+
+    this.entities.lights['pointLight2'] = new THREE.PointLight(0xffffff, 2500000.0, 500, 2.0);
+    this.entities.lights['pointLight2'].position.set(0, 250, 0);
+    this.entities.lights['pointLight2'].castShadow = true;
+    // Slight value tweak to help the depth sorting to prevent artifacts.
+    // LINK: https://threejs.org/docs/#api/en/lights/shadows/LightShadow.bias
+    this.entities.lights['pointLight2'].shadow.bias = -0.0005;
+    this.entities.lights['pointLight2'].shadow.mapSize.width = 8192;
+    this.entities.lights['pointLight2'].shadow.mapSize.height = 8192;
+    this.entities.lights['pointLight2'].updateMatrixWorld(true);
+    this.scene.add(this.entities.lights['pointLight2']);
   };
 
   createBundledEntityTweens() {
     this.tweens['pointLightPosition'] = TweenMax.fromTo(this.entities.lights['pointLight'].position, 3, {
       x: this.entities.lights['pointLight'].position.x,
     }, {
-      x: -10,
+      x: -100,
       repeat: -1, yoyo: true, ease: Sine.easeInOut, onComplete: function() {},
     });
 
-    this.tweens['pointLightIntensity'] = TweenMax.fromTo(this.entities.lights['pointLight'], 1.5, {
-      intensity: this.entities.lights['pointLight'].intensity,
-    }, {
-      intensity: 12000,
-      repeat: -1, yoyo: true, ease: Sine.easeInOut, onComplete: function() {},
-    });
+    // this.tweens['pointLightIntensity'] = TweenMax.fromTo(this.entities.lights['pointLight'], 1.5, {
+    //   intensity: this.entities.lights['pointLight'].intensity,
+    // }, {
+    //   intensity: 120000,
+    //   repeat: -1, yoyo: true, ease: Sine.easeInOut, onComplete: function() {},
+    // });
+
+
   };
 
   loadResources(callback) {
@@ -260,8 +276,15 @@ class WebGL extends HTMLElement {
 
     // resourceLoader.add('sushi', sushi, { loadType: Resource.LOAD_TYPE.XHR, xhrType: Resource.XHR_RESPONSE_TYPE.BUFFER });
     // resourceLoader.add('chasseur', chasseur, { loadType: Resource.LOAD_TYPE.XHR, xhrType: Resource.XHR_RESPONSE_TYPE.BUFFER });
+    console.log(this.activePage);
 
-    resourceLoader.add('test', test, { loadType: Resource.LOAD_TYPE.XHR, xhrType: Resource.XHR_RESPONSE_TYPE.BUFFER });
+    if (this.activePage === 'the-veil') {
+      resourceLoader.add('glft_scene', TheVeil, { loadType: Resource.LOAD_TYPE.XHR, xhrType: Resource.XHR_RESPONSE_TYPE.BUFFER });
+    } else if (this.activePage === 'the-man-in-the-wall') {
+      resourceLoader.add('glft_scene', TheMainInTheWall, { loadType: Resource.LOAD_TYPE.XHR, xhrType: Resource.XHR_RESPONSE_TYPE.BUFFER });
+    } else if (this.activePage === 'another-world-awaits') {
+      resourceLoader.add('glft_scene', AnotherWorldAwaits, { loadType: Resource.LOAD_TYPE.XHR, xhrType: Resource.XHR_RESPONSE_TYPE.BUFFER });
+    }
     // resourceLoader.add('texture_paint_test_001', texture_paint_test_001, { loadType: Resource.LOAD_TYPE.XHR, xhrType: Resource.XHR_RESPONSE_TYPE.BUFFER });
 
     // resourceLoader.add('SCENE000X_LOD0', SCENE000X_LOD0, { loadType: Resource.LOAD_TYPE.XHR, xhrType: Resource.XHR_RESPONSE_TYPE.BUFFER });
@@ -270,9 +293,6 @@ class WebGL extends HTMLElement {
 
       if (resource.extension === 'glb') {
         gltfLoader.parse(resource.data, '', function (gltf) {
-
-          console.log(gltf);
-
           this.resources[resource.name] = gltf;
 
           next();
@@ -301,25 +321,22 @@ class WebGL extends HTMLElement {
           // this.camera.updateProjectionMatrix();
 
           // TODO: can we get this value from the gltf?
-          this.camera.fov = 60;
-
-          // console.log(this.domCanvas.clientWidth);
-          // console.log(this.domCanvas.clientHeight);
+          this.camera.fov = 45;
           this.camera.aspect = this.domCanvas.clientWidth / this.domCanvas.clientHeight;
           this.camera.updateProjectionMatrix();
-
-          console.log(this.camera);
         };
 
-        if (resource.isLight) {
-          resource.castShadow = true;
-          resource.shadow.bias = -0.0005;
-          resource.shadow.mapSize.width = 8192;
-          resource.shadow.mapSize.height = 8192;
-          resource.updateMatrixWorld(true);
-        };
+        // if (resource.isLight) {
+        //   resource.castShadow = true;
+        //   resource.shadow.bias = -0.0005;
+        //   resource.shadow.mapSize.width = 8192;
+        //   resource.shadow.mapSize.height = 8192;
+        //   resource.updateMatrixWorld(true);
+        // };
 
         if (resource.isMesh) {
+
+          console.log(resource);
           resource.castShadow = true;
           resource.receiveShadow = true;
 
@@ -328,17 +345,17 @@ class WebGL extends HTMLElement {
 
           // force flat shading
           // TODO: Do we need to keep track which materials need flat shading?
-          if (resource.name === 'Plane') {
-            // resource.material.flatShading = true;
+          // if (resource.name === 'Plane') {
+          //   // resource.material.flatShading = true;
 
-            // TODO: can we get this from the 'specular' shader value?
-            resource.material.reflectivity = 0.1;
-            // resource.material.roughness = 0.5;
-            // console.log('HERHEHREHREHR');
+          //   // TODO: can we get this from the 'specular' shader value?
+          //   resource.material.reflectivity = 0.1;
+          //   // resource.material.roughness = 0.5;
+          //   // console.log('HERHEHREHREHR');
 
-            // resource.material.transparent = true;
-            // resource.material.alphaTest = 0.9;
-          }
+          //   // resource.material.transparent = true;
+          //   // resource.material.alphaTest = 0.9;
+          // }
 
 
           if (resource.material.map !== null) {
@@ -359,12 +376,40 @@ class WebGL extends HTMLElement {
     // this.scene.add(this.entities.meshes['Leg_tool_lowpoly.001']);
 
     // console.log(this.entities.meshes['Leg_tool_lowpoly001']);
-    this.scene.add(this.resources['test'].scene);
+
+    // temp hack for scaling
+    console.log(this.resources['glft_scene'].scene);
+
+    if (this.activePage === 'another-world-awaits') {
+      // this.resources['test'].scene.children[0].scale.set(1.0, 0.5, 1.0);
+      this.resources['glft_scene'].scene.children[0].position.x = 0;
+      this.resources['glft_scene'].scene.children[0].position.y = -1117 -166; // scene value + manual offset to set to set 0,0,0 point
+      this.resources['glft_scene'].scene.children[1].position.x = 0;
+      this.resources['glft_scene'].scene.children[1].position.y = 163.57322692871094 -166; // scene value + manual offset to set 0,0,0 point
+      // this.resources['test'].scene.children[2].position.x = 0;
+
+      // this.resources['test'].scene.children[0].material.wireframe = true;
+
+      // this.resources['test'].scene.children[0].position. = 0;
+      // this.resources['test'].scene.children[1].position.x = 0;
+      // this.resources['test'].scene.children[2].position.x = 0;
+
+      // this.resources['test'].scene.children[0].position.y = 0;
+    }
+
+    this.scene.add(this.resources['glft_scene'].scene);
 
   };
 
   createLoadedEntityTweens() {
-
+    // if (this.activePage === 'another-world-awaits') {
+    //   this.tweens['pointLightIntensity'] = TweenMax.fromTo(this.resources['test'].scene.children[1].position, 10, {
+    //     y: this.resources['test'].scene.children[1].position.y -50,
+    //   }, {
+    //     y: this.resources['test'].scene.children[1].position.y,
+    //     repeat: -1, yoyo: true, ease: Sine.easeInOut, onComplete: function() {},
+    //   });
+    // }
   };
 
   createGui() {
@@ -430,11 +475,11 @@ class WebGL extends HTMLElement {
     // make this global, so we can update it from the render loop
     // to make this work we also need to call .listen() on the property
     this.cameraSettingsOptions = {
-      pos_x: 0,
-      pos_y: 0,
-      pos_z: 15,
+      pos_x: -300,
+      pos_y: 300,
+      pos_z: 600,
       // lookat ?
-      fov: 60,
+      fov: 45,
     };
 
     folder_cameraSettings.add(this.cameraSettingsOptions, 'fov').name('FOV').min(1).max(250).step(1).onChange(function(value) {
@@ -442,15 +487,15 @@ class WebGL extends HTMLElement {
       this.camera.updateProjectionMatrix();
     }.bind(this));
 
-    folder_cameraSettings.add(this.cameraSettingsOptions, 'pos_x').name('pos X').min(-250).max(250).step(1).listen().onChange(function(value) {
+    folder_cameraSettings.add(this.cameraSettingsOptions, 'pos_x').name('pos X').min(-1000).max(1000).step(1).listen().onChange(function(value) {
       this.camera.position.x = value;
     }.bind(this));
 
-    folder_cameraSettings.add(this.cameraSettingsOptions, 'pos_y').name('pos Y').min(-250).max(250).step(1).listen().onChange(function(value) {
+    folder_cameraSettings.add(this.cameraSettingsOptions, 'pos_y').name('pos Y').min(-1000).max(1000).step(1).listen().onChange(function(value) {
       this.camera.position.y = value;
     }.bind(this));
 
-    folder_cameraSettings.add(this.cameraSettingsOptions, 'pos_z').name('pos Z').min(-250).max(250).step(1).listen().onChange(function(value) {
+    folder_cameraSettings.add(this.cameraSettingsOptions, 'pos_z').name('pos Z').min(-1000).max(1000).step(1).listen().onChange(function(value) {
       this.camera.position.z = value;
     }.bind(this));
 
@@ -513,9 +558,13 @@ class WebGL extends HTMLElement {
     this.entities.helpers['polarGridHelper'].visible = false;
     this.scene.add(this.entities.helpers['polarGridHelper']);
 
-    this.entities.helpers['pointLightHelper'] = new THREE.PointLightHelper(this.entities.lights['pointLight'], 1, 0x808080);
+    this.entities.helpers['pointLightHelper'] = new THREE.PointLightHelper(this.entities.lights['pointLight'], 1.0, 0x808080);
     this.entities.helpers['pointLightHelper'].visible = false;
     this.scene.add(this.entities.helpers['pointLightHelper']);
+
+    this.entities.helpers['pointLightHelper2'] = new THREE.PointLightHelper(this.entities.lights['pointLight2'], 1.0, 0x808080);
+    this.entities.helpers['pointLightHelper2'].visible = false;
+    this.scene.add(this.entities.helpers['pointLightHelper2']);
   };
 
   createAnimationLoop() {
@@ -529,6 +578,12 @@ class WebGL extends HTMLElement {
     if (this.cameraSettingsOptions) this.cameraSettingsOptions.pos_x = this.camera.position.x;
     if (this.cameraSettingsOptions) this.cameraSettingsOptions.pos_y = this.camera.position.y;
     if (this.cameraSettingsOptions) this.cameraSettingsOptions.pos_z = this.camera.position.z;
+
+    if (this.activePage === 'another-world-awaits') {
+      this.camera.lookAt(0, -150, 0); // pulls the planet up a little
+    } else {
+      this.camera.lookAt(0, 0, 0); // pulls the planet up a little
+    }
 
     const delta = this.clock.getDelta();
     if (this.mixer) this.mixer.update(delta);
@@ -575,7 +630,6 @@ class WebGL extends HTMLElement {
   };
 
   removeThree() {
-    console.warn('removeThree');
     if (this.scene) {
       for (let i = this.scene.children.length - 1; i >= 0; i--) {
         if (this.scene.children[i] instanceof THREE.Mesh) {

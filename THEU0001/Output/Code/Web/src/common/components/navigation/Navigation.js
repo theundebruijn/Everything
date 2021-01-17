@@ -27,54 +27,78 @@ class Navigation extends HTMLElement  {
 
   // web component lifecycle
   connectedCallback() {
-    // browser calls this method when the element is added to the document
-    // (can be called many times if an element is repeatedly added/removed)
+    // TODO: abstract into subclass
 
-    // render the css when the web component is added to the DOM
-    // TODO: test for FOUC
-    // this.styles.replace(css);
-
-    const linkHome = DOM.create('a', { className: 'link home', href: '/' }, 'let\'s go home!');
+    const linkHome = DOM.create('a', { className: 'link home', href: '/' }, 'home');
 
     Flyd.createStream('_navigation:linkHome:onclick');
     Flyd.addEventListenerToStream('_navigation:linkHome:onclick', linkHome, 'click');
     Flyd.listenToStream('_navigation:linkHome:onclick', function(data) {
-      console.log('BOOM3');
       data.preventDefault();
+
+      // TODO: handle this in the router
+      // push a stream instead
+      if (window.location.pathname === '/') return;
       window.history.pushState(null, 'home', '/');
       const popStateEvent = new PopStateEvent('popstate', { state: null });
       window.dispatchEvent(popStateEvent);
     });
 
-    // RxJS.create('_navigation:linkHome:click', 'fromEvent', linkHome, 'click');
-    // RxJS.subscribe('_navigation:linkHome:click', function(data) {
-    //   data.preventDefault();
-
-    //   window.history.pushState(null, 'home', '/');
-    // });
-
     DOM.append(linkHome, this.shadow);
 
-    const linkAbout = DOM.create('a', { className: 'link about', href: '/about/' }, 'see some about');
 
-    Flyd.createStream('_navigation:linkAbout:click');
-    Flyd.addEventListenerToStream('_navigation:linkAbout:click', linkAbout, 'click');
-    Flyd.listenToStream('_navigation:linkAbout:click', function(data) {
-      console.log('BOOM3');
+    const linkTheVeil = DOM.create('a', { className: 'link about', href: '/the-veil/' }, 'the veil');
+
+    Flyd.createStream('_navigation:linkTheVeil:click');
+    Flyd.addEventListenerToStream('_navigation:linkTheVeil:click', linkTheVeil, 'click');
+    Flyd.listenToStream('_navigation:linkTheVeil:click', function(data) {
       data.preventDefault();
-      window.history.pushState(null, 'about', '/about/');
+
+      // TODO: handle this in the router
+      // push a stream instead
+      if (window.location.pathname === '/the-veil/') return;
+      window.history.pushState(null, 'about', '/the-veil/');
       const popStateEvent = new PopStateEvent('popstate', { state: null });
       window.dispatchEvent(popStateEvent);
     });
 
-    // RxJS.create('_navigation:linkAbout:click', 'fromEvent', linkAbout, 'click');
-    // RxJS.subscribe('_navigation:linkAbout:click', function(data) {
-    //   data.preventDefault();
+    DOM.append(linkTheVeil, this.shadow);
 
-    //   window.history.pushState(null, 'about', '/about/');
-    // });
 
-    DOM.append(linkAbout, this.shadow);
+    const linkTheManInTheWall = DOM.create('a', { className: 'link about', href: '/the-man-in-the-wall/' }, 'the man in the wall');
+
+    Flyd.createStream('_navigation:linkTheManInTheWall:click');
+    Flyd.addEventListenerToStream('_navigation:linkTheManInTheWall:click', linkTheManInTheWall, 'click');
+    Flyd.listenToStream('_navigation:linkTheManInTheWall:click', function(data) {
+      data.preventDefault();
+
+      // TODO: handle this in the router
+      // push a stream instead
+      if (window.location.pathname === '/the-man-in-the-wall/') return;
+      window.history.pushState(null, 'about', '/the-man-in-the-wall/');
+      const popStateEvent = new PopStateEvent('popstate', { state: null });
+      window.dispatchEvent(popStateEvent);
+    });
+
+    DOM.append(linkTheManInTheWall, this.shadow);
+
+
+    const linkAnotherWorldAwaits = DOM.create('a', { className: 'link about', href: '/another-world-awaits/' }, 'another world awaits');
+
+    Flyd.createStream('_navigation:linkAnotherWorldAwaits:click');
+    Flyd.addEventListenerToStream('_navigation:linkAnotherWorldAwaits:click', linkAnotherWorldAwaits, 'click');
+    Flyd.listenToStream('_navigation:linkAnotherWorldAwaits:click', function(data) {
+      data.preventDefault();
+
+      // TODO: handle this in the router
+      // push a stream instead
+      if (window.location.pathname === '/another-world-awaits/') return;
+      window.history.pushState(null, 'about', '/another-world-awaits/');
+      const popStateEvent = new PopStateEvent('popstate', { state: null });
+      window.dispatchEvent(popStateEvent);
+    });
+
+    DOM.append(linkAnotherWorldAwaits, this.shadow);
 
     // const linkHome = DOM.create('a', { className: 'link home', href: '/' }, 'let\'s go home!');
     // RxJS.create('home:linkHome:click', 'fromEvent', linkHome, 'click');
