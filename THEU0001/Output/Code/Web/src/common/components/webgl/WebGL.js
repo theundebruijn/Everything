@@ -202,14 +202,9 @@ class WebGL extends HTMLElement {
 
     this.renderer.setSize(this.domCanvas.clientWidth, this.domCanvas.clientHeight);
 
-    // Here we brute force 25% supersampling in addition to the device's resolution scaling.
-    // The performance hit is typically worth the anti aliasing benefits.
-    // this.renderer.setPixelRatio(window.devicePixelRatio * 1.25);
-
-    // this.renderer.setPixelRatio(window.devicePixelRatio);
-
-    // this.renderer.setPixelRatio(300/72); // take our 72dpi base and approximate 300dpi print
-    this.renderer.setPixelRatio(window.devicePixelRatio);
+    // Here we brute force 20% supersampling - rather than grabbing the device native scaling
+    // Saves on performance on hidpi devices while applying a little extra anti aliasing
+    this.renderer.setPixelRatio(1.2);
 
     this.renderer.outputEncoding = THREE.sRGBEncoding;
     this.renderer.toneMapping = THREE.ReinhardToneMapping;
@@ -289,9 +284,6 @@ class WebGL extends HTMLElement {
 
     this.scene.add(this.entities.lights['pointLight']);
     this.scene.add(this.entities.lights['pointLight2']);
-
-
-
   };
 
   createBundledEntityTweens() {
@@ -321,17 +313,6 @@ class WebGL extends HTMLElement {
         repeat: -1, yoyo: true, ease: Sine.easeInOut, onComplete: function() {},
       });
     }
-
-
-
-    // this.tweens['pointLightIntensity'] = TweenMax.fromTo(this.entities.lights['pointLight'], 1.5, {
-    //   intensity: this.entities.lights['pointLight'].intensity,
-    // }, {
-    //   intensity: 120000,
-    //   repeat: -1, yoyo: true, ease: Sine.easeInOut, onComplete: function() {},
-    // });
-
-
   };
 
   loadResources(callback) {
@@ -390,21 +371,12 @@ class WebGL extends HTMLElement {
   };
 
   createLoadedEntities() {
-    // this.entities.meshes['CHASSEUR'] = this.resources['chasseur'].scene.children.filter(function(result) { return result.name === 'CHASSEUR'; })[0];
-    // this.scene.add(this.entities.meshes['CHASSEUR']);
-
-    // this.entities.meshes['Leg_tool_lowpoly001'] = this.resources['test'].scene.children.filter(function(result) { return result.name === 'Leg_tool_lowpoly001'; })[0];
-    // this.scene.add(this.entities.meshes['Leg_tool_lowpoly.001']);
-
-    // console.log(this.entities.meshes['Leg_tool_lowpoly001']);
-
-
     if (this.activePage === 'another-world-awaits') {
       this.resources['glft_scene'].scene.children[0].position.x = 0;
       this.resources['glft_scene'].scene.children[0].position.y = -1117 -166; // scene value + manual offset to set to set 0,0,0 point
       this.resources['glft_scene'].scene.children[1].position.x = 0;
       this.resources['glft_scene'].scene.children[1].position.y = 163.57322692871094 -166; // scene value + manual offset to set 0,0,0 point
-    }
+    };
 
     this.scene.add(this.resources['glft_scene'].scene);
 
@@ -428,10 +400,27 @@ class WebGL extends HTMLElement {
     folder_renderSettings.open();
 
     const renderSettingsOptions = {
-      pixelRatio: window.devicePixelRatio,
+      pauseRenderer: false,
+      pixelRatio: this.renderer.getPixelRatio(),
     };
 
-    folder_renderSettings.add(renderSettingsOptions, 'pixelRatio').min(1).max(10).step(1).onChange(function(value) {
+    folder_renderSettings.add(renderSettingsOptions, 'pauseRenderer').name('Pause Renderer').onChange(function(value) {
+      if (value === true) {
+
+        this.controls.enabled = false;
+        for (const tween in this.tweens) { this.tweens[tween].pause(); };
+        this.renderer.setAnimationLoop(null);
+
+      } else {
+
+        this.controls.enabled = true;
+        for (const tween in this.tweens) { this.tweens[tween].resume(); };
+        this.renderer.setAnimationLoop(this.tick.bind(this));
+      }
+    }.bind(this));
+
+
+    folder_renderSettings.add(renderSettingsOptions, 'pixelRatio').min(1).max(10).step(.1).onChange(function(value) {
       this.renderer.setPixelRatio(value);
     }.bind(this));
 
@@ -465,7 +454,6 @@ class WebGL extends HTMLElement {
       this.camera.position.z = value;
     }.bind(this));
 
-
     const folder_constrolsTarget = this.gui.addFolder('Controls Target');
     folder_constrolsTarget.open();
 
@@ -489,12 +477,6 @@ class WebGL extends HTMLElement {
       this.controls.target.z = value;
     }.bind(this));
 
-
-
-
-
-
-
     const folder_studioSettings = this.gui.addFolder('Studio Settings');
     folder_studioSettings.open();
 
@@ -517,10 +499,6 @@ class WebGL extends HTMLElement {
     folder_studioSettings.add(studioSettingsOptions, 'bgOpacity').min(0).max(1).step(0.01).onChange(function(value) {
       this.renderer.setClearColor(studioSettingsOptions.bgColour, value);
     }.bind(this));
-
-
-
-
 
     const obj = { grab_frameBuffer: function() {
       const dataURL = this.domCanvas.toDataURL('image/png');
@@ -564,6 +542,7 @@ class WebGL extends HTMLElement {
   };
 
   tick() {
+    // update controls
     this.controls.update();
 
     // update dat.gui
@@ -575,20 +554,11 @@ class WebGL extends HTMLElement {
     if (this.controlsTargetOptions) this.controlsTargetOptions.y = this.controls.target.y;
     if (this.controlsTargetOptions) this.controlsTargetOptions.z = this.controls.target.z;
 
-    // TODO: implement based this on player-camera control
-    // if (this.activePage === 'home') {
-    //   this.camera.lookAt(0, 0, 0);
-    // } else if (this.activePage === 'the-veil') {
-    //   this.camera.lookAt(0, 0, 0);
-    // } else if (this.activePage === 'the-man-in-the-wall') {
-    //   this.camera.lookAt(0, 0, 0);
-    // } else if (this.activePage === 'another-world-awaits') {
-    //   this.camera.lookAt(0, -150, 0); // pulls the planet up a little
-    // }
-
+    // update animations
     const delta = this.clock.getDelta();
     if (this.mixer) this.mixer.update(delta);
 
+    // update renderer
     this.renderer.render(this.scene, this.camera);
   };
 
@@ -620,9 +590,7 @@ class WebGL extends HTMLElement {
   };
 
   removeTweens() {
-    for (const tween in this.tweens) {
-      this.tweens[tween].kill();
-    };
+    for (const tween in this.tweens) { this.tweens[tween].kill(); };
   };
 
   removeGui() {
