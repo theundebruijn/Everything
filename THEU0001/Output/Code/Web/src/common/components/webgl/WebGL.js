@@ -125,16 +125,6 @@ class WebGL extends HTMLElement {
       this.createLoadedEntities();
       this.createLoadedEntityTweens();
 
-
-      // if (this.activePage === 'home') {
-      // } else if (this.activePage === 'the-veil') {
-      // } else if (this.activePage === 'the-man-in-the-wall') {
-      // } else if (this.activePage === 'another-world-awaits') {
-      // }
-
-
-
-
     }.bind(this));
   };
 
@@ -216,6 +206,11 @@ class WebGL extends HTMLElement {
 
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+    if (this.activePage === 'another-world-awaits') {
+      // TODO: ease into this while animating in
+      this.renderer.setClearColor(0x0e0e14, 1.0);
+    };
   };
 
   createControls() {
@@ -244,46 +239,39 @@ class WebGL extends HTMLElement {
       this.entities.lights['pointLight'] = new THREE.PointLight(0xffffff, 1500000.0, 500, 2.0);
       this.entities.lights['pointLight'].position.set(275, 25, 0);
 
-      this.entities.lights['pointLight2'] = new THREE.PointLight(0xffffff, 2500000.0, 500, 2.0);
-      this.entities.lights['pointLight2'].position.set(0, 250, 0);
-
     } else if (this.activePage === 'the-veil') {
-      this.entities.lights['pointLight'] = new THREE.PointLight(0xffffff, 1000.0, 500, 2.0);
-      this.entities.lights['pointLight'].position.set(10, 10, 10);
-
-      this.entities.lights['pointLight2'] = new THREE.PointLight(0xffffff, 0.0, 500, 2.0);
-      this.entities.lights['pointLight2'].position.set(0, 250, 0);
+      this.entities.lights['pointLight'] = new THREE.PointLight(0xc4c4f5, 5000.0, 500, 2.0);
+      // this.entities.lights['pointLight'] = new THREE.PointLight(0xffffff, 5000.0, 500, 2.0);
+      this.entities.lights['pointLight'].position.set(20, 20, 10);
 
     } else if (this.activePage === 'the-man-in-the-wall') {
-      this.entities.lights['pointLight'] = new THREE.PointLight(0xffffff, 1000.0, 500, 2.0);
+      this.entities.lights['pointLight'] = new THREE.PointLight(0xc4c4f5, 2500.0, 500, 2.0);
       this.entities.lights['pointLight'].position.set(10, 10, 10);
-
-      this.entities.lights['pointLight2'] = new THREE.PointLight(0xffffff, 0.0, 500, 2.0);
-      this.entities.lights['pointLight2'].position.set(0, 250, 0);
 
     } else if (this.activePage === 'another-world-awaits') {
 
       this.entities.lights['pointLight'] = new THREE.PointLight(0xffffff, 1500000.0, 500, 2.0);
       this.entities.lights['pointLight'].position.set(275, 25, 0);
 
-      this.entities.lights['pointLight2'] = new THREE.PointLight(0xffffff, 2500000.0, 500, 2.0);
-      this.entities.lights['pointLight2'].position.set(0, 250, 0);
+      this.entities.lights['pointLight2'] = new THREE.PointLight(0xc4c4f5, 2500000.0, 500, 2.0);
+      this.entities.lights['pointLight2'].position.set(0, 150, 0);
     }
 
-    this.entities.lights['pointLight'].castShadow = true;    //
+    this.entities.lights['pointLight'].castShadow = true;
     this.entities.lights['pointLight'].shadow.bias = -0.0005;
     this.entities.lights['pointLight'].shadow.mapSize.width = 8192;
     this.entities.lights['pointLight'].shadow.mapSize.height = 8192;
     this.entities.lights['pointLight'].updateMatrixWorld(true);
-
-    this.entities.lights['pointLight2'].castShadow = true;
-    this.entities.lights['pointLight2'].shadow.bias = -0.0005;
-    this.entities.lights['pointLight2'].shadow.mapSize.width = 8192;
-    this.entities.lights['pointLight2'].shadow.mapSize.height = 8192;
-    this.entities.lights['pointLight2'].updateMatrixWorld(true);
-
     this.scene.add(this.entities.lights['pointLight']);
-    this.scene.add(this.entities.lights['pointLight2']);
+
+    if (this.entities.lights['pointLight2']) {
+      this.entities.lights['pointLight2'].castShadow = true;
+      this.entities.lights['pointLight2'].shadow.bias = -0.0005;
+      this.entities.lights['pointLight2'].shadow.mapSize.width = 8192;
+      this.entities.lights['pointLight2'].shadow.mapSize.height = 8192;
+      this.entities.lights['pointLight2'].updateMatrixWorld(true);
+      this.scene.add(this.entities.lights['pointLight2']);
+    }
   };
 
   createBundledEntityTweens() {
@@ -293,7 +281,7 @@ class WebGL extends HTMLElement {
       this.tweens['pointLightPosition'] = TweenMax.fromTo(this.entities.lights['pointLight'].position, 10, {
         x: this.entities.lights['pointLight'].position.x,
       }, {
-        x: -10,
+        x: -20,
         repeat: -1, yoyo: true, ease: Sine.easeInOut, onComplete: function() {},
       });
 
@@ -374,6 +362,11 @@ class WebGL extends HTMLElement {
     if (this.activePage === 'another-world-awaits') {
       this.resources['glft_scene'].scene.children[0].position.x = 0;
       this.resources['glft_scene'].scene.children[0].position.y = -1117 -166; // scene value + manual offset to set to set 0,0,0 point
+
+      this.resources['glft_scene'].scene.children[0].material.color = new THREE.Color(0x0d0e0f); // override with a blueish bhue
+      this.resources['glft_scene'].scene.children[0].material.metalness = .85; // tweaking the reflective properties
+      this.resources['glft_scene'].scene.children[0].material.roughness = .5; // tweaking the reflective properties
+
       this.resources['glft_scene'].scene.children[1].position.x = 0;
       this.resources['glft_scene'].scene.children[1].position.y = 163.57322692871094 -166; // scene value + manual offset to set 0,0,0 point
     };
@@ -406,13 +399,11 @@ class WebGL extends HTMLElement {
 
     folder_renderSettings.add(renderSettingsOptions, 'pauseRenderer').name('Pause Renderer').onChange(function(value) {
       if (value === true) {
-
         this.controls.enabled = false;
         for (const tween in this.tweens) { this.tweens[tween].pause(); };
         this.renderer.setAnimationLoop(null);
 
       } else {
-
         this.controls.enabled = true;
         for (const tween in this.tweens) { this.tweens[tween].resume(); };
         this.renderer.setAnimationLoop(this.tick.bind(this));
@@ -420,10 +411,7 @@ class WebGL extends HTMLElement {
     }.bind(this));
 
 
-    folder_renderSettings.add(renderSettingsOptions, 'pixelRatio').min(1).max(10).step(.1).onChange(function(value) {
-      this.renderer.setPixelRatio(value);
-    }.bind(this));
-
+    folder_renderSettings.add(renderSettingsOptions, 'pixelRatio').min(1).max(10).step(.1).onChange(function(value) { this.renderer.setPixelRatio(value); }.bind(this));
 
     const folder_cameraSettings = this.gui.addFolder('Camera Settings');
     folder_cameraSettings.open();
@@ -442,17 +430,9 @@ class WebGL extends HTMLElement {
       this.camera.updateProjectionMatrix();
     }.bind(this));
 
-    folder_cameraSettings.add(this.cameraSettingsOptions, 'pos_x').name('pos X').min(-1000).max(1000).step(.01).listen().onChange(function(value) {
-      this.camera.position.x = value;
-    }.bind(this));
-
-    folder_cameraSettings.add(this.cameraSettingsOptions, 'pos_y').name('pos Y').min(-1000).max(1000).step(.01).listen().onChange(function(value) {
-      this.camera.position.y = value;
-    }.bind(this));
-
-    folder_cameraSettings.add(this.cameraSettingsOptions, 'pos_z').name('pos Z').min(-1000).max(1000).step(.01).listen().onChange(function(value) {
-      this.camera.position.z = value;
-    }.bind(this));
+    folder_cameraSettings.add(this.cameraSettingsOptions, 'pos_x').name('pos X').min(-1000).max(1000).step(.01).listen().onChange(function(value) { this.camera.position.x = value; }.bind(this));
+    folder_cameraSettings.add(this.cameraSettingsOptions, 'pos_y').name('pos Y').min(-1000).max(1000).step(.01).listen().onChange(function(value) { this.camera.position.y = value; }.bind(this));
+    folder_cameraSettings.add(this.cameraSettingsOptions, 'pos_z').name('pos Z').min(-1000).max(1000).step(.01).listen().onChange(function(value) { this.camera.position.z = value; }.bind(this));
 
     const folder_constrolsTarget = this.gui.addFolder('Controls Target');
     folder_constrolsTarget.open();
@@ -465,17 +445,9 @@ class WebGL extends HTMLElement {
 
     // values are updated in the render tick
 
-    folder_constrolsTarget.add(this.controlsTargetOptions, 'x').name('X').min(-1000).max(1000).step(.01).listen().onChange(function(value) {
-      this.controls.target.x = value;
-    }.bind(this));
-
-    folder_constrolsTarget.add(this.controlsTargetOptions, 'y').name('Y').min(-1000).max(1000).step(.01).listen().onChange(function(value) {
-      this.controls.target.y = value;
-    }.bind(this));
-
-    folder_constrolsTarget.add(this.controlsTargetOptions, 'z').name('Z').min(-1000).max(1000).step(.01).listen().onChange(function(value) {
-      this.controls.target.z = value;
-    }.bind(this));
+    folder_constrolsTarget.add(this.controlsTargetOptions, 'x').name('X').min(-1000).max(1000).step(.01).listen().onChange(function(value) { this.controls.target.x = value; }.bind(this));
+    folder_constrolsTarget.add(this.controlsTargetOptions, 'y').name('Y').min(-1000).max(1000).step(.01).listen().onChange(function(value) { this.controls.target.y = value; }.bind(this));
+    folder_constrolsTarget.add(this.controlsTargetOptions, 'z').name('Z').min(-1000).max(1000).step(.01).listen().onChange(function(value) { this.controls.target.z = value; }.bind(this));
 
     const folder_studioSettings = this.gui.addFolder('Studio Settings');
     folder_studioSettings.open();
@@ -492,13 +464,8 @@ class WebGL extends HTMLElement {
       }
     }.bind(this));
 
-    folder_studioSettings.addColor(studioSettingsOptions, 'bgColour').onChange(function(value) {
-      this.renderer.setClearColor(value, studioSettingsOptions.bgOpacity);
-    }.bind(this));
-
-    folder_studioSettings.add(studioSettingsOptions, 'bgOpacity').min(0).max(1).step(0.01).onChange(function(value) {
-      this.renderer.setClearColor(studioSettingsOptions.bgColour, value);
-    }.bind(this));
+    folder_studioSettings.addColor(studioSettingsOptions, 'bgColour').onChange(function(value) { this.renderer.setClearColor(value, studioSettingsOptions.bgOpacity); }.bind(this));
+    folder_studioSettings.add(studioSettingsOptions, 'bgOpacity').min(0).max(1).step(0.01).onChange(function(value) { this.renderer.setClearColor(studioSettingsOptions.bgColour, value); }.bind(this));
 
     const obj = { grab_frameBuffer: function() {
       const dataURL = this.domCanvas.toDataURL('image/png');
@@ -532,9 +499,11 @@ class WebGL extends HTMLElement {
     this.entities.helpers['pointLightHelper'].visible = false;
     this.scene.add(this.entities.helpers['pointLightHelper']);
 
-    this.entities.helpers['pointLightHelper2'] = new THREE.PointLightHelper(this.entities.lights['pointLight2'], 1.0, 0x808080);
-    this.entities.helpers['pointLightHelper2'].visible = false;
-    this.scene.add(this.entities.helpers['pointLightHelper2']);
+    if (this.entities.lights['pointLight2']) {
+      this.entities.helpers['pointLightHelper2'] = new THREE.PointLightHelper(this.entities.lights['pointLight2'], 1.0, 0x808080);
+      this.entities.helpers['pointLightHelper2'].visible = false;
+      this.scene.add(this.entities.helpers['pointLightHelper2']);
+    }
   };
 
   createAnimationLoop() {
