@@ -1,15 +1,8 @@
-:host {
-
-}
+:host {}
 
 .domCanvasWrapper {
-  /* 100% render */
-  /* width: 7225px; */
-  /* height: 9463px; */
-
-  /* 1/8 downscale for editing */
-  width: 100%;
-  height: 1200px;
+  height: 100vh;
+  min-height: 900px;
 }
 
 .domCanvas {

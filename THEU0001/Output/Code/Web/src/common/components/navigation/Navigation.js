@@ -28,6 +28,7 @@ class Navigation extends HTMLElement  {
   // web component lifecycle
   connectedCallback() {
     // TODO: abstract into subclass
+    const navigationWrapper = DOM.create('nav', { className: 'navigationWrapper' });
 
     const linkHome = DOM.create('a', { className: 'link home', href: '/' }, 'home');
 
@@ -44,7 +45,7 @@ class Navigation extends HTMLElement  {
       window.dispatchEvent(popStateEvent);
     });
 
-    DOM.append(linkHome, this.shadow);
+    DOM.append(linkHome, navigationWrapper);
 
 
     const linkTheVeil = DOM.create('a', { className: 'link about', href: '/the-veil/' }, 'the veil');
@@ -62,7 +63,7 @@ class Navigation extends HTMLElement  {
       window.dispatchEvent(popStateEvent);
     });
 
-    DOM.append(linkTheVeil, this.shadow);
+    DOM.append(linkTheVeil, navigationWrapper);
 
 
     const linkTheManInTheWall = DOM.create('a', { className: 'link about', href: '/the-man-in-the-wall/' }, 'the man in the wall');
@@ -80,7 +81,7 @@ class Navigation extends HTMLElement  {
       window.dispatchEvent(popStateEvent);
     });
 
-    DOM.append(linkTheManInTheWall, this.shadow);
+    DOM.append(linkTheManInTheWall, navigationWrapper);
 
 
     const linkAnotherWorldAwaits = DOM.create('a', { className: 'link about', href: '/another-world-awaits/' }, 'another world awaits');
@@ -98,7 +99,9 @@ class Navigation extends HTMLElement  {
       window.dispatchEvent(popStateEvent);
     });
 
-    DOM.append(linkAnotherWorldAwaits, this.shadow);
+    DOM.append(linkAnotherWorldAwaits, navigationWrapper);
+
+    DOM.append(navigationWrapper, this.shadow);
 
     // const linkHome = DOM.create('a', { className: 'link home', href: '/' }, 'let\'s go home!');
     // RxJS.create('home:linkHome:click', 'fromEvent', linkHome, 'click');

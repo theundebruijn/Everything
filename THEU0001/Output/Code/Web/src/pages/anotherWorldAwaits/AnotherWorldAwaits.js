@@ -18,8 +18,11 @@ class AnotherWorldAwaits extends HTMLElement  {
 
   // web component lifecycle
   connectedCallback() {
-    const testMessage = DOM.create('h1', { className: 'testMessage' }, 'welcome to Another World Awaits');
+    const testMessage = DOM.create('h1', { className: 'testMessage' }, 'part . three');
     DOM.append(testMessage, this.shadow);
+
+    const testMessage2 = DOM.create('h1', { className: 'testMessage2' }, 'another world awaits');
+    DOM.append(testMessage2, this.shadow);
 
     const _webgl = new WebGL('another-world-awaits');
     DOM.append(_webgl, this.shadow);

@@ -18,20 +18,22 @@ import AnotherWorldAwaits from '~/pages/anotherWorldAwaits/AnotherWorldAwaits.js
 // import Error from '~/pages/error/Error.js';
 
 // // assets
-// import woff2 from './assets/roboto-v20-latin-regular.woff2';
+import saoldisplay_semibold from './assets/fonts/SaolDisplay-Semibold.woff2';
+import lausanne_550 from './assets/fonts/Lausanne-550.woff2';
 
 // css
 import css from './Main.css';
 
 // TODO: abstract this into a little 'css loader' method
 // note we add the '/' to make sure nested static pages refer to the assets folder in the _dist/ root
-// const mycss = css.replace(/.\/assets\/roboto-v20-latin-regular.woff2/g, '/' + woff2);
+let mycss = css.replace(/.\/assets\/fonts\/SaolDisplay-Semibold.woff2/g, '/' + saoldisplay_semibold);
+mycss = mycss.replace(/.\/assets\/fonts\/Lausanne-550.woff2/g, '/' + lausanne_550);
 
 // TODO: see if there's a better way to do this
 // TODO: also add load-checking for webfonts
 const style = document.createElement('style');
 // style.textContent = mycss;
-style.textContent = css;
+style.textContent = mycss;
 document.head.append(style);
 
 /////////////////

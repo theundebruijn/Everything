@@ -17,14 +17,9 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import * as dat from 'dat.gui';
 
 // assets
-// import sushi from './assets/sushi-compressed.glb';
-// import test from './assets/3d_print_test_0001_compressed.glb';
 import TheMainInTheWall from './assets/the-man-in-the-wall.glb';
 import TheVeil from './assets/the-veil.glb';
 import AnotherWorldAwaits from './assets/another-world-awaits.glb';
-// import texture_paint_test_001 from './assets/texture_paint_test_001.glb';
-// import nili_fossae_test_001 from './assets/nili_fossae_test_001.glb';
-// import SCENE000X_LOD0 from './assets/SCENE000X_LOD0.glb';
 
 // style sheet
 import css from './WebGL.css';
@@ -37,7 +32,6 @@ class WebGL extends HTMLElement {
   constructor(page) {
     super();
 
-    console.log(page);
     this.activePage = page;
 
     // Create and attach the Shadow DOM wrapper.
@@ -274,10 +268,6 @@ class WebGL extends HTMLElement {
 
     gltfLoader.setDRACOLoader(this.dracoLoader);
 
-    // resourceLoader.add('sushi', sushi, { loadType: Resource.LOAD_TYPE.XHR, xhrType: Resource.XHR_RESPONSE_TYPE.BUFFER });
-    // resourceLoader.add('chasseur', chasseur, { loadType: Resource.LOAD_TYPE.XHR, xhrType: Resource.XHR_RESPONSE_TYPE.BUFFER });
-    console.log(this.activePage);
-
     if (this.activePage === 'the-veil') {
       resourceLoader.add('glft_scene', TheVeil, { loadType: Resource.LOAD_TYPE.XHR, xhrType: Resource.XHR_RESPONSE_TYPE.BUFFER });
     } else if (this.activePage === 'the-man-in-the-wall') {
@@ -285,9 +275,6 @@ class WebGL extends HTMLElement {
     } else if (this.activePage === 'another-world-awaits') {
       resourceLoader.add('glft_scene', AnotherWorldAwaits, { loadType: Resource.LOAD_TYPE.XHR, xhrType: Resource.XHR_RESPONSE_TYPE.BUFFER });
     }
-    // resourceLoader.add('texture_paint_test_001', texture_paint_test_001, { loadType: Resource.LOAD_TYPE.XHR, xhrType: Resource.XHR_RESPONSE_TYPE.BUFFER });
-
-    // resourceLoader.add('SCENE000X_LOD0', SCENE000X_LOD0, { loadType: Resource.LOAD_TYPE.XHR, xhrType: Resource.XHR_RESPONSE_TYPE.BUFFER });
 
     resourceLoader.use(function (resource, next) {
 
@@ -336,7 +323,6 @@ class WebGL extends HTMLElement {
 
         if (resource.isMesh) {
 
-          console.log(resource);
           resource.castShadow = true;
           resource.receiveShadow = true;
 
@@ -377,24 +363,12 @@ class WebGL extends HTMLElement {
 
     // console.log(this.entities.meshes['Leg_tool_lowpoly001']);
 
-    // temp hack for scaling
-    console.log(this.resources['glft_scene'].scene);
 
     if (this.activePage === 'another-world-awaits') {
-      // this.resources['test'].scene.children[0].scale.set(1.0, 0.5, 1.0);
       this.resources['glft_scene'].scene.children[0].position.x = 0;
       this.resources['glft_scene'].scene.children[0].position.y = -1117 -166; // scene value + manual offset to set to set 0,0,0 point
       this.resources['glft_scene'].scene.children[1].position.x = 0;
       this.resources['glft_scene'].scene.children[1].position.y = 163.57322692871094 -166; // scene value + manual offset to set 0,0,0 point
-      // this.resources['test'].scene.children[2].position.x = 0;
-
-      // this.resources['test'].scene.children[0].material.wireframe = true;
-
-      // this.resources['test'].scene.children[0].position. = 0;
-      // this.resources['test'].scene.children[1].position.x = 0;
-      // this.resources['test'].scene.children[2].position.x = 0;
-
-      // this.resources['test'].scene.children[0].position.y = 0;
     }
 
     this.scene.add(this.resources['glft_scene'].scene);

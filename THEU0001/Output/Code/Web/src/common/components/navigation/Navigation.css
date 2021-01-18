@@ -2,6 +2,13 @@
   font-family: 'Georgia';
 }
 
-.hello {
-  color: red;
+.navigationWrapper {
+  position: absolute;
+}
+
+.navigationWrapper a {
+  margin-right: 20px;
+  text-decoration: none;
+  text-transform: uppercase;
+  color: white;
 }
