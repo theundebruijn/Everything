@@ -18,8 +18,11 @@ class TheVeil extends HTMLElement  {
 
   // web component lifecycle
   connectedCallback() {
-    const testMessage = DOM.create('h1', { className: 'testMessage' }, 'welcome to The Veil');
+    const testMessage = DOM.create('h1', { className: 'testMessage' }, 'part . one');
     DOM.append(testMessage, this.shadow);
+
+    const testMessage2 = DOM.create('h1', { className: 'testMessage2' }, 'the veil');
+    DOM.append(testMessage2, this.shadow);
 
     const _webgl = new WebGL('the-veil');
     DOM.append(_webgl, this.shadow);

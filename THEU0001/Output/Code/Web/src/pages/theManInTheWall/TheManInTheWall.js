@@ -18,8 +18,11 @@ class TheManInTheWall extends HTMLElement  {
 
   // web component lifecycle
   connectedCallback() {
-    const testMessage = DOM.create('h1', { className: 'testMessage' }, 'welcome to The Man In The Wall');
+    const testMessage = DOM.create('h1', { className: 'testMessage' }, 'part . two');
     DOM.append(testMessage, this.shadow);
+
+    const testMessage2 = DOM.create('h1', { className: 'testMessage2' }, 'the man in the wall');
+    DOM.append(testMessage2, this.shadow);
 
     const _webgl = new WebGL('the-man-in-the-wall');
     DOM.append(_webgl, this.shadow);

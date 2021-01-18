@@ -30,8 +30,8 @@ class Home extends HTMLElement  {
   connectedCallback() {
 
 
-    const testMessage = DOM.create('h1', { className: 'testMessage' }, 'welcome home');
-    DOM.append(testMessage, this.shadow);
+    // const testMessage = DOM.create('h1', { className: 'testMessage' }, 'welcome home');
+    // DOM.append(testMessage, this.shadow);
     // browser calls this method when the element is added to the document
     // (can be called many times if an element is repeatedly added/removed)
 
