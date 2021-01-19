@@ -208,8 +208,12 @@ class WebGL extends HTMLElement {
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
+    // TODO: don't do this here. keep them fully transparent
+    // and handle the color transitions in css
+    // this way we can swap out webgl renderers without issue
+    // or we use a second webgl scene in the bg just for color transition
     if(this.activePage === 'home') {
-      // this.renderer.setClearColor(0xfdfbf8, 1.0);
+      this.renderer.setClearColor(0xf5efec, 1.0);
     } else if (this.activePage === 'another-world-awaits') {
       // TODO: ease into this while animating in
       this.renderer.setClearColor(0x0e0e14, 1.0);
