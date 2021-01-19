@@ -34,7 +34,7 @@ class TheManInTheWall extends HTMLElement  {
   };
 };
 
-customElements.define('theu0001-the-man-in-the-wall', TheManInTheWall);
+customElements.define('theu0001-pages-themaninthewall', TheManInTheWall);
 export default TheManInTheWall;
 
 ////////////////////////////////////////////////////////////

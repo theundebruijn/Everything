@@ -616,7 +616,7 @@ class WebGL extends HTMLElement {
   };
 };
 
-customElements.define('theu0002-home-webgl', WebGL);
+customElements.define('theu0001-common-webgl', WebGL);
 export default WebGL;
 
 ////////////////////////////////////////////////////////////

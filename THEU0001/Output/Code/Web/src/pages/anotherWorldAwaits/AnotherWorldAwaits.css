@@ -16,6 +16,11 @@
   pointer-events: none;
 }
 
+.testMessage .hidden {
+  display: inline-block;
+  opacity: 0.0;
+}
+
 
 .testMessage2 {
   position: absolute;
@@ -30,4 +35,9 @@
   letter-spacing: 40px;
   color: white;
   pointer-events: none;
+}
+
+.testMessage2 .hidden {
+  display: inline-block;
+  opacity: 0.0;
 }

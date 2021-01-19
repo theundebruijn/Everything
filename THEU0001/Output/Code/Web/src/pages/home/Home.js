@@ -46,7 +46,7 @@ class Home extends HTMLElement  {
   };
 };
 
-customElements.define('theu0001-home', Home);
+customElements.define('theu0001-pages-home', Home);
 export default Home;
 
 ////////////////////////////////////////////////////////////

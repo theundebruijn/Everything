@@ -34,7 +34,7 @@ class TheVeil extends HTMLElement  {
   };
 };
 
-customElements.define('theu0001-the-veil', TheVeil);
+customElements.define('theu0001-pages-theveil', TheVeil);
 export default TheVeil;
 
 ////////////////////////////////////////////////////////////
