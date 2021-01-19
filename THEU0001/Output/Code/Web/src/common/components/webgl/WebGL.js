@@ -17,6 +17,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import * as dat from 'dat.gui';
 
 // assets
+import Home from './assets/home.glb';
 import TheMainInTheWall from './assets/the-man-in-the-wall.glb';
 import TheVeil from './assets/the-veil.glb';
 import AnotherWorldAwaits from './assets/another-world-awaits.glb';
@@ -153,8 +154,8 @@ class WebGL extends HTMLElement {
 
     if (this.activePage === 'home') {
       this.camera.fov = 20;
-      this.camera.position.x = -20;
-      this.camera.position.y = 30;
+      this.camera.position.x = 90;
+      this.camera.position.y = 0;
       this.camera.position.z = 15;
 
     } else if (this.activePage === 'the-veil') {
@@ -207,7 +208,9 @@ class WebGL extends HTMLElement {
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-    if (this.activePage === 'another-world-awaits') {
+    if(this.activePage === 'home') {
+      // this.renderer.setClearColor(0xfdfbf8, 1.0);
+    } else if (this.activePage === 'another-world-awaits') {
       // TODO: ease into this while animating in
       this.renderer.setClearColor(0x0e0e14, 1.0);
     };
@@ -236,8 +239,14 @@ class WebGL extends HTMLElement {
     // LINK: https://threejs.org/docs/#api/en/lights/shadows/LightShadow.bias
 
     if (this.activePage === 'home') {
-      this.entities.lights['pointLight'] = new THREE.PointLight(0xffffff, 1500000.0, 500, 2.0);
-      this.entities.lights['pointLight'].position.set(275, 25, 0);
+      this.entities.lights['pointLight'] = new THREE.PointLight(0xc4c4f5, 50000.0, 500, 2.0);
+      this.entities.lights['pointLight'].position.set(20, 20, 20);
+
+      this.entities.lights['pointLight2'] = new THREE.PointLight(0xde6d22, 5000.0, 500, 2.0);
+      this.entities.lights['pointLight2'].position.set(0, 10, 20);
+
+      // this.entities.lights['pointLight2'] = new THREE.PointLight(0xc4c4f5, 2500000.0, 500, 2.0);
+      // this.entities.lights['pointLight2'].position.set(0, 150, 0);
 
     } else if (this.activePage === 'the-veil') {
       this.entities.lights['pointLight'] = new THREE.PointLight(0xc4c4f5, 5000.0, 500, 2.0);
@@ -277,7 +286,16 @@ class WebGL extends HTMLElement {
   createBundledEntityTweens() {
 
     if (this.activePage === 'home') {
+
+      this.tweens['pointLightPosition'] = TweenMax.fromTo(this.entities.lights['pointLight'].position, 10, {
+        x: this.entities.lights['pointLight'].position.x,
+      }, {
+        x: -20,
+        repeat: -1, yoyo: true, ease: Sine.easeInOut, onComplete: function() {},
+      });
+
     } else if (this.activePage === 'the-veil') {
+
       this.tweens['pointLightPosition'] = TweenMax.fromTo(this.entities.lights['pointLight'].position, 10, {
         x: this.entities.lights['pointLight'].position.x,
       }, {
@@ -286,6 +304,7 @@ class WebGL extends HTMLElement {
       });
 
     } else if (this.activePage === 'the-man-in-the-wall') {
+
       this.tweens['pointLightPosition'] = TweenMax.fromTo(this.entities.lights['pointLight'].position, 10, {
         x: this.entities.lights['pointLight'].position.x,
       }, {
@@ -294,6 +313,7 @@ class WebGL extends HTMLElement {
       });
 
     } else if (this.activePage === 'another-world-awaits') {
+
       this.tweens['pointLightPosition'] = TweenMax.fromTo(this.entities.lights['pointLight'].position, 10, {
         x: this.entities.lights['pointLight'].position.x,
       }, {
@@ -312,7 +332,9 @@ class WebGL extends HTMLElement {
 
     gltfLoader.setDRACOLoader(this.dracoLoader);
 
-    if (this.activePage === 'the-veil') {
+    if (this.activePage === 'home') {
+      resourceLoader.add('glft_scene', Home, { loadType: Resource.LOAD_TYPE.XHR, xhrType: Resource.XHR_RESPONSE_TYPE.BUFFER });
+    } else if (this.activePage === 'the-veil') {
       resourceLoader.add('glft_scene', TheVeil, { loadType: Resource.LOAD_TYPE.XHR, xhrType: Resource.XHR_RESPONSE_TYPE.BUFFER });
     } else if (this.activePage === 'the-man-in-the-wall') {
       resourceLoader.add('glft_scene', TheMainInTheWall, { loadType: Resource.LOAD_TYPE.XHR, xhrType: Resource.XHR_RESPONSE_TYPE.BUFFER });

@@ -29,31 +29,11 @@ class Home extends HTMLElement  {
   // web component lifecycle
   connectedCallback() {
 
+    const testMessage = DOM.create('h1', { className: 'testMessage' }, 'home');
+    DOM.append(testMessage, this.shadow);
 
-    // const testMessage = DOM.create('h1', { className: 'testMessage' }, 'welcome home');
-    // DOM.append(testMessage, this.shadow);
-    // browser calls this method when the element is added to the document
-    // (can be called many times if an element is repeatedly added/removed)
-
-    // render the css when the web component is added to the DOM
-    // TODO: test for FOUC
-    //this.styles.replace(mycss);
-
-    // const testMessage = DOM.create('h1', { className: 'testMessage' }, 'welcome home');
-    // DOM.append(testMessage, this.shadow);
-
-    // const testDiv = DOM.create('div', { className: 'testDiv' });
-    // DOM.append(testDiv, this.shadow);
-
-    // const renderButton = DOM.create('button', { className: 'renderButton' }, `click to grab current framebuffer`);
-    // renderButton.addEventListener("click", function() {
-    //   const webGlCanvas = document.querySelector("theu0002-container").shadowRoot.querySelector("theu0002-home").shadowRoot.querySelector("theu0002-home-webgl").shadowRoot.getElementById('domCanvas');
-
-    //   var dataURL = webGlCanvas.toDataURL('image/png');
-    //   var newTab = window.open();
-    //   newTab.document.body.innerHTML = '<img src="'+ dataURL +'">';
-    // });
-    // DOM.append(renderButton, this.shadow);
+    const testMessage2 = DOM.create('h1', { className: 'testMessage2' }, 'project giantesque');
+    DOM.append(testMessage2, this.shadow);
 
     const _webgl = new WebGL('home');
     DOM.append(_webgl, this.shadow);
