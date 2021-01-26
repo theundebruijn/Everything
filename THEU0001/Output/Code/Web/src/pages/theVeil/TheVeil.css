@@ -11,7 +11,7 @@
   font-size: 8px;
   text-transform: uppercase;
   letter-spacing: 50px;
-  color: black;
+  color: white;
   pointer-events: none;
 }
 
@@ -20,13 +20,13 @@
   position: absolute;
   top: 300px;
   left: 200px;
-  max-width: 600px;
+  max-width: 650px;
   font-family: 'Saol Display';
-  font-weight: 650;
+  font-weight: 600;
   font-style: normal;
   font-size: 65px;
   text-transform: uppercase;
   letter-spacing: 40px;
-  color: black;
+  color: white;
   pointer-events: none;
 }

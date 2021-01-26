@@ -1,0 +1,14 @@
+:host {
+  font-family: 'Georgia';
+}
+
+.navigationWrapper {
+  position: absolute;
+}
+
+.navigationWrapper a {
+  margin-right: 20px;
+  text-decoration: none;
+  text-transform: uppercase;
+  color: white;
+}

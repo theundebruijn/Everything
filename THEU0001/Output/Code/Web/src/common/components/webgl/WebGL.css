@@ -1,0 +1,11 @@
+:host {}
+
+.domCanvasWrapper {
+  height: 100vh;
+  min-height: 900px;
+}
+
+.domCanvas {
+  outline: none; /* prevents focus outline */
+  /* border: 1px solid red; */
+}

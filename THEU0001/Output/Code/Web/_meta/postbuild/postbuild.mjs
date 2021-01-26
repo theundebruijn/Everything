@@ -71,10 +71,12 @@ const generateStaticPage = function(callback, path) {
     let pageName;
 
     if (path === '') {
-      relativePath = '';
+      relativePath = '/';
       pageName = 'home';
-
-    };
+    } else if (path === 'another-world-awaits') {
+      relativePath = 'another-world-awaits/';
+      pageName = 'another-world-awaits';
+    }
 
     // rewrite relative paths for HTML includes
     let localIndexFile = global.indexFile;
@@ -107,7 +109,7 @@ const generateStaticPage = function(callback, path) {
     });
 
 
-    fs.writeFile('./_dist'+ path + '/index.html', localIndexFile, function (err) {
+    fs.writeFile('./_dist/'+ path + '/index.html', localIndexFile, function (err) {
       if (err) throw err;
 
       if (callback) callback();
@@ -196,6 +198,7 @@ async.series([
   function(callback) { getIndexFile(callback); },
   function(callback) { getMetadataFile(callback); },
   function(callback) { generateStaticPage(callback, ''); },
+  // function(callback) { generateStaticPage(callback, 'another-world-awaits'); },
   // function(callback) { removeAdditionalComments(callback) },
   function(callback) { revertDracoFilenames(callback); },
   function(callback) { writeModifiedDraco(callback); },

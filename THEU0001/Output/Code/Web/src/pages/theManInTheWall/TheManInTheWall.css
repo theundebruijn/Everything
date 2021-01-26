@@ -11,7 +11,7 @@
   font-size: 8px;
   text-transform: uppercase;
   letter-spacing: 50px;
-  color: black;
+  color: white;
   pointer-events: none;
 }
 
@@ -27,6 +27,6 @@
   font-size: 65px;
   text-transform: uppercase;
   letter-spacing: 40px;
-  color: black;
+  color: white;
   pointer-events: none;
 }

@@ -3,31 +3,37 @@
 ///////////////////
 
 // import { RxJS } from '~/utils/rxjs.js';
+import { Flyd } from '~/utils/flyd.js';
 import { DOM } from '~/utils/dom.js';
-// import Router from '~/utils/Router.js';
+import Router from '~/utils/Router.js';
 
-// import Navigation from '~/common/navigation/Navigation.js';
-import Container from '~/common/container/Container.js';
+import Navigation from '~/common/components/navigation/Navigation.js';
+import Container from '~/common/components/container/Container.js';
 
 import Home from '~/pages/home/Home.js';
-console.log(Home);
+import TheVeil from '~/pages/theVeil/TheVeil.js';
+import TheManInTheWall from '~/pages/theManInTheWall/TheManInTheWall.js';
+import AnotherWorldAwaits from '~/pages/anotherWorldAwaits/AnotherWorldAwaits.js';
+
 // import Error from '~/pages/error/Error.js';
 
 // // assets
-// import woff2 from './assets/roboto-v20-latin-regular.woff2';
+import saoldisplay_semibold from './assets/fonts/SaolDisplay-Semibold.woff2';
+import lausanne_550 from './assets/fonts/Lausanne-550.woff2';
 
 // css
 import css from './Main.css';
 
 // TODO: abstract this into a little 'css loader' method
 // note we add the '/' to make sure nested static pages refer to the assets folder in the _dist/ root
-// const mycss = css.replace(/.\/assets\/roboto-v20-latin-regular.woff2/g, '/' + woff2);
+let mycss = css.replace(/.\/assets\/fonts\/SaolDisplay-Semibold.woff2/g, '/' + saoldisplay_semibold);
+mycss = mycss.replace(/.\/assets\/fonts\/Lausanne-550.woff2/g, '/' + lausanne_550);
 
 // TODO: see if there's a better way to do this
 // TODO: also add load-checking for webfonts
 const style = document.createElement('style');
 // style.textContent = mycss;
-style.textContent = css;
+style.textContent = mycss;
 document.head.append(style);
 
 /////////////////
@@ -37,57 +43,73 @@ document.head.append(style);
 class Main {
 
   constructor() {
-    // const _navigation = new Navigation();
-    // document.body.appendChild(_navigation);
+
+
+    // Flyd.createStream('main:onclick');
+    // Flyd.addEventListenerToStream('main:onclick', document, 'click');
+    // Flyd.listenToStream('main:onclick', function(data) {
+    //   console.log('BOOM');
+    //   console.log(data);
+    // });
+
+
+
+
+    const _navigation = new Navigation();
+    document.body.appendChild(_navigation);
 
     this._container = new Container();
     document.body.appendChild(this._container);
 
-    // const _router = new Router();
-
-    // this.handleRouterEvents();
-    // _router.determinePage();
-
-    const _home = new Home();
-    DOM.append(_home, this._container.shadow);
+    const _router = new Router();
+    this.handleRouterEvents();
   };
 
   /////////////////////////
   ///// CLASS METHODS /////
   /////////////////////////
 
-  // handleRouterEvents() {
+  handleRouterEvents() {
 
-  //   // handle events from the router to (re)place pages into the container
-  //   RxJS.subscribe('router:determinePage', function(pageName) {
-  //     this.setActivePage(pageName);
-  //   }.bind(this));
-  // };
+    Flyd.listenToStream('router:determinePage', function(data) {
+      this.setActivePage(data);
+    }.bind(this));
+  };
 
   /**
    * Sets a new active page. This destroys the currently active one!
    * @param {String} name page to activate
    */
-  // setActivePage(pageName) {
+  setActivePage(pageName) {
 
-  //   console.log(pageName);
+    // TODO: do this elegantly
+    // TODO: make sure we clean up
+    // TODO: make sure we can handle 'outros'
+    this._container.shadow.innerHTML = '';
 
-  //   // TODO: do this elegantly
-  //   // TODO: make sure we clean up
-  //   // TODO: make sure we can handle 'outros'
-  //   this._container.shadow.innerHTML = '';
+    if (pageName === 'home') {
+      const _home = new Home();
+      DOM.append(_home, this._container.shadow);
 
-  //   if (pageName === 'home') {
-  //     const _home = new Home();
-  //     DOM.append(_home, this._container.shadow);
+    } else if (pageName === 'the-veil') {
+      const _theVeil = new TheVeil();
+      DOM.append(_theVeil, this._container.shadow);
 
-  //   } else if (pageName === '404') {
-  //     const _error = new Error('404');
-  //     DOM.append(_error, this._container.shadow);
-  //   };
+    } else if (pageName === 'the-man-in-the-wall') {
+      const _theManInTheWall = new TheManInTheWall();
+      DOM.append(_theManInTheWall, this._container.shadow);
 
-  //   DOM.updateMetadata(pageName);
-  // };
+    } else if (pageName === 'another-world-awaits') {
+      const _anotherWorldAwairs = new AnotherWorldAwaits();
+      DOM.append(_anotherWorldAwairs, this._container.shadow);
+
+    }else if (pageName === '404') {
+      const _error = new Error('404');
+      DOM.append(_error, this._container.shadow);
+    };
+
+    DOM.updateMetadata(pageName);
+  };
 };
 
 const _main = new Main();

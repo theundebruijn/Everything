@@ -1,7 +1,7 @@
 {
   "home": {
     "document": {
-      "title": "Giantesque"
+      "title": "GIANTESQUE"
     },
     "meta": {
       "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
@@ -9,6 +9,72 @@
       "og:locale:alternate": "en_GB",
       "og:site_name": "Giantesque",
       "og:title": "Giantesque",
+      "og:type": "website",
+      "og:url": "https://giantesque.com",
+      "og:description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      "og:image": "",
+      "og:image:type": "",
+      "og:image:width": "",
+      "og:image:height": "",
+      "twitter:card": "summary_large_image",
+      "twitter:site": "@theundebruijn",
+      "twitter:creator": "@theundebruijn"
+    }
+  },
+  "the-veil": {
+    "document": {
+      "title": "GIANTESQUE / THE VEIL"
+    },
+    "meta": {
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      "og:locale": "en_AU",
+      "og:locale:alternate": "en_GB",
+      "og:site_name": "GIANTESQUE",
+      "og:title": "GIANTESQUE",
+      "og:type": "website",
+      "og:url": "https://giantesque.com",
+      "og:description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      "og:image": "",
+      "og:image:type": "",
+      "og:image:width": "",
+      "og:image:height": "",
+      "twitter:card": "summary_large_image",
+      "twitter:site": "@theundebruijn",
+      "twitter:creator": "@theundebruijn"
+    }
+  },
+  "the-man-in-the-wall": {
+    "document": {
+      "title": "GIANTESQUE / THE MAN IN THE WALL"
+    },
+    "meta": {
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      "og:locale": "en_AU",
+      "og:locale:alternate": "en_GB",
+      "og:site_name": "GIANTESQUE",
+      "og:title": "GIANTESQUE",
+      "og:type": "website",
+      "og:url": "https://giantesque.com",
+      "og:description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      "og:image": "",
+      "og:image:type": "",
+      "og:image:width": "",
+      "og:image:height": "",
+      "twitter:card": "summary_large_image",
+      "twitter:site": "@theundebruijn",
+      "twitter:creator": "@theundebruijn"
+    }
+  },
+  "another-world-awaits": {
+    "document": {
+      "title": "GIANTESQUE / ANOTHER WORLD AWAITS"
+    },
+    "meta": {
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      "og:locale": "en_AU",
+      "og:locale:alternate": "en_GB",
+      "og:site_name": "GIANTESQUE",
+      "og:title": "GIANTESQUE",
       "og:type": "website",
       "og:url": "https://giantesque.com",
       "og:description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
