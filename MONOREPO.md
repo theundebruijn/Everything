@@ -69,10 +69,8 @@ gcsfuse --version
 wget https://github.com/sinbad/lfs-folderstore/releases/download/v1.0.0/lfs-folderstore-linux-amd64-v1.0.0.zip -P ~
 cd ~
 7z x lfs-folderstore-linux-amd64-v1.0.0.zip
-sudo mv ./lfs-folderstore-linux-amd64/lfs-folderstore /usr/local/bin/
-sudo chmod +x /usr/local/bin/lfs-folderstore
-rm -rf ~/lfs-folderstore-linux-amd64
-rm ~/lfs-folderstore-linux-amd64-v1.0.0.zip
+sudo mv ./lfs-folderstore-linux-amd64/lfs-folderstore /usr/local/bin/ && sudo chmod +x /usr/local/bin/lfs-folderstore
+rm -rf ~/lfs-folderstore-linux-amd64 && rm ~/lfs-folderstore-linux-amd64-v1.0.0.zip
 lfs-folderstore --version
 ```
 ##### monorepo workflow
@@ -118,25 +116,13 @@ git reset --hard main
 <sup>howto / update the sparse-checkout mapping (post checkout)</sup>  
 ```zsh
 # zsh (theundebruijn)
-# mount the gcp storage bucket — https://cloud.google.com/storage
-gcsfuse everything-storage-bucket-uswest1-0001 ~/.gcsfuse_mountpoint
-
-# make sure lfs-folderstore is available on the PATH
-lfs-folderstore --version
-
-# make a sparse checkout</sup>  
+# update a sparse checkout</sup>  
 cd "/mnt/c/Users/Theun de Bruijn/Everything"
 git sparse-checkout set THEU0000/Input/Resources
 ```
 <sup>howto / sparse-checkout in wsl2</sup>  
 ```zsh
 # zsh (theundebruijn)
-# mount the gcp storage bucket — https://cloud.google.com/storage
-gcsfuse everything-storage-bucket-uswest1-0001 ~/.gcsfuse_mountpoint
-
-# make sure lfs-folderstore is available on the PATH
-lfs-folderstore --version
-
 # make a sparse checkout</sup>  
 git clone --no-checkout git@github.com-theundebruijn:theundebruijn/Everything.git ~/Everything
 cd ~/Everything
