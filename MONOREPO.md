@@ -102,8 +102,9 @@ ls ~/.gcsfuse_mountpoint
 lfs-folderstore --version
 
 # make a sparse checkout</sup>  
-git clone --no-checkout git@github.com-theundebruijn:theundebruijn/Everything.git "/mnt/c/Users/Theun de Bruijn/Everything"
-cd "/mnt/c/Users/Theun de Bruijn/Everything"
+mkdir -p "/mnt/c/Work/Theun de Bruijn"
+git clone --no-checkout git@github.com-theundebruijn:theundebruijn/Everything.git "/mnt/c/Work/Theun de Bruijn/Everything"
+cd "/mnt/c/Work/Theun de Bruijn/Everything"
 git config user.name "Theun de Bruijn" && git config user.email "theun@theundebruijn.com"
 git lfs install
 git config --add lfs.customtransfer.lfs-folder.path lfs-folderstore
@@ -117,7 +118,7 @@ git reset --hard main
 ```zsh
 # zsh (theundebruijn)
 # update a sparse checkout</sup>  
-cd "/mnt/c/Users/Theun de Bruijn/Everything"
+cd "/mnt/c/Work/Theun de Bruijn/Everything"
 git sparse-checkout set THEU0000/Input/Resources
 ```
 <sup>howto / sparse-checkout in wsl2</sup>  
