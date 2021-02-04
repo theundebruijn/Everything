@@ -38,15 +38,15 @@ wsl -d ubuntu-2010-wsl -u theundebruijn
 ```
 ```zsh
 # zsh (theundebruijn)
-cd ~/Everything/THEU0001/Output/Code/DevOps/
+cd "/home/theundebruijn/Work/Theun de Bruijn/Everything/THEU0001/Output/Code/DevOps/"
 ./local-env.sh start
 ```
 <sup>2 / configure network routing (wsl2 + win10)</sup>
 
 ```zsh
 # zsh (theundebruijn)
-mkdir -p ~/Everything/THEU0001/Output/Code/DevOps/_tmp/
-ip -4 addr show eth0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}' > ~/Everything/THEU0001/Output/Code/DevOps/_tmp/ip_addr.txt
+mkdir -p "/home/theundebruijn/Work/Theun de Bruijn/Everything/THEU0001/Output/Code/DevOps/_tmp/"
+ip -4 addr show eth0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}' > "/home/theundebruijn/Work/Theun de Bruijn/Everything/THEU0001/Output/Code/DevOps/_tmp/ip_addr.txt"
 ```
 ```powershell
 # powershell (administrator)
@@ -56,7 +56,7 @@ powershell.exe -ExecutionPolicy Bypass -File \\wsl$\ubuntu-2010-wsl\home\theunde
 
 ```zsh
 # zsh (theundebruijn)
-cd ~/Everything/THEU0001/Output/Code/DevOps/
+cd "/home/theundebruijn/Work/Theun de Bruijn/Everything/THEU0001/Output/Code/DevOps/"
 ./local-web.sh install
 ./local-web.sh update
 ./local-web.sh upgrade
