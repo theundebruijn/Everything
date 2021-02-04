@@ -13,18 +13,18 @@
     "flyd": "0.2.8",
     "gsap": "3.6.0",
     "resource-loader": "3.0.1",
-    "three": "0.124.0"
+    "three": "0.125.2"
   },
   "devDependencies": {
-    "@rollup/plugin-alias": "3.1.1",
-    "@rollup/plugin-commonjs": "17.0.0",
+    "@rollup/plugin-alias": "3.1.2",
+    "@rollup/plugin-commonjs": "17.1.0",
     "@rollup/plugin-json": "4.1.0",
-    "@rollup/plugin-node-resolve": "11.1.0",
+    "@rollup/plugin-node-resolve": "11.1.1",
     "@rollup/plugin-url": "6.0.0",
-    "eslint": "7.18.0",
+    "eslint": "7.19.0",
     "html-minifier": "4.0.0",
-    "npm-check-updates": "10.2.5",
-    "rollup": "2.37.0",
+    "npm-check-updates": "11.1.1",
+    "rollup": "2.38.4",
     "rollup-plugin-cleaner": "1.0.0",
     "rollup-plugin-copy": "3.3.0",
     "rollup-plugin-serve": "1.1.0",
@@ -34,8 +34,8 @@
   },
   "license": "",
   "engines": {
-    "node": "15.6.0",
-    "npm": "7.4.1"
+    "node": "15.8.0",
+    "npm": "7.5.2"
   },
   "scripts": {
     "start": "./node_modules/.bin/rollup --config './_meta/rollup/rollup.dev.js' --watch",
