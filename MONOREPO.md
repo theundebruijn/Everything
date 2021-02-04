@@ -125,8 +125,9 @@ git sparse-checkout set THEU0000/Input/Resources
 ```zsh
 # zsh (theundebruijn)
 # make a sparse checkout</sup>  
-git clone --no-checkout git@github.com-theundebruijn:theundebruijn/Everything.git ~/Everything
-cd ~/Everything
+mkdir -p "/home/theundebruijn/Work/Theun de Bruijn"
+git clone --no-checkout git@github.com-theundebruijn:theundebruijn/Everything.git "/home/theundebruijn/Work/Theun de Bruijn/Everything"
+cd "/home/theundebruijn/Work/Theun de Bruijn/Everything"
 git config user.name "Theun de Bruijn" && git config user.email "theun@theundebruijn.com"
 git lfs install
 git config --add lfs.customtransfer.lfs-folder.path lfs-folderstore
