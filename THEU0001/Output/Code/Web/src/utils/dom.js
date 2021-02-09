@@ -29,6 +29,15 @@ DOM.append = function(domEl, domParent) {
   domParent.appendChild(domEl);
 };
 
+DOM.remove = function(domEl) {
+  domEl.remove();
+};
+
+DOM.empty = function(domEl) {
+  // more performant than setting innertHTML
+  domEl.textContent = '';
+};
+
 // NOTE: this is handled separately for generating the static index.html files.
 // The postbuild process uses the same JSON object as this class.
 // This method handles the runtime updates when navigating the SPA website.

@@ -2,15 +2,14 @@
 ///// IMPORTS /////
 ///////////////////
 
-// import { RxJS } from '~/utils/rxjs.js';
+import async from 'async';
+
 import { Flyd } from '~/utils/flyd.js';
 import { DOM } from '~/utils/dom.js';
 import Router from '~/utils/Router.js';
 
 import Navigation from '~/common/components/navigation/Navigation.js';
 import Container from '~/common/components/container/Container.js';
-
-
 
 import Home from '~/pages/home/Home.js';
 import TheVeil from '~/pages/theVeil/TheVeil.js';
@@ -73,45 +72,54 @@ class Main {
 
   handleRouterEvents() {
 
-    Flyd.listenToStream('router:determinePage', function(data) {
-      this.setActivePage(data);
+    Flyd.listenToStream('router:onNewPage', function(data) {
+
+      async.series([
+        function (fSeriesCallback) { this.removeActivePage(fSeriesCallback); }.bind(this),
+        function (fSeriesCallback) { this.createNewPage(fSeriesCallback, data); }.bind(this),
+      ], function (err, results) {}.bind(this));
+
     }.bind(this));
   };
 
-  /**
-   * Sets a new active page. This destroys the currently active one!
-   * @param {String} name page to activate
-   */
-  setActivePage(pageName) {
+  removeActivePage(fSeriesCallback) {
+    fSeriesCallback();
+  };
+
+  createNewPage(fSeriesCallback, sPageName) {
+
+    // TODO: keep track of active page, outro it, render new one on callback
 
     // TODO: do this elegantly
     // TODO: make sure we clean up
     // TODO: make sure we can handle 'outros'
-    // this._container.shadow.innerHTML = '';
-    this._container.domPageWrapper.innerHTML = '';
+    DOM.empty(this._container.domPageWrapper);
 
-    if (pageName === 'home') {
+
+    if (sPageName === 'home') {
       const _home = new Home();
       DOM.append(_home, this._container.domPageWrapper);
 
-    } else if (pageName === 'the-veil') {
+    } else if (sPageName === 'the-veil') {
       const _theVeil = new TheVeil();
       DOM.append(_theVeil, this._container.domPageWrapper);
 
-    } else if (pageName === 'the-man-in-the-wall') {
+    } else if (sPageName === 'the-man-in-the-wall') {
       const _theManInTheWall = new TheManInTheWall();
       DOM.append(_theManInTheWall, this._container.domPageWrapper);
 
-    } else if (pageName === 'another-world-awaits') {
+    } else if (sPageName === 'another-world-awaits') {
       const _anotherWorldAwairs = new AnotherWorldAwaits();
       DOM.append(_anotherWorldAwairs, this._container.domPageWrapper);
 
-    }else if (pageName === '404') {
+    } else if (sPageName === '404') {
       const _error = new Error('404');
       DOM.append(_error, this._container.domPageWrapper);
     };
 
-    DOM.updateMetadata(pageName);
+    DOM.updateMetadata(sPageName);
+
+    fSeriesCallback();
   };
 };
 

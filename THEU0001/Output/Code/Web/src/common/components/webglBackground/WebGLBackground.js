@@ -6,6 +6,7 @@
 ///////////////////
 
 // npm dependencies
+import { Flyd } from '~/utils/flyd.js';
 import async from 'async';
 import { DOM } from '~/utils/dom.js';
 import { gsap, TweenMax, Sine, Linear } from 'gsap';
@@ -111,22 +112,11 @@ class WebGLBackground extends HTMLElement {
     ], function (err, results) {
       if (err) { return console.log(err); }
 
-
-      // TODO: use this RGB tween or switch to HSL?
-
-      const test1 = new THREE.Color(0x2a2a2a);
-      const test2 = new THREE.Color(0xa08b68);
-
-      this.tweens['backgroundColor'] = TweenMax.fromTo(this.scene.background, 60, {
-        r: test2.r, g: test2.g, b: test2.b,
-      }, {
-        r: test2.r, g: test2.g, b: test2.b,
-        repeat: -1, yoyo: true, ease: Sine.easeInOut, onComplete: function () { },
-      });
-
       // Now the resources have been loaded we can compute the methods that rely on them.
       this.createLoadedEntities();
       this.createLoadedEntityTweens();
+
+      this.handleRouterEvents();
 
     }.bind(this));
   };
@@ -150,7 +140,7 @@ class WebGLBackground extends HTMLElement {
     this.scene = new THREE.Scene();
     // set the background color on the scene - NOT on the renderer
     // much more efficient easing
-    this.scene.background = new THREE.Color(0xff0000); // red
+    this.scene.background = new THREE.Color(0xffffff); // white like the html
 
     this.camera = new THREE.PerspectiveCamera(45, this.domCanvas.clientWidth / this.domCanvas.clientHeight, 1, 10000);
     this.camera.updateProjectionMatrix();
@@ -164,7 +154,7 @@ class WebGLBackground extends HTMLElement {
       canvas: this.domCanvas,
       context: this.domCanvasContext,
       antialias: false,
-      alpha: true,
+      alpha: false,
     });
 
     this.renderer.setSize(this.domCanvas.clientWidth, this.domCanvas.clientHeight);
@@ -243,6 +233,30 @@ class WebGLBackground extends HTMLElement {
 
     this.camera.aspect = updatedWidth / updatedHeight;
     this.camera.updateProjectionMatrix();
+  };
+
+  handleRouterEvents() {
+
+    Flyd.listenToStream('router:onNewPage', function (data) {
+      this.updateBackgroundColor(data);
+    }.bind(this));
+  };
+
+  updateBackgroundColor(sPageName) {
+    if (this.tweens['backgroundColor']) this.tweens['backgroundColor'].kill();
+
+    // TODO: fix white bg color flash
+    let oTargetColor;
+    if (sPageName === 'home') { oTargetColor = new THREE.Color(0xfdfbf8); }
+    else if (sPageName === 'the-veil') { oTargetColor = new THREE.Color(0xa08b68); }
+    else if (sPageName === 'the-man-in-the-wall') { oTargetColor = new THREE.Color(0xa08b68); }
+    else if (sPageName === 'another-world-awaits') { oTargetColor = new THREE.Color(0x000000); }
+    else if (sPageName === '404') { oTargetColor = new THREE.Color(0xfdfbf8); };
+
+    this.tweens['backgroundColor'] = TweenMax.to(this.scene.background, 4.00, {
+      r: oTargetColor.r, g: oTargetColor.g, b: oTargetColor.b,
+      ease: Sine.easeInOut, onComplete: function () { },
+    });
   };
 
   ///////////////////

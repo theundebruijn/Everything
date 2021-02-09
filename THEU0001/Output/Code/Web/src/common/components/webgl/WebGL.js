@@ -63,16 +63,24 @@ class WebGL extends HTMLElement {
   ///////////////////////////////////
 
   connectedCallback() {
+    console.log('connectedCallback');
     this.init();
   };
 
   disconnectedCallback() {
-    this.removeAnimationLoop();
-    this.removeDomObservers();
-    this.removeLoaders();
-    this.removeTweens();
-    this.removeGui();
-    this.removeThree();
+    console.log('disconnectedCallback');
+
+    // TODO: replace with proper outro
+    // this timeout prevents a white flash when we immediately remove the draw calls
+    setTimeout(function() {
+      this.removeAnimationLoop();
+      this.removeDomObservers();
+      this.removeLoaders();
+      this.removeTweens();
+      this.removeGui();
+      this.removeThree();
+    }.bind(this), 10);
+
   };
 
   ///////////////////////////
@@ -214,17 +222,6 @@ class WebGL extends HTMLElement {
 
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
-    // TODO: don't do this here. keep them fully transparent
-    // and handle the color transitions in css
-    // this way we can swap out webgl renderers without issue
-    // or we use a second webgl scene in the bg just for color transition
-    if(this.activePage === 'home') {
-      this.renderer.setClearColor(0xf5efec, 1.0);
-    } else if (this.activePage === 'another-world-awaits') {
-      // TODO: ease into this while animating in
-      this.renderer.setClearColor(0x0e0e14, 1.0);
-    };
   };
 
   createControls() {
@@ -519,9 +516,6 @@ class WebGL extends HTMLElement {
         this.entities.helpers[helper].visible = value;
       }
     }.bind(this));
-
-    folder_studioSettings.addColor(studioSettingsOptions, 'bgColour').onChange(function(value) { this.renderer.setClearColor(value, studioSettingsOptions.bgOpacity); }.bind(this));
-    folder_studioSettings.add(studioSettingsOptions, 'bgOpacity').min(0).max(1).step(0.01).onChange(function(value) { this.renderer.setClearColor(studioSettingsOptions.bgColour, value); }.bind(this));
 
     const obj = { grab_frameBuffer: function() {
       const dataURL = this.domCanvas.toDataURL('image/png');

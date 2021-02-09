@@ -9,17 +9,16 @@ class Router {
   };
 
   createStreams() {
-    Flyd.createStream('router:onpopstate');
-    Flyd.createStream('router:determinePage');
+    Flyd.createStream('router:onPopState');
+    Flyd.createStream('router:onNewPage');
 
-    Flyd.addEventListenerToStream('router:onpopstate', window, 'popstate');
-    Flyd.listenToStream('router:onpopstate', function(data) {
-      this.determinePage();
+    Flyd.addEventListenerToStream('router:onPopState', window, 'popstate');
+    Flyd.listenToStream('router:onPopState', function(data) {
+      this.onNewPage();
     }.bind(this));
 
     // determine initial state
-    this.determinePage();
-
+    this.onNewPage();
   };
 
   /**
@@ -35,27 +34,27 @@ class Router {
   /**
    * Determines the page to be loaded based on the determined pathName.
    */
-  determinePage() {
+  onNewPage() {
     const pathName = this.getPathName();
 
     if (pathName === '') {
-      const x = Flyd.returnStream('router:determinePage');
+      const x = Flyd.returnStream('router:onNewPage');
       x('home');
 
     } else if (pathName === 'the-veil/') {
-      const x = Flyd.returnStream('router:determinePage');
+      const x = Flyd.returnStream('router:onNewPage');
       x('the-veil');
 
     } else if (pathName === 'the-man-in-the-wall/') {
-      const x = Flyd.returnStream('router:determinePage');
+      const x = Flyd.returnStream('router:onNewPage');
       x('the-man-in-the-wall');
 
     } else if (pathName === 'another-world-awaits/') {
-      const x = Flyd.returnStream('router:determinePage');
+      const x = Flyd.returnStream('router:onNewPage');
       x('another-world-awaits');
 
     } else {
-      const x = Flyd.returnStream('router:determinePage');
+      const x = Flyd.returnStream('router:onNewPage');
       x('404');
 
     }
