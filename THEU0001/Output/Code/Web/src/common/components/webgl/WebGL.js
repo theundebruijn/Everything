@@ -11,135 +11,17 @@ import { DOM } from '~/utils/dom.js';
 import { gsap, TweenMax, Sine } from 'gsap';
 import { Loader, Resource } from 'resource-loader';
 import * as THREE from 'three';
-
+import * as dat from 'dat.gui';
 
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { Reflector } from 'three/examples/jsm/objects/Reflector';
 
+import sReflectorFragment from './shaders/sReflectorFragment.glsl';
 
-console.log(Reflector.ReflectorShader.fragmentShader);
-console.log(typeof Reflector.ReflectorShader.fragmentShader);
-
-Reflector.ReflectorShader.fragmentShader = `
-uniform vec3 color;
-uniform sampler2D tDiffuse;
-varying vec4 vUv;
-float blendOverlay(float base, float blend) {
-  // return (base < 0.5 ? (2.0 * base * blend) : (1.0 - 2.0 * (1.0 - base) * (1.0 - blend)));
-
-
-
-  return (base < 0.5 ?    0.33   *    (2.0 * base * blend) :    0.33   *   (1.0 - 2.0 * (1.0 - base) * (1.0 - blend)));
-
-
-  //return (0.75 * (1.0 * base) * (1.0 * blend));
-
-
-}
-vec3 blendOverlay(vec3 base, vec3 blend) {
-  return vec3(blendOverlay(base.r, blend.r), blendOverlay(base.g, blend.g), blendOverlay(base.b, blend.b));
-}
-void main() {
-  vec4 base = texture2DProj(tDiffuse, vUv);
-  //gl_FragColor = vec4(blendOverlay(base.rgb, color), 1.0);
-  gl_FragColor = vec4(blendOverlay(base.rgb, color), 1.0);
-}
-`;
-
-// Reflector.ReflectorShader = {
-
-//   uniforms: {
-
-//     'color': {
-//       type: 'c',
-//       value: null
-//     },
-
-//     'tDiffuse': {
-//       type: 't',
-//       value: null
-//     },
-
-//     'tDepth': {
-//       type: 't',
-//       value: null
-//     },
-
-//     'textureMatrix': {
-//       type: 'm4',
-//       value: null
-//     },
-
-//     'cameraNear': {
-//       type: 'f',
-//       value: 0
-//     },
-
-//     'cameraFar': {
-//       type: 'f',
-//       value: 0
-//     },
-
-//   },
-
-//   vertexShader: [
-//     'uniform mat4 textureMatrix;',
-//     'varying vec4 vUv;',
-
-//     'void main() {',
-
-//     '	vUv = textureMatrix * vec4( position, 1.0 );',
-
-//     '	gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );',
-
-//     '}'
-//   ].join('\n'),
-
-//   fragmentShader: [
-//     '#include <packing>',
-//     'uniform vec3 color;',
-//     'uniform sampler2D tDiffuse;',
-//     'uniform sampler2D tDepth;',
-//     'uniform float cameraNear;',
-//     'uniform float cameraFar;',
-//     'varying vec4 vUv;',
-
-//     'float blendOverlay( float base, float blend ) {',
-
-//     '	return( base < 0.5 ? ( 2.0 * base * blend ) : ( 1.0 - 2.0 * ( 1.0 - base ) * ( 1.0 - blend ) ) );',
-
-//     '}',
-
-//     'vec3 blendOverlay( vec3 base, vec3 blend ) {',
-
-//     '	return vec3( blendOverlay( base.r, blend.r ), blendOverlay( base.g, blend.g ), blendOverlay( base.b, blend.b ) );',
-
-//     '}',
-
-//     'float readDepth( sampler2D depthSampler, vec4 coord ) {',
-
-//     '	float fragCoordZ = texture2DProj( depthSampler, coord ).x;',
-//     '	float viewZ = perspectiveDepthToViewZ( fragCoordZ, cameraNear, cameraFar );',
-//     '	return viewZToOrthographicDepth( viewZ, cameraNear, cameraFar );',
-
-//     '}',
-
-//     'void main() {',
-
-//     '	vec4 base = texture2DProj( tDiffuse, vUv );',
-//     ' float depth = readDepth( tDepth, vUv );',
-//     '	gl_FragColor = vec4( blendOverlay( base.rgb, color ), 1.0 - ( depth * 7000.0 ) );',
-
-//     '}'
-//   ].join('\n')
-// };
-
-
-import * as dat from 'dat.gui';
-
-// console.log(Reflector);
+// fragment shader override
+Reflector.ReflectorShader.fragmentShader = sReflectorFragment;
 
 // assets
 import Home from './assets/home.glb';
@@ -348,7 +230,7 @@ class WebGL extends HTMLElement {
   createControls() {
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.enableDamping = true;
-    this.controls.dampingFactor = 0.05;
+    this.controls.dampingFactor = 0.04;
   };
 
   createDomObservers() {
@@ -374,57 +256,35 @@ class WebGL extends HTMLElement {
       this.entities.lights['pointLight2'] = new THREE.PointLight(0xa08b68, 5000.0, 500, 2.0);
       this.entities.lights['pointLight2'].position.set(0, 10, 20);
 
-      // this.entities.lights['pointLight2'] = new THREE.PointLight(0xc4c4f5, 2500000.0, 500, 2.0);
-      // this.entities.lights['pointLight2'].position.set(0, 150, 0);
-
     } else if (this.activePage === 'the-veil') {
 
-
-      const geometry = new THREE.PlaneGeometry(22, 29.1, 1, 1);
-      // const material = new THREE.MeshBasicMaterial(0xffffff);
-      // const mesh = new THREE.Mesh(geometry, material);
-      const mirror = new Reflector(geometry, {
+      const mirrorGeometry = new THREE.PlaneGeometry(22.1, 29.1, 1, 1);
+      const mirror = new Reflector(mirrorGeometry, {
         clipBias: 0.000001,
         textureWidth: 4096,
         textureHeight:4096,
-        // color: 0x808080, // 50% grey
         color: 0x6e6e9b,
       });
-      mirror.position.y = 1.7;
-      mirror.position.z = 1.7;
-      mirror.rotation.x = -0.005; // compensate for scene inaccuracy
-      // this.scene.add(mesh);
+      mirror.position.y = 1.66;
+      mirror.position.z = 1.675;
+      mirror.rotation.x = -0.006; // compensate for scene inaccuracy
       this.scene.add(mirror);
 
-
-
-
-
-
       this.entities.lights['pointLight'] = new THREE.PointLight(0xffd693, 3500.0, 500, 2.0);
-      // this.entities.lights['pointLight'] = new THREE.PointLight(0xffffff, 5000.0, 500, 2.0);
       this.entities.lights['pointLight'].position.set(20, 20, 10);
 
     } else if (this.activePage === 'the-man-in-the-wall') {
 
-
-
-
-      const geometry = new THREE.PlaneGeometry(22, 29.1, 1, 1);
-      // const material = new THREE.MeshBasicMaterial(0xffffff);
-      // const mesh = new THREE.Mesh(geometry, material);
-      const mirror = new Reflector(geometry, {
+      const mirrorGeometry = new THREE.PlaneGeometry(22.1, 29.1, 1, 1);
+      const mirror = new Reflector(mirrorGeometry, {
         clipBias: 0.000001,
         textureWidth: 4096,
         textureHeight: 4096,
-        // color: 0x808080, // 50% grey
         color: 0x6e6e9b,
       });
       mirror.position.y = 0.01;
       mirror.position.z = 0;
       mirror.rotation.x = - Math.PI / 2;
-      // this.scene.add(mesh);
-
       this.scene.add(mirror);
 
 
@@ -565,23 +425,6 @@ class WebGL extends HTMLElement {
 
       this.resources['glft_scene'].scene.children[1].position.x = 0;
       this.resources['glft_scene'].scene.children[1].position.y = 163.57322692871094 -166; // scene value + manual offset to set 0,0,0 point
-
-
-      // this.resources['glft_scene'].scene.children[0].visible = false;
-
-      // console.log(this.resources['glft_scene'].scene.children[0]);
-      // const mirror = new Reflector(this.resources['glft_scene'].scene.children[0].geometry, {
-      //   clipBias: 0.000001,
-      //   textureWidth: 4096,
-      //   textureHeight: 4096,
-      //   // color: 0x808080, // 50% grey
-      //   color: 0x6e6e9b,
-      // });
-
-      // mirror.position.x = 0;
-      // mirror.position.y = -1117 - 166; // scene value + manual offset to set to set 0,0,0 point
-      // this.scene.add(mirror);
-
     };
 
     this.scene.add(this.resources['glft_scene'].scene);

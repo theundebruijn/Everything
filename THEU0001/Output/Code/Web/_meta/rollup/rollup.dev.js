@@ -37,7 +37,7 @@ export default {
       sourceMap: false,
     }),
     string({
-      include: ['**/*.css'],
+      include: ['**/*.css', '**/*.glsl'],
     }),
     url({
       include: ['**/*.jpg', '**/*.woff2', '**/*.glb'],

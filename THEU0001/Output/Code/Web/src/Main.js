@@ -10,6 +10,8 @@ import Router from '~/utils/Router.js';
 import Navigation from '~/common/components/navigation/Navigation.js';
 import Container from '~/common/components/container/Container.js';
 
+
+
 import Home from '~/pages/home/Home.js';
 import TheVeil from '~/pages/theVeil/TheVeil.js';
 import TheManInTheWall from '~/pages/theManInTheWall/TheManInTheWall.js';
@@ -85,27 +87,28 @@ class Main {
     // TODO: do this elegantly
     // TODO: make sure we clean up
     // TODO: make sure we can handle 'outros'
-    this._container.shadow.innerHTML = '';
+    // this._container.shadow.innerHTML = '';
+    this._container.domPageWrapper.innerHTML = '';
 
     if (pageName === 'home') {
       const _home = new Home();
-      DOM.append(_home, this._container.shadow);
+      DOM.append(_home, this._container.domPageWrapper);
 
     } else if (pageName === 'the-veil') {
       const _theVeil = new TheVeil();
-      DOM.append(_theVeil, this._container.shadow);
+      DOM.append(_theVeil, this._container.domPageWrapper);
 
     } else if (pageName === 'the-man-in-the-wall') {
       const _theManInTheWall = new TheManInTheWall();
-      DOM.append(_theManInTheWall, this._container.shadow);
+      DOM.append(_theManInTheWall, this._container.domPageWrapper);
 
     } else if (pageName === 'another-world-awaits') {
       const _anotherWorldAwairs = new AnotherWorldAwaits();
-      DOM.append(_anotherWorldAwairs, this._container.shadow);
+      DOM.append(_anotherWorldAwairs, this._container.domPageWrapper);
 
     }else if (pageName === '404') {
       const _error = new Error('404');
-      DOM.append(_error, this._container.shadow);
+      DOM.append(_error, this._container.domPageWrapper);
     };
 
     DOM.updateMetadata(pageName);

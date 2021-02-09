@@ -1,5 +1,7 @@
 import { DOM } from '~/utils/dom.js';
 
+import WebGLBackground from '~/common/components/webglBackground/WebGLBackground.js';
+
 import css from './Container.css';
 
 class Container extends HTMLElement  {
@@ -16,10 +18,19 @@ class Container extends HTMLElement  {
     const domStyle = DOM.create('style');
     domStyle.innerHTML = mycss;
 
+    this.domPageWrapper = DOM.create('div', { className: 'domPageWrapper' });
+    DOM.append(this.domPageWrapper, this.shadow);
+
+    this.domBackgroundWrapper = DOM.create('div', { className: 'domBackgroundWrapper' });
+    DOM.append(this.domBackgroundWrapper, this.shadow);
+
     DOM.append(domStyle, this.shadow);
   };
 
   connectedCallback() {
+
+    const _webglBackground = new WebGLBackground();
+    DOM.append(_webglBackground, this.domBackgroundWrapper);
     // browser calls this method when the element is added to the document
     // (can be called many times if an element is repeatedly added/removed)
 
