@@ -1,4 +1,4 @@
-import { Flyd } from '~/utils/flyd.js';
+import { FRP } from '~/utils/FRP.js';
 
 /**
  * Router object (Singleton).
@@ -9,11 +9,11 @@ class Router {
   };
 
   createStreams() {
-    Flyd.createStream('router:onPopState');
-    Flyd.createStream('router:onNewPage');
+    FRP.createStream('router:onPopState');
+    FRP.createStream('router:onNewPage');
 
-    Flyd.addEventListenerToStream('router:onPopState', window, 'popstate');
-    Flyd.listenToStream('router:onPopState', function(data) {
+    FRP.addEventListenerToStream('router:onPopState', window, 'popstate');
+    FRP.listenToStream('router:onPopState', function(data) {
       this.onNewPage();
     }.bind(this));
 
@@ -38,23 +38,23 @@ class Router {
     const pathName = this.getPathName();
 
     if (pathName === '') {
-      const x = Flyd.returnStream('router:onNewPage');
+      const x = FRP.returnStream('router:onNewPage');
       x('home');
 
     } else if (pathName === 'the-veil/') {
-      const x = Flyd.returnStream('router:onNewPage');
+      const x = FRP.returnStream('router:onNewPage');
       x('the-veil');
 
     } else if (pathName === 'the-man-in-the-wall/') {
-      const x = Flyd.returnStream('router:onNewPage');
+      const x = FRP.returnStream('router:onNewPage');
       x('the-man-in-the-wall');
 
     } else if (pathName === 'another-world-awaits/') {
-      const x = Flyd.returnStream('router:onNewPage');
+      const x = FRP.returnStream('router:onNewPage');
       x('another-world-awaits');
 
     } else {
-      const x = Flyd.returnStream('router:onNewPage');
+      const x = FRP.returnStream('router:onNewPage');
       x('404');
 
     }

@@ -1,5 +1,5 @@
 // npm
-import { DOM } from '~/utils/dom.js';
+import { DOM } from '~/utils/DOM.js';
 
 //
 import WebGL from '~/common/components/webgl/WebGL.js';

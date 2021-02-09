@@ -55,6 +55,10 @@ export default {
           dest: './_dev',
         },
         {
+          src: './src/assets/icons/',
+          dest: './_dev/static',
+        },
+        {
           src: './_meta/assets/draco/1.4.1/draco_decoder.js',
           dest: './_dev/static/draco',
         },

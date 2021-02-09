@@ -6,9 +6,9 @@
 ///////////////////
 
 // npm dependencies
-import { Flyd } from '~/utils/flyd.js';
+import { FRP } from '~/utils/FRP.js';
 import async from 'async';
-import { DOM } from '~/utils/dom.js';
+import { DOM } from '~/utils/DOM.js';
 import { gsap, TweenMax, Sine, Linear } from 'gsap';
 import * as THREE from 'three';
 
@@ -29,15 +29,6 @@ class WebGLBackground extends HTMLElement {
     // NOTE: This isolates our Web Component's elements into the Shadow DOM context.
     //       Critical to build component based systems that guarantee isolation.
     this.domShadow = this.attachShadow({ mode: 'open' });
-
-    // Create holders for entities we need to keep track of.
-    this.resources = {};
-
-    this.entities = {};
-    this.entities.meshes = {};
-    this.entities.lights = {};
-    this.entities.helpers = {};
-
     this.tweens = {};
   };
 
@@ -237,7 +228,7 @@ class WebGLBackground extends HTMLElement {
 
   handleRouterEvents() {
 
-    Flyd.listenToStream('router:onNewPage', function (data) {
+    FRP.listenToStream('router:onNewPage', function (data) {
       this.updateBackgroundColor(data);
     }.bind(this));
   };

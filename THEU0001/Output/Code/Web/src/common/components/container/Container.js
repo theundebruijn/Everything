@@ -1,4 +1,4 @@
-import { DOM } from '~/utils/dom.js';
+import { DOM } from '~/utils/DOM.js';
 
 import WebGLBackground from '~/common/components/webglBackground/WebGLBackground.js';
 

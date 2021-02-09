@@ -2,7 +2,7 @@
 import { TweenMax, Linear } from 'gsap';
 
 // utilities
-import { DOM } from '~/utils/dom.js';
+import { DOM } from '~/utils/DOM.js';
 
 // components
 import WebGL from '~/common/components/webgl/WebGL.js';

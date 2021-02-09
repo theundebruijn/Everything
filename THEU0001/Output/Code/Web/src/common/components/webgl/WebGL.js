@@ -7,7 +7,7 @@
 
 // npm dependencies
 import async from 'async';
-import { DOM } from '~/utils/dom.js';
+import { DOM } from '~/utils/DOM.js';
 import { gsap, TweenMax, Sine } from 'gsap';
 import { Loader, Resource } from 'resource-loader';
 import * as THREE from 'three';

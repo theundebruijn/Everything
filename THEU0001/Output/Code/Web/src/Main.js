@@ -4,8 +4,8 @@
 
 import async from 'async';
 
-import { Flyd } from '~/utils/flyd.js';
-import { DOM } from '~/utils/dom.js';
+import { FRP } from '~/utils/FRP.js';
+import { DOM } from '~/utils/DOM.js';
 import Router from '~/utils/Router.js';
 
 import Navigation from '~/common/components/navigation/Navigation.js';
@@ -44,17 +44,24 @@ document.head.append(style);
 class Main {
 
   constructor() {
+    const domIcon = document.querySelector('link[rel="icon"]');
+    const domAppleTouchIcon = document.querySelector('link[rel="apple-touch-icon"]');
 
+    FRP.createStream('window:onfocus');
+    FRP.addEventListenerToStream('window:onfocus', window, 'focus');
 
-    // Flyd.createStream('main:onclick');
-    // Flyd.addEventListenerToStream('main:onclick', document, 'click');
-    // Flyd.listenToStream('main:onclick', function(data) {
-    //   console.log('BOOM');
-    //   console.log(data);
-    // });
+    FRP.listenToStream('window:onfocus', function (data) {
+      domIcon.setAttribute('href', '/static/icons/favicon-giantesque.png');
+      domAppleTouchIcon.setAttribute('href', '/static/icons/favicon-giantesque.png');
+    });
 
+    FRP.createStream('window:onblur');
+    FRP.addEventListenerToStream('window:onblur', window, 'blur');
 
-
+    FRP.listenToStream('window:onblur', function (data) {
+      domIcon.setAttribute('href', '/static/icons/favicon-giantesque_inactive.png');
+      domAppleTouchIcon.setAttribute('href', '/static/icons/favicon-giantesque_inactive.png');
+    });
 
     const _navigation = new Navigation();
     document.body.appendChild(_navigation);
@@ -72,7 +79,7 @@ class Main {
 
   handleRouterEvents() {
 
-    Flyd.listenToStream('router:onNewPage', function(data) {
+    FRP.listenToStream('router:onNewPage', function(data) {
 
       async.series([
         function (fSeriesCallback) { this.removeActivePage(fSeriesCallback); }.bind(this),

@@ -1,6 +1,6 @@
 // import { RxJS } from '~/utils/rxjs.js';
-import { Flyd } from '~/utils/flyd.js';
-import { DOM } from '~/utils/dom.js';
+import { FRP } from '~/utils/FRP.js';
+import { DOM } from '~/utils/DOM.js';
 
 import css from './Navigation.css';
 
@@ -32,9 +32,9 @@ class Navigation extends HTMLElement  {
 
     const linkHome = DOM.create('a', { className: 'link home', href: '/' }, 'home');
 
-    Flyd.createStream('_navigation:linkHome:onclick');
-    Flyd.addEventListenerToStream('_navigation:linkHome:onclick', linkHome, 'click');
-    Flyd.listenToStream('_navigation:linkHome:onclick', function(data) {
+    FRP.createStream('_navigation:linkHome:onclick');
+    FRP.addEventListenerToStream('_navigation:linkHome:onclick', linkHome, 'click');
+    FRP.listenToStream('_navigation:linkHome:onclick', function(data) {
       data.preventDefault();
 
       // TODO: handle this in the router
@@ -50,9 +50,9 @@ class Navigation extends HTMLElement  {
 
     const linkTheVeil = DOM.create('a', { className: 'link about', href: '/the-veil/' }, 'the veil');
 
-    Flyd.createStream('_navigation:linkTheVeil:click');
-    Flyd.addEventListenerToStream('_navigation:linkTheVeil:click', linkTheVeil, 'click');
-    Flyd.listenToStream('_navigation:linkTheVeil:click', function(data) {
+    FRP.createStream('_navigation:linkTheVeil:click');
+    FRP.addEventListenerToStream('_navigation:linkTheVeil:click', linkTheVeil, 'click');
+    FRP.listenToStream('_navigation:linkTheVeil:click', function(data) {
       data.preventDefault();
 
       // TODO: handle this in the router
@@ -68,9 +68,9 @@ class Navigation extends HTMLElement  {
 
     const linkTheManInTheWall = DOM.create('a', { className: 'link about', href: '/the-man-in-the-wall/' }, 'the man in the wall');
 
-    Flyd.createStream('_navigation:linkTheManInTheWall:click');
-    Flyd.addEventListenerToStream('_navigation:linkTheManInTheWall:click', linkTheManInTheWall, 'click');
-    Flyd.listenToStream('_navigation:linkTheManInTheWall:click', function(data) {
+    FRP.createStream('_navigation:linkTheManInTheWall:click');
+    FRP.addEventListenerToStream('_navigation:linkTheManInTheWall:click', linkTheManInTheWall, 'click');
+    FRP.listenToStream('_navigation:linkTheManInTheWall:click', function(data) {
       data.preventDefault();
 
       // TODO: handle this in the router
@@ -86,9 +86,9 @@ class Navigation extends HTMLElement  {
 
     const linkAnotherWorldAwaits = DOM.create('a', { className: 'link about', href: '/another-world-awaits/' }, 'another world awaits');
 
-    Flyd.createStream('_navigation:linkAnotherWorldAwaits:click');
-    Flyd.addEventListenerToStream('_navigation:linkAnotherWorldAwaits:click', linkAnotherWorldAwaits, 'click');
-    Flyd.listenToStream('_navigation:linkAnotherWorldAwaits:click', function(data) {
+    FRP.createStream('_navigation:linkAnotherWorldAwaits:click');
+    FRP.addEventListenerToStream('_navigation:linkAnotherWorldAwaits:click', linkAnotherWorldAwaits, 'click');
+    FRP.listenToStream('_navigation:linkAnotherWorldAwaits:click', function(data) {
       data.preventDefault();
 
       // TODO: handle this in the router
