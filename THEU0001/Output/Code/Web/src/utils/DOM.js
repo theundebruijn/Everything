@@ -4,7 +4,17 @@
 
 import metadata from '~/../_meta/assets/metadata/metadata.json';
 
+
+///////////////
+///// OBJ /////
+///////////////
+
 const DOM = Object.create(null);
+
+
+///////////////////////
+///// OBJ METHODS /////
+///////////////////////
 
 DOM.create = function(sTag, oProps, anyContent) {
   const el = document.createElement(sTag);
@@ -62,7 +72,13 @@ DOM.updateMetadata = function(pageName) {
   document.querySelector('meta[property="twitter:creator"]').setAttribute('content', metadata[pageName].meta['twitter:creator']);
 };
 
+
+//////////////////////
+///// ES6 EXPORT /////
+//////////////////////
+
 export { DOM };
+
 
 ////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////

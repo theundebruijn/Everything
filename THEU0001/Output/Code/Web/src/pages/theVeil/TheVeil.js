@@ -1,9 +1,22 @@
-// npm
+///////////////////
+///// IMPORTS /////
+///////////////////
+
+/// LOCAL ///
 import { DOM } from '~/utils/DOM.js';
 import WebGL from '~/common/components/webgl/WebGL.js';
+
+/// ASSETS ///
 import css from './TheVeil.css';
 
+
+/////////////////
+///// CLASS /////
+/////////////////
+
 class TheVeil extends HTMLElement  {
+
+  /// CONSTRUCTOR ///
   constructor() {
     super();
 
@@ -16,7 +29,11 @@ class TheVeil extends HTMLElement  {
     DOM.append(domStyle, this.shadow);
   };
 
-  // web component lifecycle
+
+  ///////////////////////////////////
+  ///// WEB COMPONENT LIFECYCLE /////
+  ///////////////////////////////////
+
   connectedCallback() {
     const testMessage = DOM.create('h1', { className: 'testMessage' }, 'part . one');
     DOM.append(testMessage, this.shadow);
@@ -34,8 +51,20 @@ class TheVeil extends HTMLElement  {
   };
 };
 
+
+////////////////////////////////////
+///// WEB COMPONENT DEFINITION /////
+////////////////////////////////////
+
 customElements.define('theu0001-pages-theveil', TheVeil);
+
+
+//////////////////////
+///// ES6 EXPORT /////
+//////////////////////
+
 export default TheVeil;
+
 
 ////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////

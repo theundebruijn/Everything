@@ -1,19 +1,26 @@
-// npm
-import { DOM } from '~/utils/DOM.js';
+///////////////////
+///// IMPORTS /////
+///////////////////
 
-//
+/// LOCAL ///
+import { DOM } from '~/utils/DOM.js';
 import WebGL from '~/common/components/webgl/WebGL.js';
 
-// assets
-import jpg from './assets/test.jpg';
-
-// style sheet
+/// ASSETS ///
 import css from './Home.css';
+import jpg from './assets/test.jpg';
 
 // TODO: abstract this into a little 'css loader' method
 const mycss = css.replace(/.\/assets\/test.jpg/g, jpg);
 
+
+/////////////////
+///// CLASS /////
+/////////////////
+
 class Home extends HTMLElement  {
+
+  /// CONSTRUCTOR ///
   constructor() {
     super();
 
@@ -26,7 +33,11 @@ class Home extends HTMLElement  {
     DOM.append(domStyle, this.shadow);
   };
 
-  // web component lifecycle
+
+  ///////////////////////////////////
+  ///// WEB COMPONENT LIFECYCLE /////
+  ///////////////////////////////////
+
   connectedCallback() {
 
     const testMessage = DOM.create('h1', { className: 'testMessage' }, 'home');
@@ -46,8 +57,20 @@ class Home extends HTMLElement  {
   };
 };
 
+
+////////////////////////////////////
+///// WEB COMPONENT DEFINITION /////
+////////////////////////////////////
+
 customElements.define('theu0001-pages-home', Home);
+
+
+//////////////////////
+///// ES6 EXPORT /////
+//////////////////////
+
 export default Home;
+
 
 ////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////

@@ -1,25 +1,27 @@
-// TODO: add performance tests + optimisations
-// TODO: look into renderer exposure (f-stop) values
-
 ///////////////////
 ///// IMPORTS /////
 ///////////////////
 
-// npm dependencies
-import { FRP } from '~/utils/FRP.js';
+/// NPM ///
 import async from 'async';
-import { DOM } from '~/utils/DOM.js';
 import { gsap, TweenMax, Sine, Linear } from 'gsap';
 import * as THREE from 'three';
 
-// style sheet
+/// LOCAL ///
+import { FRP } from '~/utils/FRP.js';
+import { DOM } from '~/utils/DOM.js';
+
+/// ASSETS ///
 import css from './WebGLBackground.css';
 
-/////////////////////////
-///// WEB COMPONENT /////
-/////////////////////////
+
+/////////////////
+///// CLASS /////
+/////////////////
 
 class WebGLBackground extends HTMLElement {
+
+  /// CONSTRUCTOR ///
   constructor(page) {
     super();
 
@@ -32,22 +34,14 @@ class WebGLBackground extends HTMLElement {
     this.tweens = {};
   };
 
+
   ///////////////////////////////////
   ///// WEB COMPONENT LIFECYCLE /////
   ///////////////////////////////////
 
-  connectedCallback() {
-    this.init();
-  };
+  connectedCallback() { this.init(); };
+  disconnectedCallback() { this.destroy(); };
 
-  disconnectedCallback() {
-    this.removeAnimationLoop();
-    this.removeDomObservers();
-    this.removeLoaders();
-    this.removeTweens();
-    this.removeGui();
-    this.removeThree();
-  };
 
   ///////////////////////////
   ///// CLASS LIFECYCLE /////
@@ -112,6 +106,16 @@ class WebGLBackground extends HTMLElement {
     }.bind(this));
   };
 
+  destroy() {
+    this.removeAnimationLoop();
+    this.removeDomObservers();
+    this.removeLoaders();
+    this.removeTweens();
+    this.removeGui();
+    this.removeThree();
+  };
+
+
   /////////////////////////
   ///// CLASS METHODS /////
   /////////////////////////
@@ -149,10 +153,7 @@ class WebGLBackground extends HTMLElement {
     });
 
     this.renderer.setSize(this.domCanvas.clientWidth, this.domCanvas.clientHeight);
-
-    // Here we brute force 20% supersampling - rather than grabbing the device native scaling
-    // Saves on performance on hidpi devices while applying a little extra anti aliasing
-    this.renderer.setPixelRatio(1.2);
+    this.renderer.setPixelRatio(1.0);
 
     this.renderer.outputEncoding = THREE.sRGBEncoding;
     this.renderer.toneMapping = THREE.ReinhardToneMapping;
@@ -164,20 +165,6 @@ class WebGLBackground extends HTMLElement {
 
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
-
-    // this.renderer.setClearColor(0xff0000, 1.0);
-
-    // TODO: don't do this here. keep them fully transparent
-    // and handle the color transitions in css
-    // this way we can swap out webgl renderers without issue
-    // or we use a second webgl scene in the bg just for color transition
-    // if(this.activePage === 'home') {
-    //   this.renderer.setClearColor(0xf5efec, 1.0);
-    // } else if (this.activePage === 'another-world-awaits') {
-    //   // TODO: ease into this while animating in
-    //   this.renderer.setClearColor(0x0e0e14, 1.0);
-    // };
   };
 
   createControls() {};
@@ -211,6 +198,7 @@ class WebGLBackground extends HTMLElement {
     // update renderer
     this.renderer.render(this.scene, this.camera);
   };
+
 
   //////////////////////////////
   ///// DOM EVENT HANDLERS /////
@@ -249,6 +237,7 @@ class WebGLBackground extends HTMLElement {
       ease: Sine.easeInOut, onComplete: function () { },
     });
   };
+
 
   ///////////////////
   ///// CLEANUP /////
@@ -295,8 +284,20 @@ class WebGLBackground extends HTMLElement {
   };
 };
 
+
+////////////////////////////////////
+///// WEB COMPONENT DEFINITION /////
+////////////////////////////////////
+
 customElements.define('theu0001-common-webglbackground', WebGLBackground);
+
+
+//////////////////////
+///// ES6 EXPORT /////
+//////////////////////
+
 export default WebGLBackground;
+
 
 ////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////

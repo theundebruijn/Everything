@@ -1,12 +1,28 @@
+///////////////////
+///// IMPORTS /////
+///////////////////
+
+/// LOCAL ///
 import flyd from 'flyd';
 
-/**
- * Wrapper object. We need to use this syntax to support vscode intellisense.
- * Using Object.create(null) doesn't do this.
- */
-const FRP = {};
 
-FRP.streams = {};
+///////////////
+///// OBJ /////
+///////////////
+
+const FRP = Object.create(null);
+
+
+//////////////////////////
+///// OBJ PROPERTIES /////
+//////////////////////////
+
+FRP.streams = Object.create(null);
+
+
+///////////////////////
+///// OBJ METHODS /////
+///////////////////////
 
 FRP.createStream = function(name, type, target, event) {
   if (this.streams[name]) throw new Error('stream already defined');
@@ -25,7 +41,13 @@ FRP.listenToStream = function(name, callback) {
   flyd.on(function(data) { callback(data); }, this.streams[name]);
 };
 
+
+//////////////////////
+///// ES6 EXPORT /////
+//////////////////////
+
 export { FRP };
+
 
 ////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////

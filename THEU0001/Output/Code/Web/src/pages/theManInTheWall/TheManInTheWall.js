@@ -1,9 +1,22 @@
-// npm
+///////////////////
+///// IMPORTS /////
+///////////////////
+
+/// LOCAL ///
 import { DOM } from '~/utils/DOM.js';
 import WebGL from '~/common/components/webgl/WebGL.js';
+
+/// ASSETS ///
 import css from './TheManInTheWall.css';
 
+
+/////////////////
+///// CLASS /////
+/////////////////
+
 class TheManInTheWall extends HTMLElement  {
+
+  /// CONSTRUCTOR ///
   constructor() {
     super();
 
@@ -16,7 +29,11 @@ class TheManInTheWall extends HTMLElement  {
     DOM.append(domStyle, this.shadow);
   };
 
-  // web component lifecycle
+
+  ///////////////////////////////////
+  ///// WEB COMPONENT LIFECYCLE /////
+  ///////////////////////////////////
+
   connectedCallback() {
     const testMessage = DOM.create('h1', { className: 'testMessage' }, 'part . two');
     DOM.append(testMessage, this.shadow);
@@ -34,8 +51,20 @@ class TheManInTheWall extends HTMLElement  {
   };
 };
 
+
+////////////////////////////////////
+///// WEB COMPONENT DEFINITION /////
+////////////////////////////////////
+
 customElements.define('theu0001-pages-themaninthewall', TheManInTheWall);
+
+
+//////////////////////
+///// ES6 EXPORT /////
+//////////////////////
+
 export default TheManInTheWall;
+
 
 ////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////

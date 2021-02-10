@@ -1,16 +1,25 @@
-// npm dependencies
+///////////////////
+///// IMPORTS /////
+///////////////////
+
+/// NPM ///
 import { TweenMax, Linear } from 'gsap';
 
-// utilities
+/// LOCAL ///
 import { DOM } from '~/utils/DOM.js';
-
-// components
 import WebGL from '~/common/components/webgl/WebGL.js';
 
-// assets
+/// ASSETS ///
 import css from './AnotherWorldAwaits.css';
 
+
+/////////////////
+///// CLASS /////
+/////////////////
+
 class AnotherWorldAwaits extends HTMLElement  {
+
+  /// CONSTRUCTOR ///
   constructor() {
     super();
 
@@ -25,7 +34,11 @@ class AnotherWorldAwaits extends HTMLElement  {
     DOM.append(domStyle, this.shadow);
   };
 
-  // web component lifecycle
+
+  ///////////////////////////////////
+  ///// WEB COMPONENT LIFECYCLE /////
+  ///////////////////////////////////
+
   connectedCallback() {
 
     const domChapterWrapper = DOM.create('div', { className: 'testMessage hidden' }, 'part . three');
@@ -82,13 +95,30 @@ class AnotherWorldAwaits extends HTMLElement  {
     this.removeTweens();
   };
 
+
+  ////////////////////////////////////
+  ///// WEB COMPONENT DEFINITION /////
+  ////////////////////////////////////
+
   removeTweens() {
     for (const tween in this.tweens) { this.tweens[tween].kill(); };
   };
 };
 
+
+////////////////////////////////////
+///// WEB COMPONENT DEFINITION /////
+////////////////////////////////////
+
 customElements.define('theu0001-pages-anotherworldawaits', AnotherWorldAwaits);
+
+
+//////////////////////
+///// ES6 EXPORT /////
+//////////////////////
+
 export default AnotherWorldAwaits;
+
 
 ////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////

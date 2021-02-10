@@ -1,10 +1,22 @@
-import { DOM } from '~/utils/DOM.js';
+///////////////////
+///// IMPORTS /////
+///////////////////
 
+/// LOCAL ///
+import { DOM } from '~/utils/DOM.js';
 import WebGLBackground from '~/common/components/webglBackground/WebGLBackground.js';
 
+/// ASSETS ///
 import css from './Container.css';
 
+
+/////////////////
+///// CLASS /////
+/////////////////
+
 class Container extends HTMLElement  {
+
+  /// CONSTRUCTOR ///
   constructor() {
     super();
 
@@ -27,6 +39,11 @@ class Container extends HTMLElement  {
     DOM.append(domStyle, this.shadow);
   };
 
+
+  ///////////////////////////////////
+  ///// WEB COMPONENT LIFECYCLE /////
+  ///////////////////////////////////
+
   connectedCallback() {
 
     const _webglBackground = new WebGLBackground();
@@ -38,12 +55,22 @@ class Container extends HTMLElement  {
     // TODO: test for FOUC
     // this.styles.replace(css);
   };
-
-
 };
 
+
+////////////////////////////////////
+///// WEB COMPONENT DEFINITION /////
+////////////////////////////////////
+
 customElements.define('theu0001-container', Container);
+
+
+//////////////////////
+///// ES6 EXPORT /////
+//////////////////////
+
 export default Container;
+
 
 ////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////

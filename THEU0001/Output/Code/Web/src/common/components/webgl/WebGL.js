@@ -1,42 +1,41 @@
-// TODO: add performance tests + optimisations
-// TODO: look into renderer exposure (f-stop) values
-
 ///////////////////
 ///// IMPORTS /////
 ///////////////////
 
-// npm dependencies
+/// NPM ///
 import async from 'async';
-import { DOM } from '~/utils/DOM.js';
 import { gsap, TweenMax, Sine } from 'gsap';
 import { Loader, Resource } from 'resource-loader';
-import * as THREE from 'three';
 import * as dat from 'dat.gui';
-
+import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { Reflector } from 'three/examples/jsm/objects/Reflector';
+
+/// LOCAL ///
+import { DOM } from '~/utils/DOM.js';
+
+/// ASSETS ///
+import css from './WebGL.css';
+import Home from './assets/home.glb';
+import TheMainInTheWall from './assets/the-man-in-the-wall.glb';
+import TheVeil from './assets/the-veil.glb';
+import AnotherWorldAwaits from './assets/another-world-awaits.glb';
 
 import sReflectorFragment from './shaders/sReflectorFragment.glsl';
 
 // fragment shader override
 Reflector.ReflectorShader.fragmentShader = sReflectorFragment;
 
-// assets
-import Home from './assets/home.glb';
-import TheMainInTheWall from './assets/the-man-in-the-wall.glb';
-import TheVeil from './assets/the-veil.glb';
-import AnotherWorldAwaits from './assets/another-world-awaits.glb';
 
-// style sheet
-import css from './WebGL.css';
-
-/////////////////////////
-///// WEB COMPONENT /////
-/////////////////////////
+/////////////////
+///// CLASS /////
+/////////////////
 
 class WebGL extends HTMLElement {
+
+  /// CONSTRUCTOR ///
   constructor(page) {
     super();
 
@@ -58,30 +57,13 @@ class WebGL extends HTMLElement {
     this.tweens = {};
   };
 
+
   ///////////////////////////////////
   ///// WEB COMPONENT LIFECYCLE /////
   ///////////////////////////////////
 
-  connectedCallback() {
-    console.log('connectedCallback');
-    this.init();
-  };
-
-  disconnectedCallback() {
-    console.log('disconnectedCallback');
-
-    // TODO: replace with proper outro
-    // this timeout prevents a white flash when we immediately remove the draw calls
-    setTimeout(function() {
-      this.removeAnimationLoop();
-      this.removeDomObservers();
-      this.removeLoaders();
-      this.removeTweens();
-      this.removeGui();
-      this.removeThree();
-    }.bind(this), 10);
-
-  };
+  connectedCallback() { this.init(); };
+  disconnectedCallback() { this.destroy(); };
 
   ///////////////////////////
   ///// CLASS LIFECYCLE /////
@@ -143,6 +125,20 @@ class WebGL extends HTMLElement {
 
     }.bind(this));
   };
+
+  destroy() {
+    // TODO: replace with proper outro
+    // this timeout prevents a white flash when we immediately remove the draw calls
+    setTimeout(function () {
+      this.removeAnimationLoop();
+      this.removeDomObservers();
+      this.removeLoaders();
+      this.removeTweens();
+      this.removeGui();
+      this.removeThree();
+    }.bind(this), 10);
+  };
+
 
   /////////////////////////
   ///// CLASS METHODS /////
@@ -581,6 +577,7 @@ class WebGL extends HTMLElement {
     this.renderer.render(this.scene, this.camera);
   };
 
+
   //////////////////////////////
   ///// DOM EVENT HANDLERS /////
   //////////////////////////////
@@ -594,6 +591,7 @@ class WebGL extends HTMLElement {
     this.camera.aspect = updatedWidth / updatedHeight;
     this.camera.updateProjectionMatrix();
   };
+
 
   ///////////////////
   ///// CLEANUP /////
@@ -640,8 +638,20 @@ class WebGL extends HTMLElement {
   };
 };
 
+
+////////////////////////////////////
+///// WEB COMPONENT DEFINITION /////
+////////////////////////////////////
+
 customElements.define('theu0001-common-webgl', WebGL);
+
+
+//////////////////////
+///// ES6 EXPORT /////
+//////////////////////
+
 export default WebGL;
+
 
 ////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////

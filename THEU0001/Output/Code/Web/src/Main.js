@@ -2,8 +2,10 @@
 ///// IMPORTS /////
 ///////////////////
 
+/// NPM ///
 import async from 'async';
 
+/// LOCAL ///
 import { FRP } from '~/utils/FRP.js';
 import { DOM } from '~/utils/DOM.js';
 import Router from '~/utils/Router.js';
@@ -16,9 +18,7 @@ import TheVeil from '~/pages/theVeil/TheVeil.js';
 import TheManInTheWall from '~/pages/theManInTheWall/TheManInTheWall.js';
 import AnotherWorldAwaits from '~/pages/anotherWorldAwaits/AnotherWorldAwaits.js';
 
-// import Error from '~/pages/error/Error.js';
-
-// // assets
+/// ASSETS ///
 import saoldisplay_semibold from './assets/fonts/SaolDisplay-Semibold.woff2';
 import lausanne_550 from './assets/fonts/Lausanne-550.woff2';
 
@@ -37,12 +37,14 @@ const style = document.createElement('style');
 style.textContent = mycss;
 document.head.append(style);
 
+
 /////////////////
 ///// CLASS /////
 /////////////////
 
 class Main {
 
+  /// CONSTRUCTOR ///
   constructor() {
     const domIcon = document.querySelector('link[rel="icon"]');
     const domAppleTouchIcon = document.querySelector('link[rel="apple-touch-icon"]');
@@ -130,7 +132,13 @@ class Main {
   };
 };
 
+
+/////////////////////////
+///// INSTANTIATION /////
+/////////////////////////
+
 const _main = new Main();
+
 
 ////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////

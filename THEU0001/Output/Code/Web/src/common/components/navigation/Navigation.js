@@ -1,12 +1,22 @@
-// import { RxJS } from '~/utils/rxjs.js';
+///////////////////
+///// IMPORTS /////
+///////////////////
+
+/// LOCAL ///
 import { FRP } from '~/utils/FRP.js';
 import { DOM } from '~/utils/DOM.js';
 
+/// ASSETS ///
 import css from './Navigation.css';
 
-// console.log(css)
+
+/////////////////
+///// CLASS /////
+/////////////////
 
 class Navigation extends HTMLElement  {
+
+  /// CONSTRUCTOR ///
   constructor() {
     super();
 
@@ -24,6 +34,11 @@ class Navigation extends HTMLElement  {
 
     // console.log('you\'re home!!');
   }
+
+
+  ///////////////////////////////////
+  ///// WEB COMPONENT LIFECYCLE /////
+  ///////////////////////////////////
 
   // web component lifecycle
   connectedCallback() {
@@ -121,8 +136,20 @@ class Navigation extends HTMLElement  {
   }
 };
 
+
+////////////////////////////////////
+///// WEB COMPONENT DEFINITION /////
+////////////////////////////////////
+
 customElements.define('theu0001-navigation', Navigation);
+
+
+//////////////////////
+///// ES6 EXPORT /////
+//////////////////////
+
 export default Navigation;
+
 
 ////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////
