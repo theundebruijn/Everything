@@ -46,6 +46,28 @@ class Main {
 
   /// CONSTRUCTOR ///
   constructor() {
+
+    ///////////////////////////
+    ///// CLASS VARIABLES /////
+    ///////////////////////////
+
+    // store the currently active page as a string (s[...])
+    this.sCurrActivePage = null;
+
+    // here we store the page that is queued to go 'live' as a string (s[...])
+    // this way we can have a page 'outro' take place, keep navigating
+    // and only at the very last moment set the page we load next
+    this.sQueuedPage = null;
+
+    // here we note if the page is transitioning to a new page at the moment as a boolean (b[...])
+    this.bIsTransitioning = false;
+
+    // here we store the class instance of the active page
+    // this gets null'ed and repurposed each page transition
+    this.cActivePage = null;
+
+
+    /// CONSTRUCTOR CONTINUED ///
     const domIcon = document.querySelector('link[rel="icon"]');
     const domAppleTouchIcon = document.querySelector('link[rel="apple-touch-icon"]');
 
@@ -81,52 +103,65 @@ class Main {
 
   handleRouterEvents() {
 
-    FRP.listenToStream('router:onNewPage', function(data) {
+    FRP.listenToStream('router:onNewPage', function (sPageName) {
 
-      async.series([
-        function (fSeriesCallback) { this.removeActivePage(fSeriesCallback); }.bind(this),
-        function (fSeriesCallback) { this.createNewPage(fSeriesCallback, data); }.bind(this),
-      ], function (err, results) {}.bind(this));
+      // happens on first page load
+      // if (this.sCurrActivePage === null) {
+      //   this.sCurrActivePage = sPageName;
+      // };
+
+      // update the queued page every time we get a router event
+      this.sQueuedPage = sPageName;
+
+      if (!this.bIsTransitioning) {
+        this.bIsTransitioning = true;
+
+        async.series([
+          function (fSeriesCallback) { this.removeActivePage(fSeriesCallback); }.bind(this),
+          function (fSeriesCallback) { this.createNewPage(fSeriesCallback); }.bind(this),
+        ], function (err, results) {
+
+          this.sCurrActivePage = this.sQueuedPage;
+          this.bIsTransitioning = false;
+        }.bind(this));
+      };
+
+
 
     }.bind(this));
   };
 
   removeActivePage(fSeriesCallback) {
-    fSeriesCallback();
-  };
 
-  createNewPage(fSeriesCallback, sPageName) {
+    console.log('removeActivePage: ' + this.sCurrActivePage);
 
-    // TODO: keep track of active page, outro it, render new one on callback
+    // happens on first page load
+    if (this.sCurrActivePage === null) { fSeriesCallback(); } else {
 
-    // TODO: do this elegantly
-    // TODO: make sure we clean up
-    // TODO: make sure we can handle 'outros'
-    DOM.empty(this._container.domPageWrapper);
+      // cleanup
+      this.cActivePage = null;
+      DOM.empty(this._container.domPageWrapper);
 
-
-    if (sPageName === 'home') {
-      const _home = new Home();
-      DOM.append(_home, this._container.domPageWrapper);
-
-    } else if (sPageName === 'the-veil') {
-      const _theVeil = new TheVeil();
-      DOM.append(_theVeil, this._container.domPageWrapper);
-
-    } else if (sPageName === 'the-man-in-the-wall') {
-      const _theManInTheWall = new TheManInTheWall();
-      DOM.append(_theManInTheWall, this._container.domPageWrapper);
-
-    } else if (sPageName === 'another-world-awaits') {
-      const _anotherWorldAwairs = new AnotherWorldAwaits();
-      DOM.append(_anotherWorldAwairs, this._container.domPageWrapper);
-
-    } else if (sPageName === '404') {
-      const _error = new Error('404');
-      DOM.append(_error, this._container.domPageWrapper);
+      // continue
+      fSeriesCallback();
     };
 
-    DOM.updateMetadata(sPageName);
+  };
+
+  createNewPage(fSeriesCallback) {
+
+    console.log('createNewPage: ' + this.sQueuedPage);
+
+
+
+    if (this.sQueuedPage === 'home') { this.cActivePage = new Home(); }
+    else if (this.sQueuedPage === 'the-veil') { this.cActivePage = new TheVeil(); }
+    else if (this.sQueuedPage === 'the-man-in-the-wall') { this.cActivePage = new TheManInTheWall(); }
+    else if (this.sQueuedPage === 'another-world-awaits') { this.cActivePage = new AnotherWorldAwaits(); }
+    else if (this.sQueuedPage === '404') { this.cActivePage = new Error('404'); };
+
+    DOM.append(this.cActivePage, this._container.domPageWrapper);
+    DOM.updateMetadata(this.sQueuedPage);
 
     fSeriesCallback();
   };

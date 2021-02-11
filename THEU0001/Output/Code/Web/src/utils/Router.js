@@ -9,6 +9,8 @@ import { FRP } from '~/utils/FRP.js';
 /////////////////
 
 class Router {
+
+  /// CONSTRUCTOR ///
   constructor() {
     this.createStreams();
   };
