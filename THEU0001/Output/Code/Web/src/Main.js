@@ -104,7 +104,7 @@ class Main {
   /// EVENT HANDLERS
   handleRouterEvents() {
 
-    FRP.listenToStream('router:onNewPage', function (sPageName) {
+    FRP.addStreamListener('router:onNewPage', null, function(sPageName) {
 
       // happens on first page load
       // if (this.sCurrActivePage === null) {
@@ -137,21 +137,16 @@ class Main {
     const domIcon = document.querySelector('link[rel="icon"]');
     const domAppleTouchIcon = document.querySelector('link[rel="apple-touch-icon"]');
 
-    FRP.createStream('window:onfocus');
-    FRP.addEventListenerToStream('window:onfocus', window, 'focus');
-
-    FRP.listenToStream('window:onfocus', function (data) {
+    FRP.addStreamListener('window:onfocus', { target: window, event: 'focus' }, function(data) {
       domIcon.setAttribute('href', '/static/icons/favicon-giantesque.png');
       domAppleTouchIcon.setAttribute('href', '/static/icons/favicon-giantesque.png');
     });
 
-    FRP.createStream('window:onblur');
-    FRP.addEventListenerToStream('window:onblur', window, 'blur');
-
-    FRP.listenToStream('window:onblur', function (data) {
+    FRP.addStreamListener('window:onblur', { target: window, event: 'blur' }, function (data) {
       domIcon.setAttribute('href', '/static/icons/favicon-giantesque_inactive.png');
       domAppleTouchIcon.setAttribute('href', '/static/icons/favicon-giantesque_inactive.png');
     });
+
   };
 
   /// CLASS LOGIC ///

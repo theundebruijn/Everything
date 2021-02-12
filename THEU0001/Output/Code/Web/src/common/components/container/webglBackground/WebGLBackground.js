@@ -216,7 +216,7 @@ class WebGLBackground extends HTMLElement {
 
   handleRouterEvents() {
 
-    FRP.listenToStream('router:onNewPage', function (data) {
+    FRP.addStreamListener('router:onNewPage', null, function(data) {
       this.updateBackgroundColor(data);
     }.bind(this));
   };

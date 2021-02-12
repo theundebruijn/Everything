@@ -21,11 +21,10 @@ class Router {
   /////////////////////////
 
   createStreams() {
-    FRP.createStream('router:onPopState');
-    FRP.createStream('router:onNewPage');
+    // FRP.createStream('router:onPopState');
+    FRP.addStreamListener('router:onNewPage', null, null);
 
-    FRP.addEventListenerToStream('router:onPopState', window, 'popstate');
-    FRP.listenToStream('router:onPopState', function(data) {
+    FRP.addStreamListener('router:onPopState', { target: window, event: 'popstate'}, function(data) {
       this.onNewPage();
     }.bind(this));
 
@@ -50,23 +49,23 @@ class Router {
     const pathName = this.getPathName();
 
     if (pathName === '') {
-      const x = FRP.returnStream('router:onNewPage');
+      const x = FRP.getStream('router:onNewPage');
       x('home');
 
     } else if (pathName === 'the-veil/') {
-      const x = FRP.returnStream('router:onNewPage');
+      const x = FRP.getStream('router:onNewPage');
       x('the-veil');
 
     } else if (pathName === 'the-man-in-the-wall/') {
-      const x = FRP.returnStream('router:onNewPage');
+      const x = FRP.getStream('router:onNewPage');
       x('the-man-in-the-wall');
 
     } else if (pathName === 'another-world-awaits/') {
-      const x = FRP.returnStream('router:onNewPage');
+      const x = FRP.getStream('router:onNewPage');
       x('another-world-awaits');
 
     } else {
-      const x = FRP.returnStream('router:onNewPage');
+      const x = FRP.getStream('router:onNewPage');
       x('404');
 
     }
