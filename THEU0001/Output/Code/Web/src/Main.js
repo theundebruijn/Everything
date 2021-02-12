@@ -164,7 +164,7 @@ class Main {
 
       // cleanup
       this.cActivePage = null;
-      DOM.empty(this.oComponentInstances['_container'].domPageWrapper);
+      DOM.empty(this.oComponentInstances['_container'].oDOMElements.domPageWrapper);
 
       // continue
       fSeriesCallback();
@@ -184,7 +184,7 @@ class Main {
     else if (this.sQueuedPage === 'another-world-awaits') { this.cActivePage = new AnotherWorldAwaits(); }
     else if (this.sQueuedPage === '404') { this.cActivePage = new Error('404'); };
 
-    DOM.append(this.cActivePage, this.oComponentInstances['_container'].domPageWrapper);
+    DOM.append(this.cActivePage, this.oComponentInstances['_container'].oDOMElements.domPageWrapper);
     DOM.updateMetadata(this.sQueuedPage);
 
     fSeriesCallback();

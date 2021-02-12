@@ -5,7 +5,8 @@
 /// LOCAL ///
 import { DOM } from '~/utils/DOM.js';
 import { CSS } from '~/utils/CSS.js';
-import WebGL from '~/common/components/webgl/WebGL.js';
+import Title from '~/common/components/pages/title/Title.js';
+import WebGL from '~/common/components/pages/webgl/WebGL.js';
 
 /// ASSETS CSS ///
 import sCSS from './TheVeil.css';
@@ -72,16 +73,12 @@ class TheVeil extends HTMLElement  {
   /////////////////////////
 
   /// CREATE ///
-  createDomElements() {
-    // TODO: abstract into components ?
-    this.oDOMElements['testMessage'] = DOM.create('h1', { className: 'testMessage' }, 'part.one');
-    DOM.append(this.oDOMElements['testMessage'], this.shadow);
-
-    this.oDOMElements['testMessage2'] = DOM.create('h1', { className: 'testMessage2' }, 'the veil');
-    DOM.append(this.oDOMElements['testMessage2'], this.shadow);
-  };
+  createDomElements() {};
 
   createComponentInstances() {
+    this.oComponentInstances['_title'] = new Title({ sChapter: 'part . one', sTitle: 'the veil X' });
+    DOM.append(this.oComponentInstances['_title'], this.shadow);
+
     this.oComponentInstances['_webgl'] = new WebGL('the-veil');
     DOM.append(this.oComponentInstances['_webgl'], this.shadow);
   };

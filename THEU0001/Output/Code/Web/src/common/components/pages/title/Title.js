@@ -2,25 +2,29 @@
 ///// IMPORTS /////
 ///////////////////
 
+/// NPM ///
+import { TweenMax, Linear } from 'gsap';
+
 /// LOCAL ///
 import { DOM } from '~/utils/DOM.js';
 import { CSS } from '~/utils/CSS.js';
-import Title from '~/common/components/pages/title/Title.js';
-import WebGL from '~/common/components/pages/webgl/WebGL.js';
 
 /// ASSETS CSS ///
-import sCSS from './Home.css';
+// TODO: rewrite classnames etc
+import sCSS from './Title.css';
 
 
 ///////////////////////////////
 ///// WEB COMPONENT CLASS /////
 ///////////////////////////////
 
-class Home extends HTMLElement  {
+class Title extends HTMLElement {
 
   /// CONSTRUCTOR ///
-  constructor() {
+  constructor(options) {
     super();
+
+    this.options = options;
 
     ///////////////////////////
     ///// CLASS VARIABLES /////
@@ -28,6 +32,8 @@ class Home extends HTMLElement  {
 
     this.oDOMElements = Object.create(null);
     this.oComponentInstances = Object.create(null);
+
+    this.oTweens = Object.create(null);
 
     /// PRE-INIT CONTRUCTS ///
     this.constructShadowDOM();
@@ -67,6 +73,9 @@ class Home extends HTMLElement  {
   __del() {
     this.destroyDomElements();
     this.destroyComponentInstances();
+
+    // TODO: refact into class method
+    for (const tween in this.oTweens) { this.oTweens[tween].kill(); };
   };
 
 
@@ -75,15 +84,52 @@ class Home extends HTMLElement  {
   /////////////////////////
 
   /// CREATE ///
-  createDomElements() {};
+  createDomElements() {
 
-  createComponentInstances() {
-    this.oComponentInstances['_title'] = new Title({ sChapter: 'home', sTitle: 'project giantesque x' });
-    DOM.append(this.oComponentInstances['_title'], this.shadow);
+    this.oDOMElements['domChapterWrapper'] = DOM.create('div', { className: 'testMessage hidden' }, this.options.sChapter);
+    DOM.append(this.oDOMElements['domChapterWrapper'], this.shadow);
 
-    this.oComponentInstances['_webgl'] = new WebGL('home');
-    DOM.append(this.oComponentInstances['_webgl'], this.shadow);
+    this.oTweens['domChapterWrapper'] = TweenMax.fromTo(this.oDOMElements['domChapterWrapper'], 2.000,
+      { css: { opacity: 0.0 } }, { css: { opacity: 1.0 }, delay: 2.000, ease: Linear.easeNone },
+    );
+
+    const sTitleSplit = this.options.sTitle.split(' ');
+
+    // TODO: make this more dynamic (coutn lines etc)
+    const aTitleLine1Split = sTitleSplit[0].split('');
+    const aTitleLine2Split = sTitleSplit[1].split('');
+    const aTitleLine3Split = sTitleSplit[2].split('');
+
+    this.oDOMElements['domTitleWrapper'] = DOM.create('div', { className: 'testMessage2' });
+
+    for (let i = 0; i < aTitleLine1Split.length; i++) {
+      DOM.append(DOM.create('div', { className: 'hidden line1' }, aTitleLine1Split[i]), this.oDOMElements['domTitleWrapper']);
+    };
+    DOM.append(DOM.create('br', {}), this.oDOMElements['domTitleWrapper']);
+
+    for (let i = 0; i < aTitleLine2Split.length; i++) {
+      DOM.append(DOM.create('span', { className: 'hidden line2' }, aTitleLine2Split[i]), this.oDOMElements['domTitleWrapper']);
+    };
+    DOM.append(DOM.create('br', {}), this.oDOMElements['domTitleWrapper']);
+
+    for (let i = 0; i < aTitleLine3Split.length; i++) {
+      DOM.append(DOM.create('span', { className: 'hidden line3' }, aTitleLine3Split[i]), this.oDOMElements['domTitleWrapper']);
+    };
+
+    DOM.append(this.oDOMElements['domTitleWrapper'], this.shadow);
+
+    this.oTweens['domTitleWrapperLine1'] = TweenMax.fromTo(this.oDOMElements['domTitleWrapper'].querySelectorAll('.line1'), 1.500,
+      { css: { translateX: -15, opacity: 0.0 } }, { css: { translateX: 0, opacity: 1.0 }, delay: 0.300, stagger: { each: 0.050, ease: Linear.easeNone } }
+    );
+    this.oTweens['domTitleWrapperLine2'] = TweenMax.fromTo(this.oDOMElements['domTitleWrapper'].querySelectorAll('.line2'), 1.500,
+      { css: { translateX: -15, opacity: 0.0 } }, { css: { translateX: 0, opacity: 1.0 }, delay: 0.600, stagger: { each: 0.050, ease: Linear.easeNone } }
+    );
+    this.oTweens['domTitleWrapperLine3'] = TweenMax.fromTo(this.oDOMElements['domTitleWrapper'].querySelectorAll('.line3'), 1.500,
+      { css: { translateX: -15, opacity: 0.0 } }, { css: { translateX: 0, opacity: 1.0 }, delay: 0.900, stagger: { each: 0.050, ease: Linear.easeNone } }
+    );
   };
+
+  createComponentInstances() {};
 
   /// DESTROY ///
   destroyDomElements() {
@@ -104,14 +150,14 @@ class Home extends HTMLElement  {
 ///// WEB COMPONENT DEFINITION /////
 ////////////////////////////////////
 
-customElements.define('theu0001-pages-home', Home);
+customElements.define('theu0001-common-pages-title', Title);
 
 
 //////////////////////
 ///// ES6 EXPORT /////
 //////////////////////
 
-export default Home;
+export default Title;
 
 
 ////////////////////////////////////////////////////////////

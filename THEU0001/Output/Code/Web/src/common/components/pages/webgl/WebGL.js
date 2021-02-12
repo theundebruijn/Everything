@@ -4,7 +4,7 @@
 
 /// NPM ///
 import async from 'async';
-import { gsap, TweenMax, Sine } from 'gsap';
+import { TweenMax, Sine } from 'gsap';
 import { Loader, Resource } from 'resource-loader';
 import * as dat from 'dat.gui';
 import * as THREE from 'three';

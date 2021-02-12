@@ -2,13 +2,11 @@
 ///// IMPORTS /////
 ///////////////////
 
-/// NPM ///
-import { TweenMax, Linear } from 'gsap';
-
 /// LOCAL ///
 import { DOM } from '~/utils/DOM.js';
 import { CSS } from '~/utils/CSS.js';
-import WebGL from '~/common/components/webgl/WebGL.js';
+import Title from '~/common/components/pages/title/Title.js';
+import WebGL from '~/common/components/pages/webgl/WebGL.js';
 
 /// ASSETS CSS ///
 import sCSS from './AnotherWorldAwaits.css';
@@ -30,13 +28,6 @@ class AnotherWorldAwaits extends HTMLElement  {
 
     this.oDOMElements = Object.create(null);
     this.oComponentInstances = Object.create(null);
-
-
-
-    // TEMP
-    this.tweens = {};
-
-
 
     /// PRE-INIT CONTRUCTS ///
     this.constructShadowDOM();
@@ -76,9 +67,6 @@ class AnotherWorldAwaits extends HTMLElement  {
   __del() {
     this.destroyDomElements();
     this.destroyComponentInstances();
-
-    // TEMP
-    this.removeTweens();
   };
 
 
@@ -87,54 +75,12 @@ class AnotherWorldAwaits extends HTMLElement  {
   /////////////////////////
 
   /// CREATE ///
-  createDomElements() {
-
-    const domChapterWrapper = DOM.create('div', { className: 'testMessage hidden' }, 'part . three');
-    DOM.append(domChapterWrapper, this.shadow);
-
-    this.tweens['domChapterWrapper'] = TweenMax.fromTo(domChapterWrapper, 2.000,
-      { css: { opacity: 0.0 } }, { css: { opacity: 1.0 }, delay: 2.000, ease: Linear.easeNone }
-    );
-
-    const sTitleLine1 = 'another';
-    const sTitleLine2 = 'world';
-    const sTitleLine3 = 'awaits';
-
-    const domTitleWrapper = DOM.create('div', { className: 'testMessage2' });
-
-    const aTitleLine1Split = sTitleLine1.split('');
-    const aTitleLine2Split = sTitleLine2.split('');
-    const aTitleLine3Split = sTitleLine3.split('');
-
-    for (let i = 0; i < aTitleLine1Split.length; i++) {
-      DOM.append(DOM.create('div', { className: 'hidden line1' }, aTitleLine1Split[i]), domTitleWrapper);
-    };
-    DOM.append(DOM.create('br', {}), domTitleWrapper);
-
-    for (let i = 0; i < aTitleLine2Split.length; i++) {
-      DOM.append(DOM.create('span', { className: 'hidden line2' }, aTitleLine2Split[i]), domTitleWrapper);
-    };
-    DOM.append(DOM.create('br', {}), domTitleWrapper);
-
-    for (let i = 0; i < aTitleLine3Split.length; i++) {
-      DOM.append(DOM.create('span', { className: 'hidden line3' }, aTitleLine3Split[i]), domTitleWrapper);
-    };
-
-    DOM.append(domTitleWrapper, this.shadow);
-
-    this.tweens['domTitleWrapperLine1'] = TweenMax.fromTo(domTitleWrapper.querySelectorAll('.line1'), 1.500,
-      { css: { translateX: -15, opacity: 0.0 } }, { css: { translateX: 0, opacity: 1.0 }, delay: 0.300, stagger: { each: 0.050, ease: Linear.easeNone } }
-    );
-    this.tweens['domTitleWrapperLine2'] = TweenMax.fromTo(domTitleWrapper.querySelectorAll('.line2'), 1.500,
-      { css: { translateX: -15, opacity: 0.0 } }, { css: { translateX: 0, opacity: 1.0 }, delay: 0.600, stagger: { each: 0.050, ease: Linear.easeNone } }
-    );
-    this.tweens['domTitleWrapperLine3'] = TweenMax.fromTo(domTitleWrapper.querySelectorAll('.line3'), 1.500,
-      { css: { translateX: -15, opacity: 0.0 } }, { css: { translateX: 0, opacity: 1.0 }, delay: 0.900, stagger: { each: 0.050, ease: Linear.easeNone } }
-    );
-
-  };
+  createDomElements() {};
 
   createComponentInstances() {
+    this.oComponentInstances['_title'] = new Title({ sChapter: 'part . three', sTitle: 'another world awaits' });
+    DOM.append(this.oComponentInstances['_title'], this.shadow);
+
     this.oComponentInstances['_webgl'] = new WebGL('another-world-awaits');
     DOM.append(this.oComponentInstances['_webgl'], this.shadow);
   };
@@ -150,13 +96,6 @@ class AnotherWorldAwaits extends HTMLElement  {
     for (const _componentInstance in this.oComponentInstances) {
       this.oComponentInstances[_componentInstance] = null;
     };
-  };
-
-
-
-  // TEMP
-  removeTweens() {
-    for (const tween in this.tweens) { this.tweens[tween].kill(); };
   };
 };
 

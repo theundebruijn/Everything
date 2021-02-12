@@ -5,7 +5,8 @@
 /// LOCAL ///
 import { DOM } from '~/utils/DOM.js';
 import { CSS } from '~/utils/CSS.js';
-import WebGL from '~/common/components/webgl/WebGL.js';
+import Title from '~/common/components/pages/title/Title.js';
+import WebGL from '~/common/components/pages/webgl/WebGL.js';
 
 /// ASSETS CSS ///
 import sCSS from './TheManInTheWall.css';
@@ -49,7 +50,6 @@ class TheManInTheWall extends HTMLElement  {
   connectedCallback() { this.__init(); };
   disconnectedCallback() { this.__del(); };
 
-
   ///////////////////////////
   ///// CLASS LIFECYCLE /////
   ///////////////////////////
@@ -74,16 +74,12 @@ class TheManInTheWall extends HTMLElement  {
   /////////////////////////
 
   /// CREATE ///
-  createDomElements() {
-    // TODO: abstract into components ?
-    this.oDOMElements['testMessage'] = DOM.create('h1', { className: 'testMessage' }, 'part . two');
-    DOM.append(this.oDOMElements['testMessage'], this.shadow);
-
-    this.oDOMElements['testMessage2'] = DOM.create('h1', { className: 'testMessage2' }, 'the man in the wall');
-    DOM.append(this.oDOMElements['testMessage2'], this.shadow);
-  };
+  createDomElements() {};
 
   createComponentInstances() {
+    this.oComponentInstances['_title'] = new Title({ sChapter: 'part . two', sTitle: 'the man in the wall' });
+    DOM.append(this.oComponentInstances['_title'], this.shadow);
+
     this.oComponentInstances['_webgl'] = new WebGL('the-man-in-the-wall');
     DOM.append(this.oComponentInstances['_webgl'], this.shadow);
   };

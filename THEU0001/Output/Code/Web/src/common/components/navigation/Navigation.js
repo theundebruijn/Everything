@@ -5,14 +5,15 @@
 /// LOCAL ///
 import { FRP } from '~/utils/FRP.js';
 import { DOM } from '~/utils/DOM.js';
+import { CSS } from '~/utils/CSS.js';
 
-/// ASSETS ///
-import css from './Navigation.css';
+/// ASSETS CSS ///
+import sCSS from './Navigation.css';
 
 
-/////////////////
-///// CLASS /////
-/////////////////
+///////////////////////////////
+///// WEB COMPONENT CLASS /////
+///////////////////////////////
 
 class Navigation extends HTMLElement  {
 
@@ -20,36 +21,69 @@ class Navigation extends HTMLElement  {
   constructor() {
     super();
 
-    // web-component specific stylesheet
-    // this.styles = new CSSStyleSheet();
-    const mycss = css;
+    ///////////////////////////
+    ///// CLASS VARIABLES /////
+    ///////////////////////////
 
-    // we use the web component's shadow dom to isolate the styling
+    this.oDOMElements = Object.create(null);
+    this.oComponentInstances = Object.create(null);
+
+    /// PRE-INIT CONTRUCTS ///
+    this.constructShadowDOM();
+  };
+
+  constructShadowDOM() {
     this.shadow = this.attachShadow({ mode: 'open' });
-    // this.shadow.adoptedStyleSheets = [this.styles];
-    const domStyle = DOM.create('style');
-    domStyle.innerHTML = mycss;
 
-    DOM.append(domStyle, this.shadow);
+    const oCSSAssets = { sCSS: sCSS };
+    const _css = CSS.createDomStyleElement(oCSSAssets);
 
-    // console.log('you\'re home!!');
-  }
-
+    DOM.append(_css, this.shadow);
+  };
 
   ///////////////////////////////////
   ///// WEB COMPONENT LIFECYCLE /////
   ///////////////////////////////////
 
-  // web component lifecycle
-  connectedCallback() {
-    // TODO: abstract into subclass
-    const navigationWrapper = DOM.create('nav', { className: 'navigationWrapper' });
+  connectedCallback() { this.__init(); };
+  disconnectedCallback() { this.__del(); };
 
-    const linkHome = DOM.create('a', { className: 'link home', href: '/' }, 'home');
+
+  ///////////////////////////
+  ///// CLASS LIFECYCLE /////
+  ///////////////////////////
+
+  // triggered by the web component connectedCallback
+  // we're attached to the DOM at this point
+  __init() {
+    this.createDomElements();
+    this.createComponentInstances();
+  };
+
+  // triggered by the web component disconnectedCallback
+  // we're no longer attached to the DOM at this point
+  __del() {
+    this.destroyDomElements();
+    this.destroyComponentInstances();
+  };
+
+
+  /////////////////////////
+  ///// CLASS METHODS /////
+  /////////////////////////
+
+  /// CREATE ///
+  createDomElements() {
+
+
+    // TODO: abstract into subclass
+    this.oDOMElements['navigationWrapper'] = DOM.create('nav', { className: 'navigationWrapper' });
+
+    this.oDOMElements['linkHome'] = DOM.create('a', { className: 'link home', href: '/' }, 'home');
 
     FRP.createStream('_navigation:linkHome:onclick');
-    FRP.addEventListenerToStream('_navigation:linkHome:onclick', linkHome, 'click');
-    FRP.listenToStream('_navigation:linkHome:onclick', function(data) {
+    FRP.addEventListenerToStream('_navigation:linkHome:onclick', this.oDOMElements['linkHome'], 'click');
+    FRP.listenToStream('_navigation:linkHome:onclick', function (data) {
       data.preventDefault();
 
       // TODO: handle this in the router
@@ -60,14 +94,14 @@ class Navigation extends HTMLElement  {
       window.dispatchEvent(popStateEvent);
     });
 
-    DOM.append(linkHome, navigationWrapper);
+    DOM.append(this.oDOMElements['linkHome'], this.oDOMElements['navigationWrapper']);
 
 
-    const linkTheVeil = DOM.create('a', { className: 'link about', href: '/the-veil/' }, 'the veil');
+    this.oDOMElements['linkTheVeil'] = DOM.create('a', { className: 'link about', href: '/the-veil/' }, 'the veil');
 
     FRP.createStream('_navigation:linkTheVeil:click');
-    FRP.addEventListenerToStream('_navigation:linkTheVeil:click', linkTheVeil, 'click');
-    FRP.listenToStream('_navigation:linkTheVeil:click', function(data) {
+    FRP.addEventListenerToStream('_navigation:linkTheVeil:click', this.oDOMElements['linkTheVeil'], 'click');
+    FRP.listenToStream('_navigation:linkTheVeil:click', function (data) {
       data.preventDefault();
 
       // TODO: handle this in the router
@@ -78,14 +112,14 @@ class Navigation extends HTMLElement  {
       window.dispatchEvent(popStateEvent);
     });
 
-    DOM.append(linkTheVeil, navigationWrapper);
+    DOM.append(this.oDOMElements['linkTheVeil'], this.oDOMElements['navigationWrapper']);
 
 
-    const linkTheManInTheWall = DOM.create('a', { className: 'link about', href: '/the-man-in-the-wall/' }, 'the man in the wall');
+    this.oDOMElements['linkTheManInTheWall'] = DOM.create('a', { className: 'link about', href: '/the-man-in-the-wall/' }, 'the man in the wall');
 
     FRP.createStream('_navigation:linkTheManInTheWall:click');
-    FRP.addEventListenerToStream('_navigation:linkTheManInTheWall:click', linkTheManInTheWall, 'click');
-    FRP.listenToStream('_navigation:linkTheManInTheWall:click', function(data) {
+    FRP.addEventListenerToStream('_navigation:linkTheManInTheWall:click', this.oDOMElements['linkTheManInTheWall'], 'click');
+    FRP.listenToStream('_navigation:linkTheManInTheWall:click', function (data) {
       data.preventDefault();
 
       // TODO: handle this in the router
@@ -96,14 +130,14 @@ class Navigation extends HTMLElement  {
       window.dispatchEvent(popStateEvent);
     });
 
-    DOM.append(linkTheManInTheWall, navigationWrapper);
+    DOM.append(this.oDOMElements['linkTheManInTheWall'], this.oDOMElements['navigationWrapper']);
 
 
-    const linkAnotherWorldAwaits = DOM.create('a', { className: 'link about', href: '/another-world-awaits/' }, 'another world awaits');
+    this.oDOMElements['linkAnotherWorldAwaits'] = DOM.create('a', { className: 'link about', href: '/another-world-awaits/' }, 'another world awaits');
 
     FRP.createStream('_navigation:linkAnotherWorldAwaits:click');
-    FRP.addEventListenerToStream('_navigation:linkAnotherWorldAwaits:click', linkAnotherWorldAwaits, 'click');
-    FRP.listenToStream('_navigation:linkAnotherWorldAwaits:click', function(data) {
+    FRP.addEventListenerToStream('_navigation:linkAnotherWorldAwaits:click', this.oDOMElements['linkAnotherWorldAwaits'], 'click');
+    FRP.listenToStream('_navigation:linkAnotherWorldAwaits:click', function (data) {
       data.preventDefault();
 
       // TODO: handle this in the router
@@ -114,9 +148,9 @@ class Navigation extends HTMLElement  {
       window.dispatchEvent(popStateEvent);
     });
 
-    DOM.append(linkAnotherWorldAwaits, navigationWrapper);
+    DOM.append(this.oDOMElements['linkAnotherWorldAwaits'], this.oDOMElements['navigationWrapper']);
 
-    DOM.append(navigationWrapper, this.shadow);
+    DOM.append(this.oDOMElements['navigationWrapper'], this.shadow);
 
     // const linkHome = DOM.create('a', { className: 'link home', href: '/' }, 'let\'s go home!');
     // RxJS.create('home:linkHome:click', 'fromEvent', linkHome, 'click');
@@ -133,7 +167,22 @@ class Navigation extends HTMLElement  {
     // };
     // RxJS.subscribe('home:linkAbout:click', linkAboutClickHandler.bind(this));
     // DOM.append(linkAbout, this.shadow);
-  }
+  };
+
+  createComponentInstances() {};
+
+  /// DESTROY ///
+  destroyDomElements() {
+    for (const oDomElement in this.oDOMElements) {
+      DOM.remove(this.oDOMElements[oDomElement]);
+    };
+  };
+
+  destroyComponentInstances() {
+    for (const _componentInstance in this.oComponentInstances) {
+      this.oComponentInstances[_componentInstance] = null;
+    };
+  };
 };
 
 
@@ -141,7 +190,7 @@ class Navigation extends HTMLElement  {
 ///// WEB COMPONENT DEFINITION /////
 ////////////////////////////////////
 
-customElements.define('theu0001-navigation', Navigation);
+customElements.define('theu0001-common-navigation', Navigation);
 
 
 //////////////////////
