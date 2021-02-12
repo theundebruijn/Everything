@@ -8,6 +8,7 @@ import async from 'async';
 /// LOCAL ///
 import { FRP } from '~/utils/FRP.js';
 import { DOM } from '~/utils/DOM.js';
+import { CSS } from '~/utils/CSS.js';
 import Router from '~/utils/Router.js';
 
 import Navigation from '~/common/components/navigation/Navigation.js';
@@ -18,29 +19,15 @@ import TheVeil from '~/pages/theVeil/TheVeil.js';
 import TheManInTheWall from '~/pages/theManInTheWall/TheManInTheWall.js';
 import AnotherWorldAwaits from '~/pages/anotherWorldAwaits/AnotherWorldAwaits.js';
 
-/// ASSETS ///
+/// ASSETS CSS ///
+import sCSS from './Main.css';
 import saoldisplay_semibold from './assets/fonts/SaolDisplay-Semibold.woff2';
 import lausanne_550 from './assets/fonts/Lausanne-550.woff2';
 
-// css
-import css from './Main.css';
 
-// TODO: abstract this into a little 'css loader' method
-// note we add the '/' to make sure nested static pages refer to the assets folder in the _dist/ root
-let mycss = css.replace(/.\/assets\/fonts\/SaolDisplay-Semibold.woff2/g, '/' + saoldisplay_semibold);
-mycss = mycss.replace(/.\/assets\/fonts\/Lausanne-550.woff2/g, '/' + lausanne_550);
-
-// TODO: see if there's a better way to do this
-// TODO: also add load-checking for webfonts
-const style = document.createElement('style');
-// style.textContent = mycss;
-style.textContent = mycss;
-document.head.append(style);
-
-
-/////////////////
-///// CLASS /////
-/////////////////
+////////////////
+///// MAIN /////
+////////////////
 
 class Main {
 
@@ -50,6 +37,8 @@ class Main {
     ///////////////////////////
     ///// CLASS VARIABLES /////
     ///////////////////////////
+
+    this.oComponentInstances = Object.create(null);
 
     // store the currently active page as a string (s[...])
     this.sCurrActivePage = null;
@@ -66,41 +55,53 @@ class Main {
     // this gets null'ed and repurposed each page transition
     this.cActivePage = null;
 
+    /// PRE-INIT CONTRUCTS ///
+    this.constructCSS();
 
-    /// CONSTRUCTOR CONTINUED ///
-    const domIcon = document.querySelector('link[rel="icon"]');
-    const domAppleTouchIcon = document.querySelector('link[rel="apple-touch-icon"]');
-
-    FRP.createStream('window:onfocus');
-    FRP.addEventListenerToStream('window:onfocus', window, 'focus');
-
-    FRP.listenToStream('window:onfocus', function (data) {
-      domIcon.setAttribute('href', '/static/icons/favicon-giantesque.png');
-      domAppleTouchIcon.setAttribute('href', '/static/icons/favicon-giantesque.png');
-    });
-
-    FRP.createStream('window:onblur');
-    FRP.addEventListenerToStream('window:onblur', window, 'blur');
-
-    FRP.listenToStream('window:onblur', function (data) {
-      domIcon.setAttribute('href', '/static/icons/favicon-giantesque_inactive.png');
-      domAppleTouchIcon.setAttribute('href', '/static/icons/favicon-giantesque_inactive.png');
-    });
-
-    const _navigation = new Navigation();
-    document.body.appendChild(_navigation);
-
-    this._container = new Container();
-    document.body.appendChild(this._container);
-
-    const _router = new Router();
-    this.handleRouterEvents();
+    /// INIT (NON WEB COMPONENT) ///
+    this.__init();
   };
+
+  constructCSS() {
+    const oCSSAssets = {
+      sCSS: sCSS,
+      fonts: {
+        saoldisplay_semibold: { sPath: './assets/fonts/SaolDisplay-Semibold.woff2', sBuildPath: saoldisplay_semibold },
+        lausanne_550: { sPath: './assets/fonts/Lausanne-550.woff2', sBuildPath: lausanne_550 },
+      },
+    };
+
+    const _css = CSS.createDomStyleElement(oCSSAssets);
+    DOM.append(_css, document.head);
+  };
+
+  ///////////////////////////
+  ///// CLASS LIFECYCLE /////
+  ///////////////////////////
+
+  __init() {
+    this.createComponentInstances();
+    this.handleRouterEvents();
+    this.handleWindowBlurEvents();
+  };
+
 
   /////////////////////////
   ///// CLASS METHODS /////
   /////////////////////////
 
+  /// CREATE ///
+  createComponentInstances() {
+    this.oComponentInstances['_navigation'] = new Navigation();
+    document.body.appendChild(this.oComponentInstances['_navigation']);
+
+    this.oComponentInstances['_container'] = new Container();
+    document.body.appendChild(this.oComponentInstances['_container']);
+
+    this.oComponentInstances['_router'] = new Router();
+  };
+
+  /// EVENT HANDLERS
   handleRouterEvents() {
 
     FRP.listenToStream('router:onNewPage', function (sPageName) {
@@ -131,6 +132,29 @@ class Main {
     }.bind(this));
   };
 
+  handleWindowBlurEvents() {
+
+    const domIcon = document.querySelector('link[rel="icon"]');
+    const domAppleTouchIcon = document.querySelector('link[rel="apple-touch-icon"]');
+
+    FRP.createStream('window:onfocus');
+    FRP.addEventListenerToStream('window:onfocus', window, 'focus');
+
+    FRP.listenToStream('window:onfocus', function (data) {
+      domIcon.setAttribute('href', '/static/icons/favicon-giantesque.png');
+      domAppleTouchIcon.setAttribute('href', '/static/icons/favicon-giantesque.png');
+    });
+
+    FRP.createStream('window:onblur');
+    FRP.addEventListenerToStream('window:onblur', window, 'blur');
+
+    FRP.listenToStream('window:onblur', function (data) {
+      domIcon.setAttribute('href', '/static/icons/favicon-giantesque_inactive.png');
+      domAppleTouchIcon.setAttribute('href', '/static/icons/favicon-giantesque_inactive.png');
+    });
+  };
+
+  /// CLASS LOGIC ///
   removeActivePage(fSeriesCallback) {
 
     console.log('removeActivePage: ' + this.sCurrActivePage);
@@ -140,7 +164,7 @@ class Main {
 
       // cleanup
       this.cActivePage = null;
-      DOM.empty(this._container.domPageWrapper);
+      DOM.empty(this.oComponentInstances['_container'].domPageWrapper);
 
       // continue
       fSeriesCallback();
@@ -160,7 +184,7 @@ class Main {
     else if (this.sQueuedPage === 'another-world-awaits') { this.cActivePage = new AnotherWorldAwaits(); }
     else if (this.sQueuedPage === '404') { this.cActivePage = new Error('404'); };
 
-    DOM.append(this.cActivePage, this._container.domPageWrapper);
+    DOM.append(this.cActivePage, this.oComponentInstances['_container'].domPageWrapper);
     DOM.updateMetadata(this.sQueuedPage);
 
     fSeriesCallback();

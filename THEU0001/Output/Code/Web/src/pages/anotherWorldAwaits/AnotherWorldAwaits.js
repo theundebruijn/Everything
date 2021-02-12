@@ -7,15 +7,16 @@ import { TweenMax, Linear } from 'gsap';
 
 /// LOCAL ///
 import { DOM } from '~/utils/DOM.js';
+import { CSS } from '~/utils/CSS.js';
 import WebGL from '~/common/components/webgl/WebGL.js';
 
-/// ASSETS ///
-import css from './AnotherWorldAwaits.css';
+/// ASSETS CSS ///
+import sCSS from './AnotherWorldAwaits.css';
 
 
-/////////////////
-///// CLASS /////
-/////////////////
+///////////////////////////////
+///// WEB COMPONENT CLASS /////
+///////////////////////////////
 
 class AnotherWorldAwaits extends HTMLElement  {
 
@@ -23,15 +24,31 @@ class AnotherWorldAwaits extends HTMLElement  {
   constructor() {
     super();
 
-    // we use the web component's shadow dom to isolate the styling
-    this.shadow = this.attachShadow({ mode: 'open' });
+    ///////////////////////////
+    ///// CLASS VARIABLES /////
+    ///////////////////////////
 
-    const domStyle = DOM.create('style');
-    domStyle.innerHTML = css;
+    this.oDOMElements = Object.create(null);
+    this.oComponentInstances = Object.create(null);
 
+
+
+    // TEMP
     this.tweens = {};
 
-    DOM.append(domStyle, this.shadow);
+
+
+    /// PRE-INIT CONTRUCTS ///
+    this.constructShadowDOM();
+  };
+
+  constructShadowDOM() {
+    this.shadow = this.attachShadow({ mode: 'open' });
+
+    const oCSSAssets = { sCSS: sCSS };
+    const _css = CSS.createDomStyleElement(oCSSAssets);
+
+    DOM.append(_css, this.shadow);
   };
 
 
@@ -39,7 +56,38 @@ class AnotherWorldAwaits extends HTMLElement  {
   ///// WEB COMPONENT LIFECYCLE /////
   ///////////////////////////////////
 
-  connectedCallback() {
+  connectedCallback() { this.__init(); };
+  disconnectedCallback() { this.__del(); };
+
+
+  ///////////////////////////
+  ///// CLASS LIFECYCLE /////
+  ///////////////////////////
+
+  // triggered by the web component connectedCallback
+  // we're attached to the DOM at this point
+  __init() {
+    this.createDomElements();
+    this.createComponentInstances();
+  };
+
+  // triggered by the web component disconnectedCallback
+  // we're no longer attached to the DOM at this point
+  __del() {
+    this.destroyDomElements();
+    this.destroyComponentInstances();
+
+    // TEMP
+    this.removeTweens();
+  };
+
+
+  /////////////////////////
+  ///// CLASS METHODS /////
+  /////////////////////////
+
+  /// CREATE ///
+  createDomElements() {
 
     const domChapterWrapper = DOM.create('div', { className: 'testMessage hidden' }, 'part . three');
     DOM.append(domChapterWrapper, this.shadow);
@@ -52,7 +100,7 @@ class AnotherWorldAwaits extends HTMLElement  {
     const sTitleLine2 = 'world';
     const sTitleLine3 = 'awaits';
 
-    const domTitleWrapper = DOM.create('div', {className: 'testMessage2'});
+    const domTitleWrapper = DOM.create('div', { className: 'testMessage2' });
 
     const aTitleLine1Split = sTitleLine1.split('');
     const aTitleLine2Split = sTitleLine2.split('');
@@ -84,22 +132,29 @@ class AnotherWorldAwaits extends HTMLElement  {
       { css: { translateX: -15, opacity: 0.0 } }, { css: { translateX: 0, opacity: 1.0 }, delay: 0.900, stagger: { each: 0.050, ease: Linear.easeNone } }
     );
 
-    const _webgl = new WebGL('another-world-awaits');
-    DOM.append(_webgl, this.shadow);
   };
 
-  disconnectedCallback() {
-    // browser calls this method when the element is removed from the document
-    // (can be called many times if an element is repeatedly added/removed)
+  createComponentInstances() {
+    this.oComponentInstances['_webgl'] = new WebGL('another-world-awaits');
+    DOM.append(this.oComponentInstances['_webgl'], this.shadow);
+  };
 
-    this.removeTweens();
+  /// DESTROY ///
+  destroyDomElements() {
+    for (const oDomElement in this.oDOMElements) {
+      DOM.remove(this.oDOMElements[oDomElement]);
+    };
+  };
+
+  destroyComponentInstances() {
+    for (const _componentInstance in this.oComponentInstances) {
+      this.oComponentInstances[_componentInstance] = null;
+    };
   };
 
 
-  ////////////////////////////////////
-  ///// WEB COMPONENT DEFINITION /////
-  ////////////////////////////////////
 
+  // TEMP
   removeTweens() {
     for (const tween in this.tweens) { this.tweens[tween].kill(); };
   };
