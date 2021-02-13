@@ -131,6 +131,17 @@ class Title extends HTMLElement {
 
   createComponentInstances() {};
 
+  /// ANIMATE ///
+  intro(fCB) {
+    console.log('Title : ' + 'intro complete');
+    fCB();
+  };
+
+  outro(fCB) {
+    console.log('Title : ' + 'outro complete');
+    fCB();
+  };
+
   /// DESTROY ///
   destroyDomElements() {
     for (const oDomElement in this.oDOMElements) {

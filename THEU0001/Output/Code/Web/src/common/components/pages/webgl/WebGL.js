@@ -144,6 +144,17 @@ class WebGL extends HTMLElement {
   ///// CLASS METHODS /////
   /////////////////////////
 
+  /// ANIMATE ///
+  intro(fCB) {
+    console.log('WebGL : ' + 'intro complete');
+    fCB();
+  };
+
+  outro(fCB) {
+    console.log('WebGl : ' + 'outro complete');
+    fCB();
+  };
+
   createCanvas() {
 
     // TODO: move this to an animation handler

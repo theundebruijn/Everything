@@ -98,6 +98,17 @@ class Container extends HTMLElement  {
     DOM.append(this.oComponentInstances['_webglBackground'], this.oDOMElements['domBackgroundWrapper']);
   };
 
+  /// ANIMATE ///
+  intro(fCB) {
+    console.log('Container : ' + 'intro complete');
+    fCB();
+  };
+
+  outro(fCB) {
+    console.log('Container : ' + 'outro complete');
+    fCB();
+  };
+
   /// DESTROY ///
   destroyDomElements() {
     for (const oDomElement in this.oDOMElements) {

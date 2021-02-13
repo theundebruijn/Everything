@@ -2,7 +2,7 @@
 ///// IMPORTS /////
 ///////////////////
 
-/// LOCAL ///
+/// NPM ///
 import flyd from 'flyd';
 
 

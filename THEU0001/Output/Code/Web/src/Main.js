@@ -83,6 +83,8 @@ class Main {
     this.createComponentInstances();
     this.handleRouterEvents();
     this.handleWindowBlurEvents();
+
+    this.intro();
   };
 
 
@@ -99,6 +101,16 @@ class Main {
     document.body.appendChild(this.oComponentInstances['_container']);
 
     this.oComponentInstances['_router'] = new Router();
+  };
+
+  /// ANIMATE ///
+  intro() {
+    async.parallel([
+      function (fCB) { this.oComponentInstances['_navigation'].intro(fCB); }.bind(this),
+      function (fCB) { this.oComponentInstances['_container'].intro(fCB); }.bind(this),
+    ], function (err, results) {
+      console.log('Main : ' + 'intro complete');
+    }.bind(this));
   };
 
   /// EVENT HANDLERS
@@ -118,8 +130,8 @@ class Main {
         this.bIsTransitioning = true;
 
         async.series([
-          function (fSeriesCallback) { this.removeActivePage(fSeriesCallback); }.bind(this),
-          function (fSeriesCallback) { this.createNewPage(fSeriesCallback); }.bind(this),
+          function (fCB) { this.removeActivePage(fCB); }.bind(this),
+          function (fCB) { this.createNewPage(fCB); }.bind(this),
         ], function (err, results) {
 
           this.sCurrActivePage = this.sQueuedPage;
@@ -150,30 +162,36 @@ class Main {
   };
 
   /// CLASS LOGIC ///
-  removeActivePage(fSeriesCallback) {
+  removeActivePage(fCB) {
 
     console.log('removeActivePage: ' + this.sCurrActivePage);
 
     // happens on first page load
-    if (this.sCurrActivePage === null) { fSeriesCallback(); } else {
+    if (this.sCurrActivePage === null) { fCB(); } else {
 
-      // cleanup
-      this.cActivePage = null;
-      DOM.empty(this.oComponentInstances['_container'].oDOMElements.domPageWrapper);
+      async.series([
+        function (fCB) { this.cActivePage.outro(fCB); }.bind(this),
+      ], function (err, results) {
+        // cleanup
+        this.cActivePage = null;
+        // this 'recursively' triggers the disconnectedCallbacks
+        DOM.empty(this.oComponentInstances['_container'].oDOMElements.domPageWrapper);
 
-      // continue
-      fSeriesCallback();
+        // continue
+        fCB();
+      }.bind(this));
     };
-
   };
 
-  createNewPage(fSeriesCallback) {
+  createNewPage(fCB) {
 
     console.log('createNewPage: ' + this.sQueuedPage);
 
 
 
-    if (this.sQueuedPage === 'home') { this.cActivePage = new Home(); }
+    if (this.sQueuedPage === 'home') {
+      this.cActivePage = new Home();
+    }
     else if (this.sQueuedPage === 'the-veil') { this.cActivePage = new TheVeil(); }
     else if (this.sQueuedPage === 'the-man-in-the-wall') { this.cActivePage = new TheManInTheWall(); }
     else if (this.sQueuedPage === 'another-world-awaits') { this.cActivePage = new AnotherWorldAwaits(); }
@@ -182,7 +200,11 @@ class Main {
     DOM.append(this.cActivePage, this.oComponentInstances['_container'].oDOMElements.domPageWrapper);
     DOM.updateMetadata(this.sQueuedPage);
 
-    fSeriesCallback();
+    async.series([
+      function (fCB) { this.cActivePage.intro(fCB); }.bind(this),
+    ], function (err, results) {
+      fCB();
+    }.bind(this));
   };
 };
 

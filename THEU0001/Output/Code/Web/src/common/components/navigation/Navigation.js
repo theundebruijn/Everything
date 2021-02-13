@@ -139,6 +139,17 @@ class Navigation extends HTMLElement  {
 
   createComponentInstances() {};
 
+  /// ANIMATE ///
+  intro(fCB) {
+    console.log('Navigation : ' + 'intro complete');
+    fCB();
+  };
+
+  outro(fCB) {
+    console.log('Navigation : ' + 'outro complete');
+    fCB();
+  };
+
   /// DESTROY ///
   destroyDomElements() {
     for (const oDomElement in this.oDOMElements) {

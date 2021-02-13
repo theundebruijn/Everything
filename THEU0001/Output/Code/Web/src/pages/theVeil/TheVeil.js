@@ -2,6 +2,9 @@
 ///// IMPORTS /////
 ///////////////////
 
+/// NPM ///
+import async from 'async';
+
 /// LOCAL ///
 import { DOM } from '~/utils/DOM.js';
 import { CSS } from '~/utils/CSS.js';
@@ -81,6 +84,29 @@ class TheVeil extends HTMLElement  {
 
     this.oComponentInstances['_webgl'] = new WebGL('the-veil');
     DOM.append(this.oComponentInstances['_webgl'], this.shadow);
+  };
+
+  /// ANIMATE ///
+  intro(fCB) {
+    async.parallel([
+      function (fCB) { this.oComponentInstances['_title'].intro(fCB); }.bind(this),
+      function (fCB) { this.oComponentInstances['_webgl'].intro(fCB); }.bind(this),
+    ], function (err, results) {
+      console.log('TheVeil : ' + 'intro complete');
+
+      fCB();
+    }.bind(this));
+  };
+
+  outro(fCB) {
+    async.parallel([
+      function (fCB) { this.oComponentInstances['_title'].outro(fCB); }.bind(this),
+      function (fCB) { this.oComponentInstances['_webgl'].outro(fCB); }.bind(this),
+    ], function (err, results) {
+      console.log('TheVeil : ' + 'outro complete');
+
+      fCB();
+    }.bind(this));
   };
 
   /// DESTROY ///
