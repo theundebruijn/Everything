@@ -51,7 +51,7 @@ export default {
       include: ['**/*.css', '**/*.glsl'],
     }),
     url({
-      include: ['**/*.jpg', '**/*.png', '**/*.woff2', '**/*.glb'],
+      include: ['**/*.jpg', '**/*.woff2', '**/*.glb'],
       limit: 0,
       fileName: '../assets/[hash]-'+ global.UUID +'[extname]',
     }),
@@ -61,12 +61,17 @@ export default {
     }),
     injectProcessEnv({
       NODE_ENV: 'production',
+      BUILD_UUID: global.UUID,
     }),
     copy({
       targets: [
         {
           src: './_meta/assets/templates/index.html',
           dest: './_dist',
+        },
+        {
+          src: './_meta/assets/icons/',
+          dest: './_dist/static',
         },
         {
           src: './_meta/assets/draco/1.4.1/draco_decoder.js',

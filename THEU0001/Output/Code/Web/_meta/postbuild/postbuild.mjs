@@ -75,6 +75,8 @@ const generateStaticPage = function(callback, sPageName) {
     // update the metadata tags
     localIndexFile = localIndexFile.replace('<title></title>', '<title>'+ global.metadata[sPageName].document['title'] +'</title>');
     localIndexFile = localIndexFile.replace('"description" content="">', '"description" content="'+ global.metadata[sPageName].meta['description'] +'">');
+    localIndexFile = localIndexFile.replace('<link rel="icon" type="image/png" sizes="192x192" href="/static/icons/favicon-giantesque.png">', '<link rel="icon" type="image/png" sizes="192x192" href="/static/icons/favicon-giantesque.png?' + global.UUID+'">');
+    localIndexFile = localIndexFile.replace('<link rel="apple-touch-icon" type="image/png" href="/static/icons/favicon-giantesque.png">', '<link rel="apple-touch-icon" type="image/png" href="/static/icons/favicon-giantesque.png?' + global.UUID+'">');
     localIndexFile = localIndexFile.replace('"og:locale" content="">', '"og:locale" content="'+ global.metadata[sPageName].meta['og:locale'] +'">');
     localIndexFile = localIndexFile.replace('"og:locale:alternate" content="">', '"og:locale:alternate" content="'+ global.metadata[sPageName].meta['og:locale:alternate'] +'">');
     localIndexFile = localIndexFile.replace('"og:site_name" content="">', '"og:site_name" content="'+ global.metadata[sPageName].meta['og:site_name'] +'">');

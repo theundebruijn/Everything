@@ -41,7 +41,7 @@ export default {
       include: ['**/*.css', '**/*.glsl'],
     }),
     url({
-      include: ['**/*.jpg', '**/*.png', '**/*.woff2', '**/*.glb'],
+      include: ['**/*.jpg', '**/*.woff2', '**/*.glb'],
       limit: 0,
       fileName: '../assets/[name][extname]',
     }),
@@ -57,6 +57,10 @@ export default {
         {
           src: './_meta/assets/templates/index.html',
           dest: './_dev',
+        },
+        {
+          src: './_meta/assets/icons/',
+          dest: './_dev/static',
         },
         {
           src: './_meta/assets/draco/1.4.1/draco_decoder.js',

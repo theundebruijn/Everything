@@ -24,10 +24,6 @@ import sCSS from './Main.css';
 import saoldisplay_semibold from './assets/fonts/SaolDisplay-Semibold.woff2';
 import lausanne_550 from './assets/fonts/Lausanne-550.woff2';
 
-// TODO: see how we set these in the index file on build
-import favicon_giantesque from './assets/icons/favicon-giantesque.png';
-import favicon_giantesque_inactive from './assets/icons/favicon-giantesque_inactive.png';
-
 
 ////////////////
 ///// MAIN /////
@@ -89,11 +85,8 @@ class Main {
   __init() {
     this.createComponentInstances();
     this.handleRouterEvents();
-
-    // document.addEventListener('DOMContentLoaded', function() {
     this.handleWindowBlurEvents();
     this.intro();
-    // }.bind(this));
   };
 
 
@@ -159,13 +152,24 @@ class Main {
     const domAppleTouchIcon = document.querySelector('link[rel="apple-touch-icon"]');
 
     FRP.addStreamListener('window:onfocus', { target: window, event: 'focus' }, function(data) {
-      domIcon.setAttribute('href', favicon_giantesque);
-      domAppleTouchIcon.setAttribute('href', favicon_giantesque);
+
+      if (process.env.NODE_ENV === 'production') {
+        domIcon.setAttribute('href', '/static/icons/favicon-giantesque.png?' + process.env.BUILD_UUID);
+        domAppleTouchIcon.setAttribute('href', '/static/icons/favicon-giantesque.png?' + process.env.BUILD_UUID);
+      } else {
+        domIcon.setAttribute('href', '/static/icons/favicon-giantesque.png');
+        domAppleTouchIcon.setAttribute('href', '/static/icons/favicon-giantesque.png');
+      };
     });
 
     FRP.addStreamListener('window:onblur', { target: window, event: 'blur' }, function (data) {
-      domIcon.setAttribute('href', favicon_giantesque_inactive);
-      domAppleTouchIcon.setAttribute('href', favicon_giantesque_inactive);
+      if (process.env.NODE_ENV === 'production') {
+        domIcon.setAttribute('href', '/static/icons/favicon-giantesque_inactive.png?' + process.env.BUILD_UUID);
+        domAppleTouchIcon.setAttribute('href', '/static/icons/favicon-giantesque_inactive.png?' + process.env.BUILD_UUID);
+      } else {
+        domIcon.setAttribute('href', '/static/icons/favicon-giantesque_inactive.png');
+        domAppleTouchIcon.setAttribute('href', '/static/icons/favicon-giantesque_inactive.png');
+      };
     });
 
   };
