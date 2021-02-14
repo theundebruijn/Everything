@@ -86,47 +86,43 @@ class Title extends HTMLElement {
   /// CREATE ///
   createDomElements() {
 
-    this.oDOMElements['domChapterWrapper'] = DOM.create('div', { className: 'testMessage hidden' }, this.options.sChapter);
-    DOM.append(this.oDOMElements['domChapterWrapper'], this.shadow);
+    /// CHAPTER ///
+    // construct DOM
+    this.oDOMElements['domChapter'] = DOM.create('div', { className: 'domChapter' }, this.options.sChapter);
+    DOM.append(this.oDOMElements['domChapter'], this.shadow);
 
-    this.oTweens['domChapterWrapper'] = TweenMax.fromTo(this.oDOMElements['domChapterWrapper'], 2.000,
+    // animate DOM
+    this.oTweens['domChapter'] = TweenMax.fromTo(this.oDOMElements['domChapter'], 2.000,
       { css: { opacity: 0.0 } }, { css: { opacity: 1.0 }, delay: 2.000, ease: Linear.easeNone },
     );
 
-    const sTitleSplit = this.options.sTitle.split(' ');
-
-    // TODO: make this more dynamic (coutn lines etc)
-    const aTitleLine1Split = sTitleSplit[0].split('');
-    const aTitleLine2Split = sTitleSplit[1].split('');
-    const aTitleLine3Split = sTitleSplit[2].split('');
-
-    this.oDOMElements['domTitleWrapper'] = DOM.create('div', { className: 'testMessage2' });
-
-    for (let i = 0; i < aTitleLine1Split.length; i++) {
-      DOM.append(DOM.create('div', { className: 'hidden line1' }, aTitleLine1Split[i]), this.oDOMElements['domTitleWrapper']);
-    };
-    DOM.append(DOM.create('br', {}), this.oDOMElements['domTitleWrapper']);
-
-    for (let i = 0; i < aTitleLine2Split.length; i++) {
-      DOM.append(DOM.create('span', { className: 'hidden line2' }, aTitleLine2Split[i]), this.oDOMElements['domTitleWrapper']);
-    };
-    DOM.append(DOM.create('br', {}), this.oDOMElements['domTitleWrapper']);
-
-    for (let i = 0; i < aTitleLine3Split.length; i++) {
-      DOM.append(DOM.create('span', { className: 'hidden line3' }, aTitleLine3Split[i]), this.oDOMElements['domTitleWrapper']);
-    };
-
+    /// TITLE ///
+    // construct DOM
+    this.oDOMElements['domTitleWrapper'] = DOM.create('div', { className: 'domTitleWrapper' });
     DOM.append(this.oDOMElements['domTitleWrapper'], this.shadow);
 
-    this.oTweens['domTitleWrapperLine1'] = TweenMax.fromTo(this.oDOMElements['domTitleWrapper'].querySelectorAll('.line1'), 1.500,
-      { css: { translateX: -15, opacity: 0.0 } }, { css: { translateX: 0, opacity: 1.0 }, delay: 0.300, stagger: { each: 0.050, ease: Linear.easeNone } }
-    );
-    this.oTweens['domTitleWrapperLine2'] = TweenMax.fromTo(this.oDOMElements['domTitleWrapper'].querySelectorAll('.line2'), 1.500,
-      { css: { translateX: -15, opacity: 0.0 } }, { css: { translateX: 0, opacity: 1.0 }, delay: 0.600, stagger: { each: 0.050, ease: Linear.easeNone } }
-    );
-    this.oTweens['domTitleWrapperLine3'] = TweenMax.fromTo(this.oDOMElements['domTitleWrapper'].querySelectorAll('.line3'), 1.500,
-      { css: { translateX: -15, opacity: 0.0 } }, { css: { translateX: 0, opacity: 1.0 }, delay: 0.900, stagger: { each: 0.050, ease: Linear.easeNone } }
-    );
+    const aTitleSplit = this.options.sTitle.split('\n');
+
+    for (let i = 0; i < aTitleSplit.length; i++) {
+      this.oDOMElements['domTitleSplit' + i] = DOM.create('div', { className: 'domTitleSplit' }, aTitleSplit[i]);
+      DOM.append(this.oDOMElements['domTitleSplit' + i], this.oDOMElements['domTitleWrapper']);
+
+      const aTitleCharacterSplit = this.oDOMElements['domTitleSplit' + i].innerHTML.split('');
+      DOM.empty(this.oDOMElements['domTitleSplit' + i]);
+
+      for (let ii = 0; ii < aTitleCharacterSplit.length; ii++) {
+        if (aTitleCharacterSplit[ii] === ' ') { aTitleCharacterSplit[ii] = '\xa0'; };
+        this.oDOMElements['domTitleCharacterSplit' + ii] = DOM.create('div', { className: 'domTitleCharacterSplit' }, aTitleCharacterSplit[ii]);
+        DOM.append(this.oDOMElements['domTitleCharacterSplit' + ii], this.oDOMElements['domTitleSplit' + i]);
+      };
+    };
+
+    // animate DOM
+    for (let i = 0; i < aTitleSplit.length; i++) {
+      this.oTweens['aTitleSplit' + i] = TweenMax.fromTo(this.oDOMElements['domTitleSplit' + i].querySelectorAll('.domTitleCharacterSplit'), 1.500,
+        { css: { translateX: -15, opacity: 0.0 } }, { css: { translateX: 0, opacity: 1.0 }, delay: (i * 0.3) + 0.900, stagger: { each: 0.050, ease: Linear.easeNone } },
+      );
+    };
   };
 
   createComponentInstances() {};

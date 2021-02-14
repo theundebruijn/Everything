@@ -80,7 +80,7 @@ class TheManInTheWall extends HTMLElement  {
   createDomElements() {};
 
   createComponentInstances() {
-    this.oComponentInstances['_title'] = new Title({ sChapter: 'part . two', sTitle: 'the man in the wall' });
+    this.oComponentInstances['_title'] = new Title({ sChapter: 'part . two', sTitle: 'the man\nin the\nwall' });
     DOM.append(this.oComponentInstances['_title'], this.shadow);
 
     this.oComponentInstances['_webgl'] = new WebGL('the-man-in-the-wall');

@@ -79,7 +79,7 @@ class TheVeil extends HTMLElement  {
   createDomElements() {};
 
   createComponentInstances() {
-    this.oComponentInstances['_title'] = new Title({ sChapter: 'part . one', sTitle: 'the veil X' });
+    this.oComponentInstances['_title'] = new Title({ sChapter: 'part . one', sTitle: 'the veil' });
     DOM.append(this.oComponentInstances['_title'], this.shadow);
 
     this.oComponentInstances['_webgl'] = new WebGL('the-veil');

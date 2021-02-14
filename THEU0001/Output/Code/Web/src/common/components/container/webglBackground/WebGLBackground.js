@@ -4,7 +4,7 @@
 
 /// NPM ///
 import async from 'async';
-import { gsap, TweenMax, Sine, Linear } from 'gsap';
+import { TweenMax, Linear } from 'gsap';
 import * as THREE from 'three';
 
 /// LOCAL ///
@@ -232,9 +232,9 @@ class WebGLBackground extends HTMLElement {
     else if (sPageName === 'another-world-awaits') { oTargetColor = new THREE.Color(0x000000); }
     else if (sPageName === '404') { oTargetColor = new THREE.Color(0xfdfbf8); };
 
-    this.tweens['backgroundColor'] = TweenMax.to(this.scene.background, 4.00, {
+    this.tweens['backgroundColor'] = TweenMax.to(this.scene.background, 3.000, {
       r: oTargetColor.r, g: oTargetColor.g, b: oTargetColor.b,
-      ease: Sine.easeInOut, onComplete: function () { },
+      ease: Linear.easeNone, onComplete: function () { },
     });
   };
 
