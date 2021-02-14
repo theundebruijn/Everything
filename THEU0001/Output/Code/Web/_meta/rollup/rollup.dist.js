@@ -15,6 +15,7 @@ import { string } from 'rollup-plugin-string';
 import copy from 'rollup-plugin-copy';
 import cleaner from 'rollup-plugin-cleaner';
 import { terser } from 'rollup-plugin-terser';
+import injectProcessEnv from 'rollup-plugin-inject-process-env';
 
 // Synchonously read the UUID
 global.UUID = fs.readFileSync('./_tmp/UUID', 'utf8');
@@ -50,13 +51,16 @@ export default {
       include: ['**/*.css', '**/*.glsl'],
     }),
     url({
-      include: ['**/*.jpg', '**/*.woff2', '**/*.glb'],
+      include: ['**/*.jpg', '**/*.png', '**/*.woff2', '**/*.glb'],
       limit: 0,
       fileName: '../assets/[hash]-'+ global.UUID +'[extname]',
     }),
     json(),
     alias({
       entries: { '~': './src' },
+    }),
+    injectProcessEnv({
+      NODE_ENV: 'production',
     }),
     copy({
       targets: [

@@ -11,6 +11,7 @@ import json from '@rollup/plugin-json';
 import { string } from 'rollup-plugin-string';
 import copy from 'rollup-plugin-copy';
 import serve from 'rollup-plugin-serve';
+import injectProcessEnv from 'rollup-plugin-inject-process-env';
 
 export default {
   input: './src/Main.js',
@@ -40,7 +41,7 @@ export default {
       include: ['**/*.css', '**/*.glsl'],
     }),
     url({
-      include: ['**/*.jpg', '**/*.woff2', '**/*.glb'],
+      include: ['**/*.jpg', '**/*.png', '**/*.woff2', '**/*.glb'],
       limit: 0,
       fileName: '../assets/[name][extname]',
     }),
@@ -48,15 +49,14 @@ export default {
     alias({
       entries: { '~': './src' },
     }),
+    injectProcessEnv({
+      NODE_ENV: 'development',
+    }),
     copy({
       targets: [
         {
           src: './_meta/assets/templates/index.html',
           dest: './_dev',
-        },
-        {
-          src: './src/assets/icons/',
-          dest: './_dev/static',
         },
         {
           src: './_meta/assets/draco/1.4.1/draco_decoder.js',

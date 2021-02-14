@@ -101,7 +101,7 @@ class WebGL extends HTMLElement {
         this.createBundledEntities();
         this.createHelpers();
         this.createBundledEntityTweens();
-        this.createGui();
+        if(!process.env.NODE_ENV === 'production') this.createGui();
         this.createAnimationLoop();
 
         callback();
@@ -134,7 +134,7 @@ class WebGL extends HTMLElement {
       this.removeDomObservers();
       this.removeLoaders();
       this.removeTweens();
-      this.removeGui();
+      if (!process.env.NODE_ENV === 'production') this.removeGui();
       this.removeThree();
     }.bind(this), 10);
   };
