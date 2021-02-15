@@ -13,6 +13,8 @@ import Router from '~/utils/Router.js';
 
 import Navigation from '~/common/components/navigation/Navigation.js';
 import Container from '~/common/components/container/Container.js';
+import Loader from '~/common/components/loader/Loader.js';
+// import WebGL from '~/common/components/pages/webgl/WebGL.js';
 
 import Home from '~/pages/home/Home.js';
 import TheVeil from '~/pages/theVeil/TheVeil.js';
@@ -102,6 +104,12 @@ class Main {
     this.oComponentInstances['_container'] = new Container();
     document.body.appendChild(this.oComponentInstances['_container']);
 
+    // this.oComponentInstances['_cursor'] = new Cursor(function() {});
+    // document.body.appendChild(this.oComponentInstances['_cursor']);
+
+    this.oComponentInstances['_loader'] = new Loader({ sType: 'loader', sContent: 'loader' });
+    document.body.appendChild(this.oComponentInstances['_loader']);
+
     this.oComponentInstances['_router'] = new Router();
   };
 
@@ -110,6 +118,7 @@ class Main {
     async.parallel([
       function (fCB) { this.oComponentInstances['_navigation'].intro(fCB); }.bind(this),
       function (fCB) { this.oComponentInstances['_container'].intro(fCB); }.bind(this),
+      function (fCB) { this.oComponentInstances['_loader'].intro(fCB); }.bind(this),
     ], function (err, results) {
       console.log('Main : ' + 'intro complete');
     }.bind(this));
@@ -209,6 +218,7 @@ class Main {
         else if (this.sQueuedPage === '404') { this.cActivePage = new Error('404', fMainCB); };
       }.bind(this),
     ], function (err, results) {
+
       DOM.append(this.cActivePage, this.oComponentInstances['_container'].oDOMElements.domPageWrapper);
       DOM.updateMetadata(this.sQueuedPage);
 

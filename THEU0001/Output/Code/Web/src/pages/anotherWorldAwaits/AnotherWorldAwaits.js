@@ -88,7 +88,7 @@ class AnotherWorldAwaits extends HTMLElement  {
     this.oComponentInstances['_title'] = new Title({ sChapter: 'part . three', sTitle: 'another\nworld\nawaits' });
     DOM.append(this.oComponentInstances['_title'], this.shadow);
 
-    this.oComponentInstances['_webgl'] = new WebGL('another-world-awaits');
+    this.oComponentInstances['_webgl'] = new WebGL({sType: 'page', sContent: 'another-world-awaits'});
     DOM.append(this.oComponentInstances['_webgl'], this.shadow);
   };
 

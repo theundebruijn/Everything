@@ -88,7 +88,7 @@ class Home extends HTMLElement  {
     this.oComponentInstances['_title'] = new Title({ sChapter: 'home', sTitle: 'project\ngiantesque' });
     DOM.append(this.oComponentInstances['_title'], this.shadow);
 
-    this.oComponentInstances['_webgl'] = new WebGL('home');
+    this.oComponentInstances['_webgl'] = new WebGL({sType: 'page', sContent: 'home'});
     DOM.append(this.oComponentInstances['_webgl'], this.shadow);
   };
 

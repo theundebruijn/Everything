@@ -21,10 +21,10 @@ import sCSS from './Title.css';
 class Title extends HTMLElement {
 
   /// CONSTRUCTOR ///
-  constructor(options) {
+  constructor(oOptions) {
     super();
 
-    this.options = options;
+    this.oOptions = oOptions;
 
     ///////////////////////////
     ///// CLASS VARIABLES /////
@@ -88,7 +88,7 @@ class Title extends HTMLElement {
 
     /// CHAPTER ///
     // construct DOM
-    this.oDOMElements['domChapter'] = DOM.create('div', { className: 'domChapter' }, this.options.sChapter);
+    this.oDOMElements['domChapter'] = DOM.create('div', { className: 'domChapter' }, this.oOptions.sChapter);
     DOM.append(this.oDOMElements['domChapter'], this.shadow);
 
     // animate DOM
@@ -101,7 +101,7 @@ class Title extends HTMLElement {
     this.oDOMElements['domTitleWrapper'] = DOM.create('div', { className: 'domTitleWrapper' });
     DOM.append(this.oDOMElements['domTitleWrapper'], this.shadow);
 
-    const aTitleSplit = this.options.sTitle.split('\n');
+    const aTitleSplit = this.oOptions.sTitle.split('\n');
 
     for (let i = 0; i < aTitleSplit.length; i++) {
       this.oDOMElements['domTitleSplit' + i] = DOM.create('div', { className: 'domTitleSplit' }, aTitleSplit[i]);
