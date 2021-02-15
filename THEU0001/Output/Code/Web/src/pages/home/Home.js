@@ -22,7 +22,7 @@ import sCSS from './Home.css';
 class Home extends HTMLElement  {
 
   /// CONSTRUCTOR ///
-  constructor(fMainCB) {
+  constructor(fCB) {
     super();
 
     ///////////////////////////
@@ -35,7 +35,7 @@ class Home extends HTMLElement  {
     /// PRE-INIT CONTRUCTS ///
     this.constructShadowDOM();
 
-    this.__init(fMainCB);
+    this.__init(fCB);
   };
 
   constructShadowDOM() {
@@ -62,11 +62,16 @@ class Home extends HTMLElement  {
 
   // triggered by the web component connectedCallback
   // we're attached to the DOM at this point
-  __init(fMainCB) {
-    this.createDomElements();
-    this.createComponentInstances();
+  __init(fCB) {
 
-    fMainCB();
+    async.series([
+      function (fCB) { this.createDomElements(fCB); }.bind(this),
+      function (fCB) { this.createComponentInstances(fCB); }.bind(this),
+    ], function (err, results) {
+
+      fCB();
+    }.bind(this));
+
   };
 
   // triggered by the web component disconnectedCallback
@@ -82,24 +87,29 @@ class Home extends HTMLElement  {
   /////////////////////////
 
   /// CREATE ///
-  createDomElements() {};
+  createDomElements(fCB) { fCB(); };
 
-  createComponentInstances() {
-    this.oComponentInstances['_title'] = new Title({ sChapter: 'home', sTitle: 'project\ngiantesque' });
-    DOM.append(this.oComponentInstances['_title'], this.shadow);
+  createComponentInstances(fCB) {
 
-    this.oComponentInstances['_webgl'] = new WebGL({sType: 'page', sContent: 'home'});
-    DOM.append(this.oComponentInstances['_webgl'], this.shadow);
+    async.series([
+      function (fCB) {  this.oComponentInstances['_title'] = new Title({ sChapter: 'home', sTitle: 'project\ngiantesque' }, fCB); }.bind(this),
+      function (fCB) {  this.oComponentInstances['_webgl'] = new WebGL({ sType: 'page', sContent: 'home' }, fCB); }.bind(this),
+    ], function (err, results) {
+
+      DOM.append(this.oComponentInstances['_title'], this.shadow);
+      DOM.append(this.oComponentInstances['_webgl'], this.shadow);
+
+      fCB();
+    }.bind(this));
+
   };
 
   /// ANIMATE ///
   intro() {
-    console.log(this);
     async.parallel([
       function (fCB) { this.oComponentInstances['_title'].intro(fCB); }.bind(this),
       function (fCB) { this.oComponentInstances['_webgl'].intro(fCB); }.bind(this),
     ], function (err, results) {
-      console.log('Home : ' + 'intro complete');
 
     }.bind(this));
   };
@@ -109,7 +119,6 @@ class Home extends HTMLElement  {
       function (fCB) { this.oComponentInstances['_title'].outro(fCB); }.bind(this),
       function (fCB) { this.oComponentInstances['_webgl'].outro(fCB); }.bind(this),
     ], function (err, results) {
-      console.log('Home : ' + 'outro complete');
 
       fMainCB();
     }.bind(this));

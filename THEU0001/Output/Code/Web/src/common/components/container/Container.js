@@ -2,6 +2,9 @@
 ///// IMPORTS /////
 ///////////////////
 
+/// NPM ///
+import async from 'async';
+
 /// LOCAL ///
 import { DOM } from '~/utils/DOM.js';
 import { CSS } from '~/utils/CSS.js';
@@ -18,7 +21,7 @@ import sCSS from './Container.css';
 class Container extends HTMLElement  {
 
   /// CONSTRUCTOR ///
-  constructor() {
+  constructor(fCB) {
     super();
 
     ///////////////////////////
@@ -30,6 +33,9 @@ class Container extends HTMLElement  {
 
     /// PRE-INIT CONTRUCTS ///
     this.constructShadowDOM();
+
+
+    this.__init(fCB);
   };
 
   constructShadowDOM() {
@@ -46,7 +52,7 @@ class Container extends HTMLElement  {
   ///// WEB COMPONENT LIFECYCLE /////
   ///////////////////////////////////
 
-  connectedCallback() { this.__init(); };
+  connectedCallback() { };
   disconnectedCallback() { this.__del(); };
 
 
@@ -56,9 +62,16 @@ class Container extends HTMLElement  {
 
   // triggered by the web component connectedCallback
   // we're attached to the DOM at this point
-  __init() {
-    this.createDomElements();
-    this.createComponentInstances();
+  __init(fCB) {
+
+    async.series([
+      function (fCB) { this.createDomElements(fCB); }.bind(this),
+      function (fCB) { this.createComponentInstances(fCB); }.bind(this),
+    ], function (err, results) {
+
+      fCB();
+    }.bind(this));
+
   };
 
   // triggered by the web component disconnectedCallback
@@ -85,27 +98,35 @@ class Container extends HTMLElement  {
   /////////////////////////
 
   /// CREATE ///
-  createDomElements() {
+  createDomElements(fCB) {
     this.oDOMElements['domPageWrapper'] = DOM.create('div', { className: 'domPageWrapper' });
     DOM.append(this.oDOMElements['domPageWrapper'], this.shadow);
 
     this.oDOMElements['domBackgroundWrapper'] = DOM.create('div', { className: 'domBackgroundWrapper' });
     DOM.append(this.oDOMElements['domBackgroundWrapper'], this.shadow);
+
+    fCB();
   };
 
-  createComponentInstances() {
-    this.oComponentInstances['_webglBackground'] = new WebGLBackground();
-    DOM.append(this.oComponentInstances['_webglBackground'], this.oDOMElements['domBackgroundWrapper']);
+  createComponentInstances(fCB) {
+
+    async.series([
+      function (fCB) { this.oComponentInstances['_webglBackground'] = new WebGLBackground(fCB); }.bind(this),
+    ], function (err, results) {
+
+      DOM.append(this.oComponentInstances['_webglBackground'], this.oDOMElements['domBackgroundWrapper']);
+
+      fCB();
+    }.bind(this));
+
   };
 
   /// ANIMATE ///
   intro(fCB) {
-    console.log('Container : ' + 'intro complete');
     fCB();
   };
 
   outro(fCB) {
-    console.log('Container : ' + 'outro complete');
     fCB();
   };
 

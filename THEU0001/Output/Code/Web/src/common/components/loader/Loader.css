@@ -2,7 +2,7 @@
   position: absolute;
   z-index: 1;
   bottom: 0px;
-  right: 25px;
+  right: 10px;
   width: 100px;
   height: 125px;
   pointer-events: none;
@@ -12,6 +12,8 @@
   position: absolute;
   width: 100%;
   height: 100%;
+
+  opacity: 0;
 }
 
 .domCanvas {

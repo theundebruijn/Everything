@@ -10,9 +10,10 @@ import * as THREE from 'three';
 /// LOCAL ///
 import { FRP } from '~/utils/FRP.js';
 import { DOM } from '~/utils/DOM.js';
+import { CSS } from '~/utils/CSS.js';
 
 /// ASSETS ///
-import css from './WebGLBackground.css';
+import sCSS from './WebGLBackground.css';
 
 
 /////////////////
@@ -22,16 +23,24 @@ import css from './WebGLBackground.css';
 class WebGLBackground extends HTMLElement {
 
   /// CONSTRUCTOR ///
-  constructor(page) {
+  constructor(fCB) {
     super();
 
-    this.activePage = page;
-
-    // Create and attach the Shadow DOM wrapper.
-    // NOTE: This isolates our Web Component's elements into the Shadow DOM context.
-    //       Critical to build component based systems that guarantee isolation.
-    this.domShadow = this.attachShadow({ mode: 'open' });
     this.tweens = {};
+
+    /// PRE-INIT CONTRUCTS ///
+    this.constructShadowDOM();
+
+    this.__init(fCB);
+  };
+
+  constructShadowDOM() {
+    this.shadow = this.attachShadow({ mode: 'open' });
+
+    const oCSSAssets = { sCSS: sCSS };
+    const _css = CSS.createDomStyleElement(oCSSAssets);
+
+    DOM.append(_css, this.shadow);
   };
 
 
@@ -39,7 +48,7 @@ class WebGLBackground extends HTMLElement {
   ///// WEB COMPONENT LIFECYCLE /////
   ///////////////////////////////////
 
-  connectedCallback() { this.init(); };
+  connectedCallback() {} ;
   disconnectedCallback() { this.destroy(); };
 
 
@@ -47,27 +56,9 @@ class WebGLBackground extends HTMLElement {
   ///// CLASS LIFECYCLE /////
   ///////////////////////////
 
-  init() {
+  __init(fCB) {
 
     async.series([
-      // Create style tag and attach callback for onload event.
-      // This guarantees the Shadow DOM has applied the CSS stylings.
-      // Essential for calculating canvas sizes, renderer aspect ratio etc.
-      function (callback) {
-
-        // Basic style injection into the shadow root.
-        // TODO: replace this with the CSSStyleSheet interface when browser
-        //       support for using this in a Shadow DOM context is there.
-        // LINK: https://github.com/WICG/construct-stylesheets/blob/gh-pages/explainer.md
-        const shadowStyles = css; // Apply transforms on the CSS if needed here.
-
-        const domStyle = DOM.create('style');
-        domStyle.innerHTML = shadowStyles;
-        domStyle.onload = function () { callback(); };
-        DOM.append(domStyle, this.domShadow);
-
-      }.bind(this),
-
       // As the CSS has been applied to the Shadow DOM we can start creating the WebGL environment.
       // NOTE: no need to wait on async loading of resources.
       function (callback) {
@@ -103,6 +94,8 @@ class WebGLBackground extends HTMLElement {
 
       this.handleRouterEvents();
 
+      fCB();
+
     }.bind(this));
   };
 
@@ -124,7 +117,7 @@ class WebGLBackground extends HTMLElement {
 
     // We create a wrapper element as the canvas tag doesn't resize based on '%' stylings.
     this.domCanvasWrapper = DOM.create('div', { className: 'domCanvasWrapper' });
-    DOM.append(this.domCanvasWrapper, this.domShadow);
+    DOM.append(this.domCanvasWrapper, this.shadow);
 
     this.domCanvas = DOM.create('canvas', { id: 'domCanvas', className: 'domCanvas' });
     this.domCanvasContext = this.domCanvas.getContext('webgl', { powerPreference: 'high-performance', preserveDrawingBuffer: true });

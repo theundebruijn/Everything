@@ -20,12 +20,7 @@ import { exec } from 'child_process';
 import async from 'async';
 import minify from 'html-minifier';
 import serve from 'rollup-plugin-serve';
-// import gltfPipeline from 'gltf-pipeline';
 
-// TODO: Figure out a way to get the metadata.
-// Perhaps we store it somewhere else as a JSON object and use that both here and in the DOM class.
-// import * as DOM from '../../src/utils/dom.js';
-// console.log(DOM);
 
 ///////////////////
 ///// METHODS /////
@@ -143,47 +138,6 @@ const writeModifiedDraco = function(callback) {
     if (callback) callback();
   });
 };
-
-// TODO: not needed using blenders compression ? if so no need for gltf-pipeline
-// const compressGlbFiles = function(callback) {
-//   // fs.writeFile('node_modules/three/examples/jsm/loaders/DRACOLoader.js', global.modifiedDraco, function (err) {
-//   //   if (err) throw err;
-
-//   //   if (callback) callback();
-//   // });
-
-//   fs.readdir('./_dist/assets', function(err, files) {
-//     const aGlbFiles = files.filter(function(e){
-//       return path.extname(e).toLowerCase() === '.glb';
-//     });
-
-//     for (let i = 0; i < aGlbFiles.length; i++) {
-
-//       // TODO: build async callback handling for multiuple files
-//       exec('./node_modules/.bin/gltf-pipeline -i ./_dist/assets/'+ aGlbFiles[i] +' -o ./_dist/assets/'+ aGlbFiles[i] +' -d --draco.compressionLevel 10', function() {
-
-//         callback();
-//       });
-//     };
-//   });
-// };
-
-
-// TODO: shall we make this work or not?
-// const removeAdditionalComments = function(callback) {
-//   fs.readFile('./_dist/main.bundle-'+ global.UUID +'.mjs', 'utf8', function (err, data) {
-//     if (err) { return console.log(err); }
-
-//     // data = data.replace(/\/\*![^]+\*\//g, '');
-//     data = data.replace(/\/\*[\s\S]*?\*\/|([^:]|^)\/\/.*$/g);
-
-//     fs.writeFile('./_dist/main.bundle-'+ global.UUID +'.mjs', data, function (err) {
-//       if (err) throw err;
-
-//       if (callback) callback();
-//     });
-//   });
-// };
 
 const cleanTmp = function(callback) {
   fs.rmdirSync('./_tmp', { recursive: true });

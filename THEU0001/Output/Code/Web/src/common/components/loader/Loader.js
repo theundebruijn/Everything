@@ -4,7 +4,7 @@
 
 /// NPM ///
 import async from 'async';
-import { TweenMax, Sine } from 'gsap';
+import { TweenMax, Linear, Sine } from 'gsap';
 import { Loader as ResourceLoader, Resource } from 'resource-loader';
 import * as dat from 'dat.gui';
 import * as THREE from 'three';
@@ -15,10 +15,11 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 /// LOCAL ///
 import { FRP } from '~/utils/FRP.js';
 import { DOM } from '~/utils/DOM.js';
+import { CSS } from '~/utils/CSS.js';
 
 /// ASSETS ///
-import css from './Loader.css';
-import LoaderAsset from './assets/Loader.glb';
+import sCSS from './Loader.css';
+import LoaderAsset from './assets/loader.glb';
 
 
 /////////////////
@@ -28,19 +29,13 @@ import LoaderAsset from './assets/Loader.glb';
 class Loader extends HTMLElement {
 
   /// CONSTRUCTOR ///
-  constructor(oOptions) {
+  constructor(oOptions, fCB) {
     super();
 
-    console.warn(oOptions);
     this.oOptions = oOptions;
 
     this.activePage = this.oOptions.sContent;
-    console.log(this.activePage);
 
-    // Create and attach the Shadow DOM wrapper.
-    // NOTE: This isolates our Web Component's elements into the Shadow DOM context.
-    //       Critical to build component based systems that guarantee isolation.
-    this.domShadow = this.attachShadow({ mode: 'open' });
 
     // Create holders for entities we need to keep track of.
     this.resources = {};
@@ -51,6 +46,21 @@ class Loader extends HTMLElement {
     this.entities.helpers = {};
 
     this.tweens = {};
+
+    /// PRE-INIT CONTRUCTS ///
+    this.constructShadowDOM();
+
+
+    this.__init(fCB);
+  };
+
+  constructShadowDOM() {
+    this.shadow = this.attachShadow({ mode: 'open' });
+
+    const oCSSAssets = { sCSS: sCSS };
+    const _css = CSS.createDomStyleElement(oCSSAssets);
+
+    DOM.append(_css, this.shadow);
   };
 
 
@@ -58,34 +68,16 @@ class Loader extends HTMLElement {
   ///// WEB COMPONENT LIFECYCLE /////
   ///////////////////////////////////
 
-  connectedCallback() { this.init(); };
+  connectedCallback() { };
   disconnectedCallback() { this.destroy(); };
 
   ///////////////////////////
   ///// CLASS LIFECYCLE /////
   ///////////////////////////
 
-  init() {
+  __init(fCB) {
 
     async.series([
-      // Create style tag and attach callback for onload event.
-      // This guarantees the Shadow DOM has applied the CSS stylings.
-      // Essential for calculating canvas sizes, renderer aspect ratio etc.
-      function (callback) {
-
-        // Basic style injection into the shadow root.
-        // TODO: replace this with the CSSStyleSheet interface when browser
-        //       support for using this in a Shadow DOM context is there.
-        // LINK: https://github.com/WICG/construct-stylesheets/blob/gh-pages/explainer.md
-        const shadowStyles = css; // Apply transforms on the CSS if needed here.
-
-        const domStyle = DOM.create('style');
-        domStyle.innerHTML = shadowStyles;
-        domStyle.onload = function () { callback(); };
-        DOM.append(domStyle, this.domShadow);
-
-      }.bind(this),
-
       // As the CSS has been applied to the Shadow DOM we can start creating the WebGL environment.
       // NOTE: no need to wait on async loading of resources.
       function (callback) {
@@ -118,6 +110,8 @@ class Loader extends HTMLElement {
       // Now the resources have been loaded we can compute the methods that rely on them.
       this.createLoadedEntities();
       this.createLoadedEntityTweens();
+
+      fCB();
 
 
 
@@ -159,13 +153,76 @@ class Loader extends HTMLElement {
 
   /// ANIMATE ///
   intro(fCB) {
-    console.log('Loader : ' + 'intro complete');
-    fCB();
+
+    // resume render loop
+    for (const tween in this.tweens) { this.tweens[tween].resume(); };
+    this.renderer.setAnimationLoop(this.tick.bind(this));
+
+
+    // TODO: preload the loader?
+    // if (!this.scene) { fCB();return; };
+
+    if (this.tweens['sceneIntro']) this.tweens['sceneIntro'].kill();
+    if (this.tweens['sceneOutro']) this.tweens['sceneOutro'].kill();
+
+    // this.tweens['sceneIntro'] = TweenMax.fromTo(this.scene.position, 0.900, {
+    //   y: this.scene.position.y,
+    // }, {
+    //   y: 0, ease: Sine.easeOut, onComplete: function(fCB) {
+
+    //   }.bind(this),
+    // });
+
+
+    this.tweens['sceneIntro'] = TweenMax.fromTo(this.domCanvasWrapper, 0.900, {
+      opacity: 0.0,
+    }, {
+      opacity: 1.0, ease: Linear.easeNone, onComplete: function(fCB) {
+        // fCB();
+      }.bind(this),
+    });
+
+
+
   };
 
   outro(fCB) {
-    console.log('Loader : ' + 'outro complete');
-    fCB();
+
+
+
+
+    // TODO: preload the loader?
+    // if (!this.scene) { fCB(); return; };
+
+    if (this.tweens['sceneIntro']) this.tweens['sceneIntro'].kill();
+    if (this.tweens['sceneOutro']) this.tweens['sceneOutro'].kill();
+
+    // this.tweens['sceneOutro'] = TweenMax.fromTo(this.scene.position, 0.900, {
+    //   y: this.scene.position.y,
+    // }, {
+    //   y: -100, ease: Sine.easeIn, onComplete: function(fCB) {
+    //     // fCB();
+
+    //     // kill render loop
+    //     for (const tween in this.tweens) { this.tweens[tween].pause(); };
+    //     this.renderer.setAnimationLoop(null);
+
+    //   }.bind(this),
+    // });
+
+    this.tweens['sceneIntro'] = TweenMax.fromTo(this.domCanvasWrapper, 0.900, {
+      opacity: 1.0,
+    }, {
+      opacity: 0.0, ease: Linear.easeNone, onComplete: function(fCB) {
+        // fCB();
+
+        // kill render loop
+        for (const tween in this.tweens) { this.tweens[tween].pause(); };
+        this.renderer.setAnimationLoop(null);
+      }.bind(this),
+    });
+
+
   };
 
   createCanvas() {
@@ -176,7 +233,7 @@ class Loader extends HTMLElement {
 
     // We create a wrapper element as the canvas tag doesn't resize based on '%' stylings.
     this.domCanvasWrapper = DOM.create('div', { className: 'domCanvasWrapper' });
-    DOM.append(this.domCanvasWrapper, this.domShadow);
+    DOM.append(this.domCanvasWrapper, this.shadow);
 
     this.domCanvas = DOM.create('canvas', { id: 'domCanvas', className: 'domCanvas' });
     this.domCanvasContext = this.domCanvas.getContext('webgl', { powerPreference: 'high-performance', preserveDrawingBuffer: true });
@@ -185,6 +242,7 @@ class Loader extends HTMLElement {
 
   createScene() {
     this.scene = new THREE.Scene();
+    // this.scene.position.y = -100;
     this.camera = new THREE.PerspectiveCamera(45, this.domCanvas.clientWidth / this.domCanvas.clientHeight, 1, 10000);
 
     this.camera.fov = 20;
@@ -207,7 +265,7 @@ class Loader extends HTMLElement {
     });
 
     this.renderer.setSize(this.domCanvas.clientWidth, this.domCanvas.clientHeight);
-    this.renderer.setPixelRatio(1.0);
+    this.renderer.setPixelRatio(1.5);
 
     this.renderer.outputEncoding = THREE.sRGBEncoding;
     this.renderer.toneMapping = THREE.ReinhardToneMapping;
@@ -296,9 +354,7 @@ class Loader extends HTMLElement {
     resourceLoader.use(function (resource, next) {
 
       if (resource.extension === 'glb') {
-        console.log(111);
         gltfLoader.parse(resource.data, '', function (gltf) {
-          console.log(222);
           this.resources[resource.name] = gltf;
 
           next();
@@ -362,7 +418,7 @@ class Loader extends HTMLElement {
     // update controls
     this.controls.update();
 
-    this.scene.rotation.y = this.scene.rotation.y + 0.08;
+    this.scene.rotation.y = this.scene.rotation.y + 0.035;
 
     // update dat.gui
     if (this.cameraSettingsOptions) this.cameraSettingsOptions.pos_x = this.camera.position.x;

@@ -60,37 +60,11 @@ const writeModifiedDraco = function(callback) {
   });
 };
 
-// DONE(!): let's file this issue on github (https://github.com/mrdoob/three.js/pull/19737)
-
-// we manually need to rewrite `node_modules/three/build/three.module.js` (src/core/BufferAttribute.js')
-// `this.setXY( i, _vector2$1.x, _vector2$1.y, );` -> `this.setXY( i, _vector2$1.x, _vector2$1.y);`
-// to prevent it from breaking our build in terser's strict es6 mode
-// const fixSyntaxErrorTHREE = function(callback) {
-//   fs.readFile('node_modules/three/build/three.module.js', 'utf8', function (err, data) {
-//     if (err) { return console.log(err); }
-
-//     // TODO?: should we convert this file to a class based scope?
-//     global.modifiedTHREE = data.replace('this.setXY( i, _vector2$1.x, _vector2$1.y, );', 'this.setXY( i, _vector2$1.x, _vector2$1.y );');
-
-//     if (callback) callback();
-//   });
-// };
-
-// const writeModifiedTHREE = function(callback) {
-//   fs.writeFile('node_modules/three/build/three.module.js', global.modifiedTHREE, function (err) {
-//     if (err) throw err;
-
-//     if (callback) callback();
-//   });
-// };
-
 async.series([
 
   function(callback) { generateUUID(callback); },
   function(callback) { updateDracoFilenames(callback); },
   function(callback) { writeModifiedDraco(callback); },
-  // function(callback) { fixSyntaxErrorTHREE(callback); },
-  // function(callback) { writeModifiedTHREE(callback); },
 
 ], function(err, results) {
   if (err) { return console.log(err); }
@@ -98,18 +72,6 @@ async.series([
   console.log('prebuild done.');
 
 });
-
-// const overrideDracoFileNames = function(callback) {
-//   fs.readFile('node_modules/three/examples/jsm/loaders/DRACOLoader.js', 'utf8', function (err, data) {
-//     if (err) { return console.log(err); }
-
-//     // TODO?: should we convert this file to a class based scope?
-//     global.modified = data.replace('this.setXY( i, _vector2$1.x, _vector2$1.y, );', 'this.setXY( i, _vector2$1.x, _vector2$1.y );');
-
-//     if (callback) callback();
-//   });
-// };
-
 
 
 ////////////////////////////////////////////////////////////

@@ -18,7 +18,7 @@ import sCSS from './Navigation.css';
 class Navigation extends HTMLElement  {
 
   /// CONSTRUCTOR ///
-  constructor() {
+  constructor(fCB) {
     super();
 
     ///////////////////////////
@@ -30,6 +30,9 @@ class Navigation extends HTMLElement  {
 
     /// PRE-INIT CONTRUCTS ///
     this.constructShadowDOM();
+
+
+    this.__init(fCB);
   };
 
   constructShadowDOM() {
@@ -45,7 +48,7 @@ class Navigation extends HTMLElement  {
   ///// WEB COMPONENT LIFECYCLE /////
   ///////////////////////////////////
 
-  connectedCallback() { this.__init(); };
+  connectedCallback() {  };
   disconnectedCallback() { this.__del(); };
 
 
@@ -55,9 +58,11 @@ class Navigation extends HTMLElement  {
 
   // triggered by the web component connectedCallback
   // we're attached to the DOM at this point
-  __init() {
+  __init(fCB) {
     this.createDomElements();
     this.createComponentInstances();
+
+    fCB();
   };
 
   // triggered by the web component disconnectedCallback
@@ -141,12 +146,10 @@ class Navigation extends HTMLElement  {
 
   /// ANIMATE ///
   intro(fCB) {
-    console.log('Navigation : ' + 'intro complete');
     fCB();
   };
 
   outro(fCB) {
-    console.log('Navigation : ' + 'outro complete');
     fCB();
   };
 

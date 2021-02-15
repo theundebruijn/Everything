@@ -3,6 +3,7 @@
 ///////////////////
 
 /// NPM ///
+import async from 'async';
 import { TweenMax, Linear } from 'gsap';
 
 /// LOCAL ///
@@ -21,7 +22,7 @@ import sCSS from './Title.css';
 class Title extends HTMLElement {
 
   /// CONSTRUCTOR ///
-  constructor(oOptions) {
+  constructor(oOptions, fCB) {
     super();
 
     this.oOptions = oOptions;
@@ -37,6 +38,8 @@ class Title extends HTMLElement {
 
     /// PRE-INIT CONTRUCTS ///
     this.constructShadowDOM();
+
+    this.__init(fCB);
   };
 
   constructShadowDOM() {
@@ -53,7 +56,7 @@ class Title extends HTMLElement {
   ///// WEB COMPONENT LIFECYCLE /////
   ///////////////////////////////////
 
-  connectedCallback() { this.__init(); };
+  connectedCallback() {};
   disconnectedCallback() { this.__del(); };
 
 
@@ -63,9 +66,15 @@ class Title extends HTMLElement {
 
   // triggered by the web component connectedCallback
   // we're attached to the DOM at this point
-  __init() {
-    this.createDomElements();
-    this.createComponentInstances();
+  __init(fCB) {
+
+    async.series([
+      function (fCB) { this.createDomElements(fCB); }.bind(this),
+      function (fCB) { this.createComponentInstances(fCB); }.bind(this),
+    ], function (err, results) {
+      fCB();
+    }.bind(this));
+
   };
 
   // triggered by the web component disconnectedCallback
@@ -84,7 +93,7 @@ class Title extends HTMLElement {
   /////////////////////////
 
   /// CREATE ///
-  createDomElements() {
+  createDomElements(fCB) {
 
     /// CHAPTER ///
     // construct DOM
@@ -123,18 +132,18 @@ class Title extends HTMLElement {
         { css: { translateX: -15, opacity: 0.0 } }, { css: { translateX: 0, opacity: 1.0 }, delay: (i * 0.3) + 0.900, stagger: { each: 0.050, ease: Linear.easeNone } },
       );
     };
+
+    fCB();
   };
 
-  createComponentInstances() {};
+  createComponentInstances(fCB) { fCB(); };
 
   /// ANIMATE ///
   intro(fCB) {
-    console.log('Title : ' + 'intro complete');
     fCB();
   };
 
   outro(fCB) {
-    console.log('Title : ' + 'outro complete');
     fCB();
   };
 

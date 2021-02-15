@@ -36,8 +36,6 @@ class Main {
   /// CONSTRUCTOR ///
   constructor() {
 
-    console.log(process);
-
     ///////////////////////////
     ///// CLASS VARIABLES /////
     ///////////////////////////
@@ -85,10 +83,20 @@ class Main {
   ///////////////////////////
 
   __init() {
-    this.createComponentInstances();
-    this.handleRouterEvents();
-    this.handleWindowBlurEvents();
-    this.intro();
+
+    async.series([
+      function (fCB) { this.createComponentInstances(fCB); }.bind(this),
+      function (fCB) { this.handleRouterEvents(fCB); }.bind(this),
+      function (fCB) { this.handleWindowBlurEvents(fCB); }.bind(this),
+    ], function (err, results) {}.bind(this));
+
+
+
+
+
+
+
+
   };
 
 
@@ -97,37 +105,32 @@ class Main {
   /////////////////////////
 
   /// CREATE ///
-  createComponentInstances() {
-    this.oComponentInstances['_navigation'] = new Navigation();
-    document.body.appendChild(this.oComponentInstances['_navigation']);
+  createComponentInstances(cB) {
 
-    this.oComponentInstances['_container'] = new Container();
-    document.body.appendChild(this.oComponentInstances['_container']);
-
-    // this.oComponentInstances['_cursor'] = new Cursor(function() {});
-    // document.body.appendChild(this.oComponentInstances['_cursor']);
-
-    this.oComponentInstances['_loader'] = new Loader({ sType: 'loader', sContent: 'loader' });
-    document.body.appendChild(this.oComponentInstances['_loader']);
-
-    this.oComponentInstances['_router'] = new Router();
-  };
-
-  /// ANIMATE ///
-  intro() {
     async.parallel([
-      function (fCB) { this.oComponentInstances['_navigation'].intro(fCB); }.bind(this),
-      function (fCB) { this.oComponentInstances['_container'].intro(fCB); }.bind(this),
-      function (fCB) { this.oComponentInstances['_loader'].intro(fCB); }.bind(this),
+      function (fCB) { this.oComponentInstances['_navigation'] = new Navigation(fCB); }.bind(this),
+      function (fCB) { this.oComponentInstances['_container'] = new Container(fCB); }.bind(this),
+      function (fCB) { this.oComponentInstances['_loader'] = new Loader({ sType: 'loader', sContent: 'loader' }, fCB); }.bind(this),
     ], function (err, results) {
-      console.log('Main : ' + 'intro complete');
+
+      document.body.appendChild(this.oComponentInstances['_navigation']);
+      document.body.appendChild(this.oComponentInstances['_container']);
+      document.body.appendChild(this.oComponentInstances['_loader']);
+
+      this.oComponentInstances['_router'] = new Router();
+
+      cB();
+
     }.bind(this));
+
   };
 
   /// EVENT HANDLERS
-  handleRouterEvents() {
+  handleRouterEvents(cB) {
 
     FRP.addStreamListener('router:onNewPage', null, function(sPageName) {
+
+      this.oComponentInstances['_loader'].intro(function() {});
 
       // happens on first page load
       // if (this.sCurrActivePage === null) {
@@ -153,9 +156,11 @@ class Main {
 
 
     }.bind(this));
+
+    cB();
   };
 
-  handleWindowBlurEvents() {
+  handleWindowBlurEvents(cB) {
 
     const domIcon = document.querySelector('link[rel="icon"]');
     const domAppleTouchIcon = document.querySelector('link[rel="apple-touch-icon"]');
@@ -181,18 +186,18 @@ class Main {
       };
     });
 
+    cB();
+
   };
 
   /// CLASS LOGIC ///
   removeActivePage(fCB) {
 
-    console.log('removeActivePage: ' + this.sCurrActivePage);
-
     // happens on first page load
     if (this.sCurrActivePage === null) { fCB(); } else {
 
       async.series([
-        function (fCB) { console.log(this.cActivePage); this.cActivePage.outro(fCB); }.bind(this),
+        function (fCB) { this.cActivePage.outro(fCB); }.bind(this),
       ], function (err, results) {
         // cleanup
         this.cActivePage = null;
@@ -207,8 +212,6 @@ class Main {
 
   createNewPage(fCB) {
 
-    console.log('createNewPage: ' + this.sQueuedPage);
-
     async.series([
       function (fMainCB) {
         if (this.sQueuedPage === 'home') { this.cActivePage = new Home(fMainCB); }
@@ -218,6 +221,8 @@ class Main {
         else if (this.sQueuedPage === '404') { this.cActivePage = new Error('404', fMainCB); };
       }.bind(this),
     ], function (err, results) {
+
+      this.oComponentInstances['_loader'].outro(function() {});
 
       DOM.append(this.cActivePage, this.oComponentInstances['_container'].oDOMElements.domPageWrapper);
       DOM.updateMetadata(this.sQueuedPage);
