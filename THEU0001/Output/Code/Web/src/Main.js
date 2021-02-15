@@ -183,7 +183,7 @@ class Main {
     if (this.sCurrActivePage === null) { fCB(); } else {
 
       async.series([
-        function (fCB) { this.cActivePage.outro(fCB); }.bind(this),
+        function (fCB) { console.log(this.cActivePage); this.cActivePage.outro(fCB); }.bind(this),
       ], function (err, results) {
         // cleanup
         this.cActivePage = null;
@@ -200,22 +200,20 @@ class Main {
 
     console.log('createNewPage: ' + this.sQueuedPage);
 
-
-
-    if (this.sQueuedPage === 'home') {
-      this.cActivePage = new Home();
-    }
-    else if (this.sQueuedPage === 'the-veil') { this.cActivePage = new TheVeil(); }
-    else if (this.sQueuedPage === 'the-man-in-the-wall') { this.cActivePage = new TheManInTheWall(); }
-    else if (this.sQueuedPage === 'another-world-awaits') { this.cActivePage = new AnotherWorldAwaits(); }
-    else if (this.sQueuedPage === '404') { this.cActivePage = new Error('404'); };
-
-    DOM.append(this.cActivePage, this.oComponentInstances['_container'].oDOMElements.domPageWrapper);
-    DOM.updateMetadata(this.sQueuedPage);
-
     async.series([
-      function (fCB) { this.cActivePage.intro(fCB); }.bind(this),
+      function (fMainCB) {
+        if (this.sQueuedPage === 'home') { this.cActivePage = new Home(fMainCB); }
+        else if (this.sQueuedPage === 'the-veil') { this.cActivePage = new TheVeil(fMainCB); }
+        else if (this.sQueuedPage === 'the-man-in-the-wall') { this.cActivePage = new TheManInTheWall(fMainCB); }
+        else if (this.sQueuedPage === 'another-world-awaits') { this.cActivePage = new AnotherWorldAwaits(fMainCB); }
+        else if (this.sQueuedPage === '404') { this.cActivePage = new Error('404', fMainCB); };
+      }.bind(this),
     ], function (err, results) {
+      DOM.append(this.cActivePage, this.oComponentInstances['_container'].oDOMElements.domPageWrapper);
+      DOM.updateMetadata(this.sQueuedPage);
+
+      this.cActivePage.intro();
+
       fCB();
     }.bind(this));
   };

@@ -22,7 +22,7 @@ import sCSS from './TheManInTheWall.css';
 class TheManInTheWall extends HTMLElement  {
 
   /// CONSTRUCTOR ///
-  constructor() {
+  constructor(fMainCB) {
     super();
 
     ///////////////////////////
@@ -34,6 +34,8 @@ class TheManInTheWall extends HTMLElement  {
 
     /// PRE-INIT CONTRUCTS ///
     this.constructShadowDOM();
+
+    this.__init(fMainCB);
   };
 
   constructShadowDOM() {
@@ -50,7 +52,7 @@ class TheManInTheWall extends HTMLElement  {
   ///// WEB COMPONENT LIFECYCLE /////
   ///////////////////////////////////
 
-  connectedCallback() { this.__init(); };
+  connectedCallback() {};
   disconnectedCallback() { this.__del(); };
 
   ///////////////////////////
@@ -59,9 +61,11 @@ class TheManInTheWall extends HTMLElement  {
 
   // triggered by the web component connectedCallback
   // we're attached to the DOM at this point
-  __init() {
+  __init(fMainCB) {
     this.createDomElements();
     this.createComponentInstances();
+
+    fMainCB();
   };
 
   // triggered by the web component disconnectedCallback
@@ -88,25 +92,24 @@ class TheManInTheWall extends HTMLElement  {
   };
 
   /// ANIMATE ///
-  intro(fCB) {
+  intro() {
     async.parallel([
       function (fCB) { this.oComponentInstances['_title'].intro(fCB); }.bind(this),
       function (fCB) { this.oComponentInstances['_webgl'].intro(fCB); }.bind(this),
     ], function (err, results) {
       console.log('TheManInTheWall : ' + 'intro complete');
 
-      fCB();
     }.bind(this));
   };
 
-  outro(fCB) {
+  outro(fMainCB) {
     async.parallel([
       function (fCB) { this.oComponentInstances['_title'].outro(fCB); }.bind(this),
       function (fCB) { this.oComponentInstances['_webgl'].outro(fCB); }.bind(this),
     ], function (err, results) {
       console.log('TheManInTheWall : ' + 'outro complete');
 
-      fCB();
+      fMainCB();
     }.bind(this));
   };
 

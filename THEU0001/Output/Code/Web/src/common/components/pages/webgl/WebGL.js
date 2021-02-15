@@ -214,10 +214,7 @@ class WebGL extends HTMLElement {
     });
 
     this.renderer.setSize(this.domCanvas.clientWidth, this.domCanvas.clientHeight);
-
-    // Here we brute force 20% supersampling - rather than grabbing the device native scaling
-    // Saves on performance on hidpi devices while applying a little extra anti aliasing
-    this.renderer.setPixelRatio(1.2);
+    this.renderer.setPixelRatio(1.0);
 
     this.renderer.outputEncoding = THREE.sRGBEncoding;
     this.renderer.toneMapping = THREE.ReinhardToneMapping;
@@ -257,8 +254,9 @@ class WebGL extends HTMLElement {
       this.entities.lights['pointLight'] = new THREE.PointLight(0xc4c4f5, 50000.0, 500, 2.0);
       this.entities.lights['pointLight'].position.set(20, 20, 20);
 
-      this.entities.lights['pointLight2'] = new THREE.PointLight(0xa08b68, 5000.0, 500, 2.0);
-      this.entities.lights['pointLight2'].position.set(0, 10, 20);
+      // TODO: why does this add a massive GPU load? (shadows?)
+      // this.entities.lights['pointLight2'] = new THREE.PointLight(0xa08b68, 5000.0, 500, 2.0);
+      // this.entities.lights['pointLight2'].position.set(0, 10, 20);
 
     } else if (this.activePage === 'the-veil') {
 
@@ -291,34 +289,34 @@ class WebGL extends HTMLElement {
       mirror.rotation.x = - Math.PI / 2;
       this.scene.add(mirror);
 
-
       this.entities.lights['pointLight'] = new THREE.PointLight(0xffd693, 2500.0, 500, 2.0);
       this.entities.lights['pointLight'].position.set(10, 10, 10);
 
     } else if (this.activePage === 'another-world-awaits') {
+      this.entities.lights['pointLight'] = new THREE.PointLight(0xffffff, 2500000.0, 500, 2.0);
+      this.entities.lights['pointLight'].position.set(0, 150, 0);
 
-      this.entities.lights['pointLight'] = new THREE.PointLight(0xffffff, 1500000.0, 500, 2.0);
-      this.entities.lights['pointLight'].position.set(275, 25, 0);
+      // TODO: why does this add a massive GPU load? (shadows?)
+      // this.entities.lights['pointLight2'] = new THREE.PointLight(0xffffff, 1500000.0, 500, 2.0);
+      // this.entities.lights['pointLight2'].position.set(275, 25, 0);
 
-      this.entities.lights['pointLight2'] = new THREE.PointLight(0xc4c4f5, 2500000.0, 500, 2.0);
-      this.entities.lights['pointLight2'].position.set(0, 150, 0);
     }
 
     this.entities.lights['pointLight'].castShadow = true;
     this.entities.lights['pointLight'].shadow.bias = -0.0005;
-    this.entities.lights['pointLight'].shadow.mapSize.width = 8192;
-    this.entities.lights['pointLight'].shadow.mapSize.height = 8192;
+    this.entities.lights['pointLight'].shadow.mapSize.width = 2048;
+    this.entities.lights['pointLight'].shadow.mapSize.height = 2048;
     this.entities.lights['pointLight'].updateMatrixWorld(true);
     this.scene.add(this.entities.lights['pointLight']);
 
-    if (this.entities.lights['pointLight2']) {
-      this.entities.lights['pointLight2'].castShadow = true;
-      this.entities.lights['pointLight2'].shadow.bias = -0.0005;
-      this.entities.lights['pointLight2'].shadow.mapSize.width = 8192;
-      this.entities.lights['pointLight2'].shadow.mapSize.height = 8192;
-      this.entities.lights['pointLight2'].updateMatrixWorld(true);
-      this.scene.add(this.entities.lights['pointLight2']);
-    }
+    // if (this.entities.lights['pointLight2']) {
+    //   this.entities.lights['pointLight2'].castShadow = true;
+    //   this.entities.lights['pointLight2'].shadow.bias = -0.0005;
+    //   this.entities.lights['pointLight2'].shadow.mapSize.width = 8192;
+    //   this.entities.lights['pointLight2'].shadow.mapSize.height = 8192;
+    //   this.entities.lights['pointLight2'].updateMatrixWorld(true);
+    //   this.scene.add(this.entities.lights['pointLight2']);
+    // }
   };
 
   createBundledEntityTweens() {
@@ -352,12 +350,12 @@ class WebGL extends HTMLElement {
 
     } else if (this.activePage === 'another-world-awaits') {
 
-      this.tweens['pointLightPosition'] = TweenMax.fromTo(this.entities.lights['pointLight'].position, 10, {
-        x: this.entities.lights['pointLight'].position.x,
-      }, {
-        x: -275,
-        repeat: -1, yoyo: true, ease: Sine.easeInOut, onComplete: function() {},
-      });
+      // this.tweens['pointLightPosition'] = TweenMax.fromTo(this.entities.lights['pointLight'].position, 10, {
+      //   y: this.entities.lights['pointLight'].position.y,
+      // }, {
+      //   y: 50,
+      //   repeat: -1, yoyo: true, ease: Sine.easeInOut, onComplete: function() {},
+      // });
     }
   };
 
@@ -366,8 +364,8 @@ class WebGL extends HTMLElement {
     const gltfLoader = new GLTFLoader();
     this.dracoLoader = new DRACOLoader(); // class scope reference so we can dispose it.
     this.dracoLoader.setDecoderPath('/static/draco/');
+    this.dracoLoader.setWorkerLimit(10);
     this.dracoLoader.preload();
-
     gltfLoader.setDRACOLoader(this.dracoLoader);
 
     if (this.activePage === 'home') {
@@ -383,7 +381,9 @@ class WebGL extends HTMLElement {
     resourceLoader.use(function (resource, next) {
 
       if (resource.extension === 'glb') {
+        console.log(111);
         gltfLoader.parse(resource.data, '', function (gltf) {
+          console.log(222);
           this.resources[resource.name] = gltf;
 
           next();
