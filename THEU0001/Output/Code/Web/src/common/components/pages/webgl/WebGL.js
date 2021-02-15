@@ -99,8 +99,8 @@ class WebGL extends HTMLElement {
         this.createControls();
         this.createDomObservers();
         this.createBundledEntities();
-        this.createHelpers();
         this.createBundledEntityTweens();
+        if (process.env.NODE_ENV === 'development') this.createHelpers();
         if (process.env.NODE_ENV === 'development') this.createGui();
         this.createAnimationLoop();
 
