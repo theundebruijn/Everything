@@ -144,7 +144,36 @@ class Title extends HTMLElement {
   };
 
   outro(fCB) {
-    fCB();
+
+    this.removeTweens();
+
+    // this.oTweens['outro'] = TweenMax.to(this.oDOMElements['domTitleWrapper'], 1.200, {
+    //   opacity: 0.0, ease: Linear.easeNone, onComplete: function() { fCB(); }.bind(this),
+    // });
+
+    this.oTweens['domChapterOutro'] = TweenMax.to(this.oDOMElements['domChapter'], 1.000,
+      { css: { translateX: 0, opacity: 0.0 }, ease: Linear.easeNone, onComplete: function() {}.bind(this) });
+
+
+    for (let i = 0; i < this.oDOMElements['domTitleWrapper'].children.length; i++) {
+      this.oTweens['aTitleSplitOutro' + i] = TweenMax.to(this.oDOMElements['domTitleSplit' + i], 1.200,
+        { css: { translateX: 0, opacity: 0.0 }, delay: (i*0.1), ease: Linear.easeNone, onComplete: function() {
+          if (i === this.oDOMElements['domTitleWrapper'].children.length -1) fCB();
+        }.bind(this) },
+      );
+    };
+
+
+  };
+
+
+  ///////////////////
+  ///// CLEANUP /////
+  ///////////////////
+
+
+  removeTweens() {
+    for (const tween in this.oTweens) { this.oTweens[tween].kill(); };
   };
 
   /// DESTROY ///

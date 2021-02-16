@@ -1,4 +1,6 @@
-:host {}
+:host {
+  z-index: 1;
+}
 
 .domChapter {
   position: absolute;

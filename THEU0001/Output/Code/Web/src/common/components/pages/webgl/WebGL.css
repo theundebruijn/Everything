@@ -1,4 +1,6 @@
-:host {}
+:host {
+  z-index: 0;
+}
 
 .domCanvasWrapper {
   height: 100vh;

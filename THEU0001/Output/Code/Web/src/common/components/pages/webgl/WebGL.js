@@ -4,7 +4,7 @@
 
 /// NPM ///
 import async from 'async';
-import { TweenMax, Sine } from 'gsap';
+import { TweenMax, Linear, Sine } from 'gsap';
 import { Loader as ResourceLoader, Resource } from 'resource-loader';
 import * as dat from 'dat.gui';
 import * as THREE from 'three';
@@ -52,7 +52,7 @@ class WebGL extends HTMLElement {
     this.entities.lights = {};
     this.entities.helpers = {};
 
-    this.tweens = {};
+    this.oTweens = {};
     /// PRE-INIT CONTRUCTS ///
     this.constructShadowDOM();
 
@@ -145,7 +145,19 @@ class WebGL extends HTMLElement {
   };
 
   outro(fCB) {
-    fCB();
+
+    this.removeTweens();
+
+    this.oTweens['cameraOutro'] = TweenMax.to(this.camera.position, 2.000, {
+      z: this.camera.position.z + 500, ease: Sine.easeIn, onComplete: function() {}.bind(this),
+    });
+
+    this.oTweens['domCanvasOutro'] = TweenMax.to(this.domCanvas, 0.500, {
+      opacity: 0.0, delay: 0.800, ease: Linear.easeNone, onComplete: function() {
+        fCB();
+      }.bind(this),
+    });
+
   };
 
   createCanvas() {
@@ -316,7 +328,7 @@ class WebGL extends HTMLElement {
 
     if (this.activePage === 'home') {
 
-      this.tweens['pointLightPosition'] = TweenMax.fromTo(this.entities.lights['pointLight'].position, 10, {
+      this.oTweens['pointLightPosition'] = TweenMax.fromTo(this.entities.lights['pointLight'].position, 10, {
         x: this.entities.lights['pointLight'].position.x,
       }, {
         x: -20,
@@ -325,7 +337,7 @@ class WebGL extends HTMLElement {
 
     } else if (this.activePage === 'the-veil') {
 
-      this.tweens['pointLightPosition'] = TweenMax.fromTo(this.entities.lights['pointLight'].position, 10, {
+      this.oTweens['pointLightPosition'] = TweenMax.fromTo(this.entities.lights['pointLight'].position, 10, {
         x: this.entities.lights['pointLight'].position.x,
       }, {
         x: -20,
@@ -334,7 +346,7 @@ class WebGL extends HTMLElement {
 
     } else if (this.activePage === 'the-man-in-the-wall') {
 
-      this.tweens['pointLightPosition'] = TweenMax.fromTo(this.entities.lights['pointLight'].position, 10, {
+      this.oTweens['pointLightPosition'] = TweenMax.fromTo(this.entities.lights['pointLight'].position, 10, {
         x: this.entities.lights['pointLight'].position.x,
       }, {
         x: -10,
@@ -398,6 +410,9 @@ class WebGL extends HTMLElement {
           resource.castShadow = true;
           resource.receiveShadow = true;
 
+          // needed to fade in the intro/outro methods
+          resource.material.transparent = true;
+
           // set texture map interpretation
           if (resource.material.map !== null) {
             resource.material.map.anisotropy = maxAnisotropy;
@@ -451,12 +466,12 @@ class WebGL extends HTMLElement {
     folder_renderSettings.add(renderSettingsOptions, 'pauseRenderer').name('Pause Renderer').onChange(function(value) {
       if (value === true) {
         this.controls.enabled = false;
-        for (const tween in this.tweens) { this.tweens[tween].pause(); };
+        for (const tween in this.oTweens) { this.oTweens[tween].pause(); };
         this.renderer.setAnimationLoop(null);
 
       } else {
         this.controls.enabled = true;
-        for (const tween in this.tweens) { this.tweens[tween].resume(); };
+        for (const tween in this.oTweens) { this.oTweens[tween].resume(); };
         this.renderer.setAnimationLoop(this.tick.bind(this));
       }
     }.bind(this));
@@ -609,7 +624,7 @@ class WebGL extends HTMLElement {
   };
 
   removeTweens() {
-    for (const tween in this.tweens) { this.tweens[tween].kill(); };
+    for (const tween in this.oTweens) { this.oTweens[tween].kill(); };
   };
 
   removeGui() {

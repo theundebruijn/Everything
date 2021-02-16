@@ -130,7 +130,7 @@ class Main {
 
     FRP.addStreamListener('router:onNewPage', null, function(sPageName) {
 
-      this.oComponentInstances['_loader'].intro(function() {});
+
 
       // happens on first page load
       // if (this.sCurrActivePage === null) {
@@ -192,6 +192,8 @@ class Main {
 
   /// CLASS LOGIC ///
   removeActivePage(fCB) {
+
+    this.oComponentInstances['_loader'].intro(function() {});
 
     // happens on first page load
     if (this.sCurrActivePage === null) { fCB(); } else {

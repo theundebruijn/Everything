@@ -128,7 +128,8 @@ class WebGLBackground extends HTMLElement {
     this.scene = new THREE.Scene();
     // set the background color on the scene - NOT on the renderer
     // much more efficient easing
-    this.scene.background = new THREE.Color(0xffffff); // white like the html
+    // this.scene.background = new THREE.Color(0xffffff); // white like the html
+    this.scene.background = new THREE.Color(0xff0000); // white like the html
 
     this.camera = new THREE.PerspectiveCamera(45, this.domCanvas.clientWidth / this.domCanvas.clientHeight, 1, 10000);
     this.camera.updateProjectionMatrix();
@@ -225,10 +226,10 @@ class WebGLBackground extends HTMLElement {
     else if (sPageName === 'another-world-awaits') { oTargetColor = new THREE.Color(0x000000); }
     else if (sPageName === '404') { oTargetColor = new THREE.Color(0xfdfbf8); };
 
-    this.tweens['backgroundColor'] = TweenMax.to(this.scene.background, 3.000, {
-      r: oTargetColor.r, g: oTargetColor.g, b: oTargetColor.b,
-      ease: Linear.easeNone, onComplete: function () { },
-    });
+    // this.tweens['backgroundColor'] = TweenMax.to(this.scene.background, 3.000, {
+    //   r: oTargetColor.r, g: oTargetColor.g, b: oTargetColor.b,
+    //   ease: Linear.easeNone, onComplete: function () { },
+    // });
   };
 
 

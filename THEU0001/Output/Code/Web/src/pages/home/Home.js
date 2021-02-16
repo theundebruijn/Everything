@@ -114,14 +114,11 @@ class Home extends HTMLElement  {
     }.bind(this));
   };
 
-  outro(fMainCB) {
+  outro(fCB) {
     async.parallel([
       function (fCB) { this.oComponentInstances['_title'].outro(fCB); }.bind(this),
       function (fCB) { this.oComponentInstances['_webgl'].outro(fCB); }.bind(this),
-    ], function (err, results) {
-
-      fMainCB();
-    }.bind(this));
+    ], function (err, results) { fCB(); }.bind(this));
   };
 
   /// DESTROY ///

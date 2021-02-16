@@ -174,10 +174,10 @@ class Loader extends HTMLElement {
     // });
 
 
-    this.tweens['sceneIntro'] = TweenMax.fromTo(this.domCanvasWrapper, 0.900, {
+    this.tweens['sceneIntro'] = TweenMax.fromTo(this.domCanvasWrapper, 0.300, {
       opacity: 0.0,
     }, {
-      opacity: 1.0, ease: Linear.easeNone, onComplete: function(fCB) {
+      opacity: 1.0, delay: 0.800, ease: Linear.easeNone, onComplete: function(fCB) {
         // fCB();
       }.bind(this),
     });
@@ -210,7 +210,7 @@ class Loader extends HTMLElement {
     //   }.bind(this),
     // });
 
-    this.tweens['sceneIntro'] = TweenMax.fromTo(this.domCanvasWrapper, 0.900, {
+    this.tweens['sceneOutro'] = TweenMax.fromTo(this.domCanvasWrapper, 0.600, {
       opacity: 1.0,
     }, {
       opacity: 0.0, ease: Linear.easeNone, onComplete: function(fCB) {
@@ -280,9 +280,9 @@ class Loader extends HTMLElement {
   };
 
   createControls() {
-    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-    this.controls.enableDamping = true;
-    this.controls.dampingFactor = 0.04;
+    // this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+    // this.controls.enableDamping = true;
+    // this.controls.dampingFactor = 0.04;
   };
 
   createDomObservers() {
@@ -416,18 +416,18 @@ class Loader extends HTMLElement {
 
   tick() {
     // update controls
-    this.controls.update();
+    // this.controls.update();
 
     this.scene.rotation.y = this.scene.rotation.y + 0.035;
 
     // update dat.gui
-    if (this.cameraSettingsOptions) this.cameraSettingsOptions.pos_x = this.camera.position.x;
-    if (this.cameraSettingsOptions) this.cameraSettingsOptions.pos_y = this.camera.position.y;
-    if (this.cameraSettingsOptions) this.cameraSettingsOptions.pos_z = this.camera.position.z;
+    // if (this.cameraSettingsOptions) this.cameraSettingsOptions.pos_x = this.camera.position.x;
+    // if (this.cameraSettingsOptions) this.cameraSettingsOptions.pos_y = this.camera.position.y;
+    // if (this.cameraSettingsOptions) this.cameraSettingsOptions.pos_z = this.camera.position.z;
 
-    if (this.controlsTargetOptions) this.controlsTargetOptions.x = this.controls.target.x;
-    if (this.controlsTargetOptions) this.controlsTargetOptions.y = this.controls.target.y;
-    if (this.controlsTargetOptions) this.controlsTargetOptions.z = this.controls.target.z;
+    // if (this.controlsTargetOptions) this.controlsTargetOptions.x = this.controls.target.x;
+    // if (this.controlsTargetOptions) this.controlsTargetOptions.y = this.controls.target.y;
+    // if (this.controlsTargetOptions) this.controlsTargetOptions.z = this.controls.target.z;
 
     // update animations
     const delta = this.clock.getDelta();
