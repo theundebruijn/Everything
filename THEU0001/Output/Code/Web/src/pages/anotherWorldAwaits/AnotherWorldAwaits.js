@@ -6,8 +6,10 @@
 import async from 'async';
 
 /// LOCAL ///
+import { FRP } from '~/utils/FRP.js';
 import { DOM } from '~/utils/DOM.js';
 import { CSS } from '~/utils/CSS.js';
+
 import Title from '~/common/components/pages/title/Title.js';
 import WebGL from '~/common/components/pages/webgl/WebGL.js';
 
@@ -92,7 +94,7 @@ class AnotherWorldAwaits extends HTMLElement  {
   createComponentInstances(fCB) {
 
     async.series([
-      function (fCB) {  this.oComponentInstances['_title'] = new Title({ sChapter: 'part . three', sTitle: 'another\nworld\nawaits' }, fCB); }.bind(this),
+      function (fCB) {  this.oComponentInstances['_title'] = new Title({ sChapter: 'part . three', sTitle: 'another\nworld\nawaits', sColor: '#ffffff' }, fCB); }.bind(this),
       function (fCB) {  this.oComponentInstances['_webgl'] = new WebGL({ sType: 'page', sContent: 'another-world-awaits' }, fCB); }.bind(this),
     ], function (err, results) {
 
@@ -107,6 +109,10 @@ class AnotherWorldAwaits extends HTMLElement  {
 
   /// ANIMATE ///
   intro() {
+
+    const _stream = FRP.getStream('_webglBackground:onBackgroundChange');
+    _stream({ sColor: 0x0E0E14, nDuration: 3.500 });
+
     async.parallel([
       function (fCB) { this.oComponentInstances['_webgl'].intro(fCB); }.bind(this),
       function (fCB) { this.oComponentInstances['_title'].intro(fCB); }.bind(this),

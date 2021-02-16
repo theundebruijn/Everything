@@ -6,8 +6,10 @@
 import async from 'async';
 
 /// LOCAL ///
+import { FRP } from '~/utils/FRP.js';
 import { DOM } from '~/utils/DOM.js';
 import { CSS } from '~/utils/CSS.js';
+
 import Title from '~/common/components/pages/title/Title.js';
 import WebGL from '~/common/components/pages/webgl/WebGL.js';
 
@@ -55,6 +57,7 @@ class TheManInTheWall extends HTMLElement  {
   connectedCallback() {};
   disconnectedCallback() { this.__del(); };
 
+
   ///////////////////////////
   ///// CLASS LIFECYCLE /////
   ///////////////////////////
@@ -91,7 +94,7 @@ class TheManInTheWall extends HTMLElement  {
   createComponentInstances(fCB) {
 
     async.series([
-      function (fCB) {  this.oComponentInstances['_title'] = new Title({ sChapter: 'part . two', sTitle: 'the man\nin the\nwall' }, fCB); }.bind(this),
+      function (fCB) {  this.oComponentInstances['_title'] = new Title({ sChapter: 'part . two', sTitle: 'the man\nin the\nwall', sColor: '#ffffff' }, fCB); }.bind(this),
       function (fCB) {  this.oComponentInstances['_webgl'] = new WebGL({ sType: 'page', sContent: 'the-man-in-the-wall' }, fCB); }.bind(this),
     ], function (err, results) {
 
@@ -106,6 +109,10 @@ class TheManInTheWall extends HTMLElement  {
 
   /// ANIMATE ///
   intro() {
+
+    const _stream = FRP.getStream('_webglBackground:onBackgroundChange');
+    _stream({ sColor: 0xa08b68, nDuration: 3.500 });
+
     async.parallel([
       function (fCB) { this.oComponentInstances['_webgl'].intro(fCB); }.bind(this),
       function (fCB) { this.oComponentInstances['_title'].intro(fCB); }.bind(this),

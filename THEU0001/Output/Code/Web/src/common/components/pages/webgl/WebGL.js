@@ -141,6 +141,22 @@ class WebGL extends HTMLElement {
 
   /// ANIMATE ///
   intro(fCB) {
+    let targetX;
+    let targetY;
+    let targetZ;
+
+    if (this.activePage === 'home') { targetX = 128; targetY = 0; targetZ = 21.5; }
+    if (this.activePage === 'the-veil') { targetX = -97; targetY = 13; targetZ = 30; }
+    if (this.activePage === 'the-man-in-the-wall') { targetX = -41; targetY = 45; targetZ = 58; }
+    if (this.activePage === 'another-world-awaits') { targetX = -1480; targetY = 1457; targetZ = 1859; }
+
+    this.oTweens['cameraIntroX'] = TweenMax.fromTo(this.camera.position, 2.000, {
+      x: targetX / 3, y: targetY / 3, z: targetZ / 3,
+    }, {
+      x: targetX, y: targetY, z: targetZ, ease: Sine.easeOut, onComplete: function(fCB) {
+
+      }.bind(this),
+    });
 
     this.oTweens['domCanvasIntro'] = TweenMax.to(this.domCanvas, 2.000, {
       opacity: 1.0, delay: 0.00, ease: Linear.easeNone, onComplete: function() {
@@ -155,19 +171,19 @@ class WebGL extends HTMLElement {
     this.removeTweens();
 
     this.oTweens['cameraOutroX'] = TweenMax.to(this.camera.position, 2.000, {
-      x: this.camera.position.x * 5, ease: Sine.easeIn, onComplete: function() {}.bind(this),
+      x: this.camera.position.x * 3, ease: Sine.easeIn, onComplete: function() {}.bind(this),
     });
 
     this.oTweens['cameraOutroY'] = TweenMax.to(this.camera.position, 2.000, {
-      y: this.camera.position.y * 5, ease: Sine.easeIn, onComplete: function() {}.bind(this),
+      y: this.camera.position.y * 3, ease: Sine.easeIn, onComplete: function() {}.bind(this),
     });
 
     this.oTweens['cameraOutroZ'] = TweenMax.to(this.camera.position, 2.000, {
-      z: this.camera.position.z * 5, ease: Sine.easeIn, onComplete: function() {}.bind(this),
+      z: this.camera.position.z * 3, ease: Sine.easeIn, onComplete: function() {}.bind(this),
     });
 
     this.oTweens['domCanvasOutro'] = TweenMax.to(this.domCanvas, 0.500, {
-      opacity: 0.0, delay: 0.800, ease: Linear.easeNone, onComplete: function() {
+      opacity: 0.0, delay: 0.500, ease: Linear.easeNone, onComplete: function() {
         fCB();
       }.bind(this),
     });
@@ -192,31 +208,10 @@ class WebGL extends HTMLElement {
   createScene() {
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(45, this.domCanvas.clientWidth / this.domCanvas.clientHeight, 1, 10000);
-
-    if (this.activePage === 'home') {
-      this.camera.fov = 20;
-      this.camera.position.x = 90;
-      this.camera.position.y = 0;
-      this.camera.position.z = 15;
-
-    } else if (this.activePage === 'the-veil') {
-      this.camera.fov = 20;
-      this.camera.position.x = 0;
-      this.camera.position.y = 0;
-      this.camera.position.z = 50;
-
-    } else if (this.activePage === 'the-man-in-the-wall') {
-      this.camera.fov = 20;
-      this.camera.position.x = -20;
-      this.camera.position.y = 30;
-      this.camera.position.z = 15;
-
-    } else if (this.activePage === 'another-world-awaits') {
-      this.camera.fov = 60;
-      this.camera.position.x = -300;
-      this.camera.position.y = 300;
-      this.camera.position.z = 600;
-    }
+    this.camera.fov = 20;
+    this.camera.position.x = 0;
+    this.camera.position.y = 0;
+    this.camera.position.z = 0;
 
     this.camera.updateProjectionMatrix();
   };
@@ -270,7 +265,7 @@ class WebGL extends HTMLElement {
     // LINK: https://threejs.org/docs/#api/en/lights/shadows/LightShadow.bias
 
     if (this.activePage === 'home') {
-      this.entities.lights['pointLight'] = new THREE.PointLight(0xc4c4f5, 50000.0, 500, 2.0);
+      this.entities.lights['pointLight'] = new THREE.PointLight(0xffffff, 50000.0, 500, 2.0);
       this.entities.lights['pointLight'].position.set(20, 20, 20);
 
       // TODO: why does this add a massive GPU load? (shadows?)
@@ -291,7 +286,7 @@ class WebGL extends HTMLElement {
       mirror.rotation.x = -0.006; // compensate for scene inaccuracy
       this.scene.add(mirror);
 
-      this.entities.lights['pointLight'] = new THREE.PointLight(0xffd693, 3500.0, 500, 2.0);
+      this.entities.lights['pointLight'] = new THREE.PointLight(0xffffff, 3500.0, 500, 2.0);
       this.entities.lights['pointLight'].position.set(20, 20, 10);
 
     } else if (this.activePage === 'the-man-in-the-wall') {
@@ -308,7 +303,7 @@ class WebGL extends HTMLElement {
       mirror.rotation.x = - Math.PI / 2;
       this.scene.add(mirror);
 
-      this.entities.lights['pointLight'] = new THREE.PointLight(0xffd693, 2500.0, 500, 2.0);
+      this.entities.lights['pointLight'] = new THREE.PointLight(0xffffff, 2500.0, 500, 2.0);
       this.entities.lights['pointLight'].position.set(10, 10, 10);
 
     } else if (this.activePage === 'another-world-awaits') {
