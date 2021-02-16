@@ -96,17 +96,10 @@ class Title extends HTMLElement {
   createDomElements(fCB) {
 
     /// CHAPTER ///
-    // construct DOM
     this.oDOMElements['domChapter'] = DOM.create('div', { className: 'domChapter' }, this.oOptions.sChapter);
     DOM.append(this.oDOMElements['domChapter'], this.shadow);
 
-    // animate DOM
-    this.oTweens['domChapter'] = TweenMax.fromTo(this.oDOMElements['domChapter'], 2.000,
-      { css: { opacity: 0.0 } }, { css: { opacity: 1.0 }, delay: 2.000, ease: Linear.easeNone },
-    );
-
     /// TITLE ///
-    // construct DOM
     this.oDOMElements['domTitleWrapper'] = DOM.create('div', { className: 'domTitleWrapper' });
     DOM.append(this.oDOMElements['domTitleWrapper'], this.shadow);
 
@@ -126,12 +119,6 @@ class Title extends HTMLElement {
       };
     };
 
-    // animate DOM
-    for (let i = 0; i < aTitleSplit.length; i++) {
-      this.oTweens['aTitleSplit' + i] = TweenMax.fromTo(this.oDOMElements['domTitleSplit' + i].querySelectorAll('.domTitleCharacterSplit'), 1.500,
-        { css: { translateX: -15, opacity: 0.0 } }, { css: { translateX: 0, opacity: 1.0 }, delay: (i * 0.3) + 0.900, stagger: { each: 0.050, ease: Linear.easeNone } },
-      );
-    };
 
     fCB();
   };
@@ -140,7 +127,25 @@ class Title extends HTMLElement {
 
   /// ANIMATE ///
   intro(fCB) {
-    fCB();
+
+    /// CHAPTER ///
+    this.oTweens['domChapter'] = TweenMax.fromTo(this.oDOMElements['domChapter'], 2.000,
+      { css: { opacity: 0.0 } }, { css: { opacity: 1.0 }, delay: 2.000, ease: Linear.easeNone, onComplete() {
+        fCB();
+      }},
+    );
+
+    /// TITLE ///
+    const aTitleSplit = this.oOptions.sTitle.split('\n');
+
+    for (let i = 0; i < aTitleSplit.length; i++) {
+      this.oTweens['aTitleSplit' + i] = TweenMax.fromTo(this.oDOMElements['domTitleSplit' + i].querySelectorAll('.domTitleCharacterSplit'), 1.500,
+        { css: { translateX: -15, opacity: 0.0 } }, { css: { translateX: 0, opacity: 1.0 }, delay: (i * 0.3) + 0.900, stagger: { each: 0.050, ease: Linear.easeNone } },
+      );
+    };
+
+
+
   };
 
   outro(fCB) {
@@ -151,12 +156,12 @@ class Title extends HTMLElement {
     //   opacity: 0.0, ease: Linear.easeNone, onComplete: function() { fCB(); }.bind(this),
     // });
 
-    this.oTweens['domChapterOutro'] = TweenMax.to(this.oDOMElements['domChapter'], 1.000,
+    this.oTweens['domChapterOutro'] = TweenMax.to(this.oDOMElements['domChapter'], 0.500,
       { css: { translateX: 0, opacity: 0.0 }, ease: Linear.easeNone, onComplete: function() {}.bind(this) });
 
 
     for (let i = 0; i < this.oDOMElements['domTitleWrapper'].children.length; i++) {
-      this.oTweens['aTitleSplitOutro' + i] = TweenMax.to(this.oDOMElements['domTitleSplit' + i], 1.200,
+      this.oTweens['aTitleSplitOutro' + i] = TweenMax.to(this.oDOMElements['domTitleSplit' + i], 0.600,
         { css: { translateX: 0, opacity: 0.0 }, delay: (i*0.1), ease: Linear.easeNone, onComplete: function() {
           if (i === this.oDOMElements['domTitleWrapper'].children.length -1) fCB();
         }.bind(this) },

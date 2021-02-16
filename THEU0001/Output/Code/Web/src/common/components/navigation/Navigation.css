@@ -1,9 +1,9 @@
 :host {
-  font-family: 'Georgia';
+  position: absolute;
+  z-index: 1;
 }
 
 .navigationWrapper {
-  position: absolute;
 }
 
 .navigationWrapper a {

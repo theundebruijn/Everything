@@ -96,8 +96,9 @@ class Home extends HTMLElement  {
       function (fCB) {  this.oComponentInstances['_webgl'] = new WebGL({ sType: 'page', sContent: 'home' }, fCB); }.bind(this),
     ], function (err, results) {
 
-      DOM.append(this.oComponentInstances['_title'], this.shadow);
+      // order is important! even with z-indexes
       DOM.append(this.oComponentInstances['_webgl'], this.shadow);
+      DOM.append(this.oComponentInstances['_title'], this.shadow);
 
       fCB();
     }.bind(this));
@@ -107,8 +108,8 @@ class Home extends HTMLElement  {
   /// ANIMATE ///
   intro() {
     async.parallel([
-      function (fCB) { this.oComponentInstances['_title'].intro(fCB); }.bind(this),
       function (fCB) { this.oComponentInstances['_webgl'].intro(fCB); }.bind(this),
+      function (fCB) { this.oComponentInstances['_title'].intro(fCB); }.bind(this),
     ], function (err, results) {
 
     }.bind(this));
@@ -116,8 +117,8 @@ class Home extends HTMLElement  {
 
   outro(fCB) {
     async.parallel([
-      function (fCB) { this.oComponentInstances['_title'].outro(fCB); }.bind(this),
       function (fCB) { this.oComponentInstances['_webgl'].outro(fCB); }.bind(this),
+      function (fCB) { this.oComponentInstances['_title'].outro(fCB); }.bind(this),
     ], function (err, results) { fCB(); }.bind(this));
   };
 

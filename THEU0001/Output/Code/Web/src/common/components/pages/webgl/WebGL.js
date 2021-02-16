@@ -141,15 +141,29 @@ class WebGL extends HTMLElement {
 
   /// ANIMATE ///
   intro(fCB) {
-    fCB();
+
+    this.oTweens['domCanvasIntro'] = TweenMax.to(this.domCanvas, 2.000, {
+      opacity: 1.0, delay: 0.00, ease: Linear.easeNone, onComplete: function() {
+        fCB();
+      }.bind(this),
+    });
+
   };
 
   outro(fCB) {
 
     this.removeTweens();
 
-    this.oTweens['cameraOutro'] = TweenMax.to(this.camera.position, 2.000, {
-      z: this.camera.position.z + 500, ease: Sine.easeIn, onComplete: function() {}.bind(this),
+    this.oTweens['cameraOutroX'] = TweenMax.to(this.camera.position, 2.000, {
+      x: this.camera.position.x * 5, ease: Sine.easeIn, onComplete: function() {}.bind(this),
+    });
+
+    this.oTweens['cameraOutroY'] = TweenMax.to(this.camera.position, 2.000, {
+      y: this.camera.position.y * 5, ease: Sine.easeIn, onComplete: function() {}.bind(this),
+    });
+
+    this.oTweens['cameraOutroZ'] = TweenMax.to(this.camera.position, 2.000, {
+      z: this.camera.position.z * 5, ease: Sine.easeIn, onComplete: function() {}.bind(this),
     });
 
     this.oTweens['domCanvasOutro'] = TweenMax.to(this.domCanvas, 0.500, {

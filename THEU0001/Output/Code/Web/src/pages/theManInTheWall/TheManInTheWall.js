@@ -95,8 +95,9 @@ class TheManInTheWall extends HTMLElement  {
       function (fCB) {  this.oComponentInstances['_webgl'] = new WebGL({ sType: 'page', sContent: 'the-man-in-the-wall' }, fCB); }.bind(this),
     ], function (err, results) {
 
-      DOM.append(this.oComponentInstances['_title'], this.shadow);
+      // order is important! even with z-indexes
       DOM.append(this.oComponentInstances['_webgl'], this.shadow);
+      DOM.append(this.oComponentInstances['_title'], this.shadow);
 
       fCB();
     }.bind(this));
@@ -106,8 +107,8 @@ class TheManInTheWall extends HTMLElement  {
   /// ANIMATE ///
   intro() {
     async.parallel([
-      function (fCB) { this.oComponentInstances['_title'].intro(fCB); }.bind(this),
       function (fCB) { this.oComponentInstances['_webgl'].intro(fCB); }.bind(this),
+      function (fCB) { this.oComponentInstances['_title'].intro(fCB); }.bind(this),
     ], function (err, results) {
 
     }.bind(this));
@@ -115,8 +116,8 @@ class TheManInTheWall extends HTMLElement  {
 
   outro(fMainCB) {
     async.parallel([
-      function (fCB) { this.oComponentInstances['_title'].outro(fCB); }.bind(this),
       function (fCB) { this.oComponentInstances['_webgl'].outro(fCB); }.bind(this),
+      function (fCB) { this.oComponentInstances['_title'].outro(fCB); }.bind(this),
     ], function (err, results) {
 
       fMainCB();
