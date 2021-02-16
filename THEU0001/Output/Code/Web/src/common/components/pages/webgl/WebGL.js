@@ -141,14 +141,12 @@ class WebGL extends HTMLElement {
 
   /// ANIMATE ///
   intro(fCB) {
-    let targetX;
-    let targetY;
-    let targetZ;
+    let targetX, targetY, targetZ;
 
-    if (this.activePage === 'home') { targetX = 128; targetY = 0; targetZ = 21.5; }
-    if (this.activePage === 'the-veil') { targetX = -97; targetY = 13; targetZ = 30; }
-    if (this.activePage === 'the-man-in-the-wall') { targetX = -41; targetY = 45; targetZ = 58; }
-    if (this.activePage === 'another-world-awaits') { targetX = -1480; targetY = 1457; targetZ = 1859; }
+    if (this.activePage === 'home') { this.camera.fov = 20; targetX = 128; targetY = 0; targetZ = 21.5; };
+    if (this.activePage === 'the-veil') { this.camera.fov = 20; targetX = -97; targetY = 13; targetZ = 30; }
+    if (this.activePage === 'the-man-in-the-wall') { this.camera.fov = 20; targetX = -41; targetY = 45; targetZ = 58; }
+    if (this.activePage === 'another-world-awaits') { this.camera.fov = 60; targetX = -300; targetY = 300; targetZ = 600; }
 
     this.oTweens['cameraIntroX'] = TweenMax.fromTo(this.camera.position, 2.000, {
       x: targetX / 3, y: targetY / 3, z: targetZ / 3,
@@ -168,7 +166,7 @@ class WebGL extends HTMLElement {
 
   outro(fCB) {
 
-    this.removeTweens();
+    // this.removeTweens();
 
     this.oTweens['cameraOutroX'] = TweenMax.to(this.camera.position, 2.000, {
       x: this.camera.position.x * 3, ease: Sine.easeIn, onComplete: function() {}.bind(this),
@@ -208,6 +206,7 @@ class WebGL extends HTMLElement {
   createScene() {
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(45, this.domCanvas.clientWidth / this.domCanvas.clientHeight, 1, 10000);
+
     this.camera.fov = 20;
     this.camera.position.x = 0;
     this.camera.position.y = 0;
@@ -228,7 +227,7 @@ class WebGL extends HTMLElement {
     });
 
     this.renderer.setSize(this.domCanvas.clientWidth, this.domCanvas.clientHeight);
-    this.renderer.setPixelRatio(1.0);
+    this.renderer.setPixelRatio(1.5);
 
     this.renderer.outputEncoding = THREE.sRGBEncoding;
     this.renderer.toneMapping = THREE.ReinhardToneMapping;
