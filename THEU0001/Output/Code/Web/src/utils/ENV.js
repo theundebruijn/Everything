@@ -2,72 +2,28 @@
 ///// IMPORTS /////
 ///////////////////
 
-import { FRP } from '~/utils/FRP.js';
-
-/////////////////
-///// CLASS /////
-/////////////////
-
-class Router {
-
-  /// CONSTRUCTOR ///
-  constructor() {
-    this.createStreams();
-  };
+/// NPM ///
+import { getFeatures } from 'detect-features';
 
 
-  /////////////////////////
-  ///// CLASS METHODS /////
-  /////////////////////////
+///////////////
+///// OBJ /////
+///////////////
 
-  createStreams() {
-    // FRP.createStream('router:onPopState');
-    FRP.addStreamListener('router:onNewPage', null, null);
+const ENV = Object.create(null);
 
-    FRP.addStreamListener('router:onPopState', { target: window, event: 'popstate'}, function(data) {
-      this.onNewPage();
-    }.bind(this));
-  };
 
-  /**
-   * Determines the pathName based on 'window.location.pathname'.
-   */
-  getPathName() {
-    let pathName = window.location.pathname;
-    if (pathName.charAt(0) === '/') { pathName = pathName.substr(1); };
+///////////////////////
+///// OBJ METHODS /////
+///////////////////////
 
-    return pathName;
-  };
+ENV.detectFeatures = async function (fCB) {
+  this.features = await getFeatures();
+  fCB();
+};
 
-  /**
-   * Determines the page to be loaded based on the determined pathName.
-   */
-  onNewPage() {
-
-    const pathName = this.getPathName();
-
-    if (pathName === '') {
-      const x = FRP.getStream('router:onNewPage');
-      x('home');
-
-    } else if (pathName === 'the-veil/') {
-      const x = FRP.getStream('router:onNewPage');
-      x('the-veil');
-
-    } else if (pathName === 'the-man-in-the-wall/') {
-      const x = FRP.getStream('router:onNewPage');
-      x('the-man-in-the-wall');
-
-    } else if (pathName === 'another-world-awaits/') {
-      const x = FRP.getStream('router:onNewPage');
-      x('another-world-awaits');
-
-    } else {
-      const x = FRP.getStream('router:onNewPage');
-      x('404');
-
-    }
-  };
+ENV.getFeatures = function() {
+  return this.features;
 };
 
 
@@ -75,7 +31,7 @@ class Router {
 ///// ES6 EXPORT /////
 //////////////////////
 
-export default Router;
+export { ENV };
 
 
 ////////////////////////////////////////////////////////////

@@ -2,80 +2,43 @@
 ///// IMPORTS /////
 ///////////////////
 
-import { FRP } from '~/utils/FRP.js';
-
-/////////////////
-///// CLASS /////
-/////////////////
-
-class Router {
-
-  /// CONSTRUCTOR ///
-  constructor() {
-    this.createStreams();
-  };
+/// NPM ///
+import { default as loglevel } from 'loglevel';
+(process.env.NODE_ENV === 'development') ? loglevel.setLevel(0, false) :  loglevel.setLevel(3, false);
 
 
-  /////////////////////////
-  ///// CLASS METHODS /////
-  /////////////////////////
+///////////////
+///// OBJ /////
+///////////////
 
-  createStreams() {
-    // FRP.createStream('router:onPopState');
-    FRP.addStreamListener('router:onNewPage', null, null);
+// we substitute the LOG object as a ref to the loglevel trace
+// this makes calling LOG(x)'s real simple
+// nesting the loglevel.trace call in a property method doesn't work as the
+// initial stack trace becomes the LOG object iself
+const LOG = loglevel.info;
 
-    FRP.addStreamListener('router:onPopState', { target: window, event: 'popstate'}, function(data) {
-      this.onNewPage();
-    }.bind(this));
-  };
+// no we inject the other log level methods on top
+// not super clean, but it allows the top level object to be directly callable
+LOG.trace = loglevel.trace;
+LOG.debug = loglevel.debug;
+LOG.info = loglevel.info;  // duplicate for completeness sake
+LOG.warn = loglevel.warn;
+LOG.error = loglevel.error;
 
-  /**
-   * Determines the pathName based on 'window.location.pathname'.
-   */
-  getPathName() {
-    let pathName = window.location.pathname;
-    if (pathName.charAt(0) === '/') { pathName = pathName.substr(1); };
 
-    return pathName;
-  };
+///////////////////////
+///// OBJ METHODS /////
+///////////////////////
 
-  /**
-   * Determines the page to be loaded based on the determined pathName.
-   */
-  onNewPage() {
+// LOG.trace = loglevel.trace;
 
-    const pathName = this.getPathName();
-
-    if (pathName === '') {
-      const x = FRP.getStream('router:onNewPage');
-      x('home');
-
-    } else if (pathName === 'the-veil/') {
-      const x = FRP.getStream('router:onNewPage');
-      x('the-veil');
-
-    } else if (pathName === 'the-man-in-the-wall/') {
-      const x = FRP.getStream('router:onNewPage');
-      x('the-man-in-the-wall');
-
-    } else if (pathName === 'another-world-awaits/') {
-      const x = FRP.getStream('router:onNewPage');
-      x('another-world-awaits');
-
-    } else {
-      const x = FRP.getStream('router:onNewPage');
-      x('404');
-
-    }
-  };
-};
 
 
 //////////////////////
 ///// ES6 EXPORT /////
 //////////////////////
 
-export default Router;
+export { LOG };
 
 
 ////////////////////////////////////////////////////////////

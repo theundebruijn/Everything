@@ -14,8 +14,10 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { Reflector } from 'three/examples/jsm/objects/Reflector';
 
 /// LOCAL ///
+import { ENV } from '~/utils/ENV.js';
 import { DOM } from '~/utils/DOM.js';
 import { CSS } from '~/utils/CSS.js';
+import { LOG } from '~/utils/LOG.js';
 
 /// ASSETS ///
 import sCSS from './WebGL.css';
@@ -39,6 +41,8 @@ class WebGL extends HTMLElement {
   /// CONSTRUCTOR ///
   constructor(oOptions, fCB) {
     super();
+
+    // console.log(ENV.getFeatures());
 
     this.oOptions = oOptions;
 
@@ -81,6 +85,7 @@ class WebGL extends HTMLElement {
   ///////////////////////////
 
   __init(fCB) {
+    LOG('WebGL : __init');
 
     async.series([
       // As the CSS has been applied to` the Shadow DOM we can start creating the WebGL environment.
@@ -110,7 +115,8 @@ class WebGL extends HTMLElement {
       }.bind(this),
 
     ], function (err, results) {
-      if (err) { return console.log(err); }
+      LOG('WebGL : __init : complete');
+      if (err) { return LOG.error(err); }
 
       // Now the resources have been loaded we can compute the methods that rely on them.
       this.createLoadedEntities();
@@ -141,6 +147,8 @@ class WebGL extends HTMLElement {
 
   /// ANIMATE ///
   intro(fCB) {
+    LOG('WebGL : intro');
+
     let targetX, targetY, targetZ;
 
     if (this.activePage === 'home') { this.camera.fov = 20; targetX = 128; targetY = 0; targetZ = 21.5; };
@@ -158,6 +166,8 @@ class WebGL extends HTMLElement {
 
     this.oTweens['domCanvasIntro'] = TweenMax.to(this.domCanvas, 2.000, {
       opacity: 1.0, delay: 0.00, ease: Linear.easeNone, onComplete: function() {
+        LOG('WebGL : intro : complete');
+
         fCB();
       }.bind(this),
     });
@@ -165,6 +175,7 @@ class WebGL extends HTMLElement {
   };
 
   outro(fCB) {
+    LOG('WebGL : outro');
 
     // this.removeTweens();
 
@@ -182,6 +193,8 @@ class WebGL extends HTMLElement {
 
     this.oTweens['domCanvasOutro'] = TweenMax.to(this.domCanvas, 0.500, {
       opacity: 0.0, delay: 0.500, ease: Linear.easeNone, onComplete: function() {
+        LOG('WebGL : outro : complete');
+
         fCB();
       }.bind(this),
     });
@@ -499,7 +512,7 @@ class WebGL extends HTMLElement {
 
     // values are updated in the render tick
 
-    folder_cameraSettings.add(this.cameraSettingsOptions, 'fov').name('FOV').min(1).max(180).step(1).onChange(function(value) {
+    folder_cameraSettings.add(this.cameraSettingsOptions, 'fov').name('FOV').min(1).max(180).step(1).listen().onChange(function(value) {
       this.camera.fov = value;
       this.camera.updateProjectionMatrix();
     }.bind(this));

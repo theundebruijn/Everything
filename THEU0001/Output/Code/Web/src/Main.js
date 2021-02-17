@@ -6,9 +6,12 @@
 import async from 'async';
 
 /// LOCAL ///
+import { ENV } from '~/utils/ENV.js';
 import { FRP } from '~/utils/FRP.js';
 import { DOM } from '~/utils/DOM.js';
 import { CSS } from '~/utils/CSS.js';
+import { LOG } from '~/utils/LOG.js';
+
 import Router from '~/utils/Router.js';
 
 import Navigation from '~/common/components/navigation/Navigation.js';
@@ -83,20 +86,19 @@ class Main {
   ///////////////////////////
 
   __init() {
+    LOG('Main : __init');
 
-    async.series([
+    async.parallel([
+      function (fCB) { ENV.detectFeatures(fCB); }.bind(this),
       function (fCB) { this.createComponentInstances(fCB); }.bind(this),
       function (fCB) { this.handleRouterEvents(fCB); }.bind(this),
       function (fCB) { this.handleWindowBlurEvents(fCB); }.bind(this),
-    ], function (err, results) {}.bind(this));
+    ], function (err, results) {
+      LOG('Main : __init : complete');
 
-
-
-
-
-
-
-
+      // trigger inital page
+      this.oComponentInstances['_router'].onNewPage();
+    }.bind(this));
   };
 
 
@@ -105,7 +107,7 @@ class Main {
   /////////////////////////
 
   /// CREATE ///
-  createComponentInstances(cB) {
+  createComponentInstances(fCB) {
 
     async.parallel([
       function (fCB) { this.oComponentInstances['_navigation'] = new Navigation(fCB); }.bind(this),
@@ -119,7 +121,7 @@ class Main {
 
       this.oComponentInstances['_router'] = new Router();
 
-      cB();
+      fCB();
 
     }.bind(this));
 
@@ -127,7 +129,6 @@ class Main {
 
   /// EVENT HANDLERS
   handleRouterEvents(cB) {
-
     FRP.addStreamListener('router:onNewPage', null, function(sPageName) {
 
 
@@ -192,6 +193,7 @@ class Main {
 
   /// CLASS LOGIC ///
   removeActivePage(fCB) {
+    LOG('Main : removeActivePage : ' + this.sCurrActivePage);
 
     this.oComponentInstances['_loader'].intro(function() {});
 
@@ -201,6 +203,8 @@ class Main {
       async.series([
         function (fCB) { this.cActivePage.outro(fCB); }.bind(this),
       ], function (err, results) {
+        LOG('Main : removeActivePage : complete');
+
         // cleanup
         this.cActivePage = null;
         // this 'recursively' triggers the disconnectedCallbacks
@@ -213,16 +217,20 @@ class Main {
   };
 
   createNewPage(fCB) {
+    LOG('Main : createNewPage : ' + '(queued: ' + this.sQueuedPage + ')');
 
     async.series([
-      function (fMainCB) {
-        if (this.sQueuedPage === 'home') { this.cActivePage = new Home(fMainCB); }
-        else if (this.sQueuedPage === 'the-veil') { this.cActivePage = new TheVeil(fMainCB); }
-        else if (this.sQueuedPage === 'the-man-in-the-wall') { this.cActivePage = new TheManInTheWall(fMainCB); }
-        else if (this.sQueuedPage === 'another-world-awaits') { this.cActivePage = new AnotherWorldAwaits(fMainCB); }
-        else if (this.sQueuedPage === '404') { this.cActivePage = new Error('404', fMainCB); };
+      function (fCB) {
+
+        if (this.sQueuedPage === 'home') { this.cActivePage = new Home(fCB); }
+        else if (this.sQueuedPage === 'the-veil') { this.cActivePage = new TheVeil(fCB); }
+        else if (this.sQueuedPage === 'the-man-in-the-wall') { this.cActivePage = new TheManInTheWall(fCB); }
+        else if (this.sQueuedPage === 'another-world-awaits') { this.cActivePage = new AnotherWorldAwaits(fCB); }
+        else if (this.sQueuedPage === '404') { this.cActivePage = new Error('404', fCB); };
       }.bind(this),
+
     ], function (err, results) {
+      LOG('Main : createNewPage : ' + '(queued: ' + this.sQueuedPage + ') : complete');
 
       this.oComponentInstances['_loader'].outro(function() {});
 

@@ -20,6 +20,7 @@ import { CSS } from '~/utils/CSS.js';
 /// ASSETS ///
 import sCSS from './Loader.css';
 import LoaderAsset from './assets/loader.glb';
+import { LOG } from '../../../utils/LOG';
 
 
 /////////////////
@@ -76,6 +77,7 @@ class Loader extends HTMLElement {
   ///////////////////////////
 
   __init(fCB) {
+    // LOG('Loader : __init');
 
     async.series([
       // As the CSS has been applied to the Shadow DOM we can start creating the WebGL environment.
@@ -105,7 +107,8 @@ class Loader extends HTMLElement {
       }.bind(this),
 
     ], function (err, results) {
-      if (err) { return console.log(err); }
+      // LOG('Loader : __init : complete');
+      if (err) { return LOG.error(err); }
 
       // Now the resources have been loaded we can compute the methods that rely on them.
       this.createLoadedEntities();
@@ -152,7 +155,8 @@ class Loader extends HTMLElement {
   /////////////////////////
 
   /// ANIMATE ///
-  intro(fCB) {
+  intro() {
+    // LOG('Loader : intro');
 
     // resume render loop
     for (const tween in this.tweens) { this.tweens[tween].resume(); };
@@ -177,8 +181,8 @@ class Loader extends HTMLElement {
     this.tweens['sceneIntro'] = TweenMax.fromTo(this.domCanvasWrapper, 0.300, {
       opacity: 0.0,
     }, {
-      opacity: 1.0, delay: 0.800, ease: Linear.easeNone, onComplete: function(fCB) {
-        // fCB();
+      opacity: 1.0, delay: 0.800, ease: Linear.easeNone, onComplete: function() {
+        // LOG('Loader : intro : complete');
       }.bind(this),
     });
 
@@ -186,7 +190,8 @@ class Loader extends HTMLElement {
 
   };
 
-  outro(fCB) {
+  outro() {
+    // LOG('Loader : outro');
 
 
 
@@ -213,8 +218,9 @@ class Loader extends HTMLElement {
     this.tweens['sceneOutro'] = TweenMax.fromTo(this.domCanvasWrapper, 0.600, {
       opacity: 1.0,
     }, {
-      opacity: 0.0, ease: Linear.easeNone, onComplete: function(fCB) {
-        // fCB();
+      opacity: 0.0, ease: Linear.easeNone, onComplete: function() {
+        // LOG('Loader : outro : complete');
+
 
         // kill render loop
         for (const tween in this.tweens) { this.tweens[tween].pause(); };

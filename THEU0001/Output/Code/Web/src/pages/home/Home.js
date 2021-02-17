@@ -9,6 +9,7 @@ import async from 'async';
 import { FRP } from '~/utils/FRP.js';
 import { DOM } from '~/utils/DOM.js';
 import { CSS } from '~/utils/CSS.js';
+import { LOG } from '~/utils/LOG.js';
 
 import Title from '~/common/components/pages/title/Title.js';
 import WebGL from '~/common/components/pages/webgl/WebGL.js';
@@ -65,11 +66,13 @@ class Home extends HTMLElement  {
   // triggered by the web component connectedCallback
   // we're attached to the DOM at this point
   __init(fCB) {
+    LOG('Home : __init');
 
     async.series([
       function (fCB) { this.createDomElements(fCB); }.bind(this),
       function (fCB) { this.createComponentInstances(fCB); }.bind(this),
     ], function (err, results) {
+      LOG('Home : __init : complete');
 
       fCB();
     }.bind(this));
@@ -109,6 +112,7 @@ class Home extends HTMLElement  {
 
   /// ANIMATE ///
   intro() {
+    LOG('Home : intro');
 
     const _stream = FRP.getStream('_webglBackground:onBackgroundChange');
     _stream({ sColor: 0xfdfbf8, nDuration: 3.500 });
@@ -117,15 +121,22 @@ class Home extends HTMLElement  {
       function (fCB) { this.oComponentInstances['_webgl'].intro(fCB); }.bind(this),
       function (fCB) { this.oComponentInstances['_title'].intro(fCB); }.bind(this),
     ], function (err, results) {
+      LOG('Home : intro : complete');
 
     }.bind(this));
   };
 
   outro(fCB) {
+    LOG('Home : outro');
+
     async.parallel([
       function (fCB) { this.oComponentInstances['_webgl'].outro(fCB); }.bind(this),
       function (fCB) { this.oComponentInstances['_title'].outro(fCB); }.bind(this),
-    ], function (err, results) { fCB(); }.bind(this));
+    ], function (err, results) {
+      LOG('Home : outro : complete');
+
+      fCB();
+    }.bind(this));
   };
 
   /// DESTROY ///

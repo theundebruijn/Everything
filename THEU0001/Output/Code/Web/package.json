@@ -10,8 +10,10 @@
   "dependencies": {
     "async": "3.2.0",
     "dat.gui": "0.7.7",
+    "detect-features": "1.0.2",
     "flyd": "0.2.8",
     "gsap": "3.6.0",
+    "loglevel": "1.7.1",
     "resource-loader": "3.0.1",
     "three": "0.125.2"
   },

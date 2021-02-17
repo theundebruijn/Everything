@@ -9,6 +9,7 @@ import async from 'async';
 import { FRP } from '~/utils/FRP.js';
 import { DOM } from '~/utils/DOM.js';
 import { CSS } from '~/utils/CSS.js';
+import { LOG } from '~/utils/LOG.js';
 
 import Title from '~/common/components/pages/title/Title.js';
 import WebGL from '~/common/components/pages/webgl/WebGL.js';
@@ -65,11 +66,13 @@ class AnotherWorldAwaits extends HTMLElement  {
   // triggered by the web component connectedCallback
   // we're attached to the DOM at this point
   __init(fCB) {
+    LOG('AnotherWorldAwaits : __init');
 
     async.series([
       function (fCB) { this.createDomElements(fCB); }.bind(this),
       function (fCB) { this.createComponentInstances(fCB); }.bind(this),
     ], function (err, results) {
+      LOG('AnotherWorldAwaits : __init : complete');
 
       fCB();
     }.bind(this));
@@ -109,6 +112,7 @@ class AnotherWorldAwaits extends HTMLElement  {
 
   /// ANIMATE ///
   intro() {
+    LOG('AnotherWorldAwaits : intro');
 
     const _stream = FRP.getStream('_webglBackground:onBackgroundChange');
     _stream({ sColor: 0x0E0E14, nDuration: 3.500 });
@@ -117,17 +121,21 @@ class AnotherWorldAwaits extends HTMLElement  {
       function (fCB) { this.oComponentInstances['_webgl'].intro(fCB); }.bind(this),
       function (fCB) { this.oComponentInstances['_title'].intro(fCB); }.bind(this),
     ], function (err, results) {
+      LOG('AnotherWorldAwaits : intro : complete');
 
     }.bind(this));
   };
 
-  outro(fMainCB) {
+  outro(fCB) {
+    LOG('AnotherWorldAwaits : outro');
+
     async.parallel([
       function (fCB) { this.oComponentInstances['_webgl'].outro(fCB); }.bind(this),
       function (fCB) { this.oComponentInstances['_title'].outro(fCB); }.bind(this),
     ], function (err, results) {
+      LOG('AnotherWorldAwaits : outro : complete');
 
-      fMainCB();
+      fCB();
     }.bind(this));
   };
 

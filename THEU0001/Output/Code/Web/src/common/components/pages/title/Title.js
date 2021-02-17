@@ -9,10 +9,12 @@ import { TweenMax, Linear } from 'gsap';
 /// LOCAL ///
 import { DOM } from '~/utils/DOM.js';
 import { CSS } from '~/utils/CSS.js';
+import { LOG } from '~/utils/LOG.js';
 
 /// ASSETS CSS ///
 // TODO: rewrite classnames etc
 import sCSS from './Title.css';
+import { LightShadow } from 'three';
 
 
 ///////////////////////////////
@@ -67,11 +69,14 @@ class Title extends HTMLElement {
   // triggered by the web component connectedCallback
   // we're attached to the DOM at this point
   __init(fCB) {
+    LOG('Title : __init');
 
     async.series([
       function (fCB) { this.createDomElements(fCB); }.bind(this),
       function (fCB) { this.createComponentInstances(fCB); }.bind(this),
     ], function (err, results) {
+      LOG('Title : __init : complete');
+
       fCB();
     }.bind(this));
 
@@ -129,28 +134,43 @@ class Title extends HTMLElement {
 
   /// ANIMATE ///
   intro(fCB) {
+    LOG('Title : intro');
 
-    /// CHAPTER ///
-    this.oTweens['domChapter'] = TweenMax.fromTo(this.oDOMElements['domChapter'], 2.000,
-      { css: { opacity: 0.0 } }, { css: { opacity: 1.0 }, delay: 2.000, ease: Linear.easeNone, onComplete() {
-        fCB();
-      }},
-    );
+    async.parallel([
+      function (fCB) {
 
-    /// TITLE ///
-    const aTitleSplit = this.oOptions.sTitle.split('\n');
+        /// CHAPTER ///
+        this.oTweens['domChapter'] = TweenMax.fromTo(this.oDOMElements['domChapter'], 1.000,
+          { css: { opacity: 0.0 } }, { css: { opacity: 1.0 }, delay: 2.000, ease: Linear.easeNone, onComplete() {
+            fCB();
+          }},
+        );
 
-    for (let i = 0; i < aTitleSplit.length; i++) {
-      this.oTweens['aTitleSplit' + i] = TweenMax.fromTo(this.oDOMElements['domTitleSplit' + i].querySelectorAll('.domTitleCharacterSplit'), 1.500,
-        { css: { translateX: -15, opacity: 0.0 } }, { css: { translateX: 0, opacity: 1.0 }, delay: (i * 0.3) + 0.900, stagger: { each: 0.050, ease: Linear.easeNone } },
-      );
-    };
+      }.bind(this),
 
+      function (fCB) {
 
+        /// TITLE ///
+        const aTitleSplit = this.oOptions.sTitle.split('\n');
 
+        for (let i = 0; i < aTitleSplit.length; i++) {
+          this.oTweens['aTitleSplit' + i] = TweenMax.fromTo(this.oDOMElements['domTitleSplit' + i].querySelectorAll('.domTitleCharacterSplit'), 1.500,
+            { css: { translateX: -15, opacity: 0.0 } }, { css: { translateX: 0, opacity: 1.0 }, delay: (i * 0.3) + 0.900, stagger: { each: 0.050, ease: Linear.easeNone }, onComplete() {
+              if (i === aTitleSplit.length -1) fCB();
+            }},
+          );
+        };
+
+      }.bind(this),
+    ], function (err, results) {
+      LOG('Title : intro : complete');
+      fCB();
+
+    }.bind(this));
   };
 
   outro(fCB) {
+    LOG('Title : outro');
 
     this.removeTweens();
 
@@ -165,12 +185,14 @@ class Title extends HTMLElement {
     for (let i = 0; i < this.oDOMElements['domTitleWrapper'].children.length; i++) {
       this.oTweens['aTitleSplitOutro' + i] = TweenMax.to(this.oDOMElements['domTitleSplit' + i], 0.600,
         { css: { translateX: 0, opacity: 0.0 }, delay: (i*0.1), ease: Linear.easeNone, onComplete: function() {
-          if (i === this.oDOMElements['domTitleWrapper'].children.length -1) fCB();
+          if (i === this.oDOMElements['domTitleWrapper'].children.length -1) {
+            LOG('Title : outro : complete');
+
+            fCB();
+          };
         }.bind(this) },
       );
     };
-
-
   };
 
 
