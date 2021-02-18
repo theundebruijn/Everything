@@ -12,11 +12,10 @@
   position: absolute;
   width: 100%;
   height: 100%;
-
-  opacity: 0;
 }
 
 .domCanvas {
   outline: none; /* prevents focus outline */
-  /* border: 1px solid red; */
+
+  opacity: 0;
 }

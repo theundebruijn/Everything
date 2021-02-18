@@ -14,7 +14,6 @@ import { LOG } from '~/utils/LOG.js';
 /// ASSETS CSS ///
 // TODO: rewrite classnames etc
 import sCSS from './Title.css';
-import { LightShadow } from 'three';
 
 
 ///////////////////////////////

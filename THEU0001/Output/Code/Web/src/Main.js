@@ -45,20 +45,15 @@ class Main {
 
     this.oComponentInstances = Object.create(null);
 
-    // store the currently active page as a string (s[...])
-    this.sCurrActivePage = null;
+    // here we store the class instance of the active page
+    // this gets null'ed and repurposed each page transition
+    this.cActivePage = null;
 
     // here we store the page that is queued to go 'live' as a string (s[...])
     // this way we can have a page 'outro' take place, keep navigating
     // and only at the very last moment set the page we load next
     this.sQueuedPage = null;
 
-    // here we note if the page is transitioning to a new page at the moment as a boolean (b[...])
-    this.bIsTransitioning = false;
-
-    // here we store the class instance of the active page
-    // this gets null'ed and repurposed each page transition
-    this.cActivePage = null;
 
     /// PRE-INIT CONTRUCTS ///
     this.constructCSS();
@@ -106,6 +101,10 @@ class Main {
   ///// CLASS METHODS /////
   /////////////////////////
 
+  // TODO: there is still a rare race condition when _rapidly_ changing pages
+  // it looks like the page gets removed in between its __init and intro calls
+  // UPD: hmm. can't replicate in the build version of the site
+
   /// CREATE ///
   createComponentInstances(fCB) {
 
@@ -128,37 +127,69 @@ class Main {
   };
 
   /// EVENT HANDLERS
-  handleRouterEvents(cB) {
+  handleRouterEvents(fCB) {
     FRP.addStreamListener('router:onNewPage', null, function(sPageName) {
-
-
-
-      // happens on first page load
-      // if (this.sCurrActivePage === null) {
-      //   this.sCurrActivePage = sPageName;
-      // };
 
       // update the queued page every time we get a router event
       this.sQueuedPage = sPageName;
+      DOM.updateMetadata(this.sQueuedPage);
 
-      if (!this.bIsTransitioning) {
-        this.bIsTransitioning = true;
-
-        async.series([
-          function (fCB) { this.removeActivePage(fCB); }.bind(this),
-          function (fCB) { this.createNewPage(fCB); }.bind(this),
-        ], function (err, results) {
-
-          this.sCurrActivePage = this.sQueuedPage;
-          this.bIsTransitioning = false;
-        }.bind(this));
-      };
-
-
+      async.series([
+        function (fCB) { this.removeActivePage(fCB); }.bind(this),
+        function (fCB) { this.createNewPage(fCB); }.bind(this),
+      ], function (err, results) {}.bind(this));
 
     }.bind(this));
 
-    cB();
+    fCB();
+  };
+
+  removeActivePage(fCB) {
+    this.oComponentInstances['_loader'].intro(function() {});
+
+    // happens on first page load
+    if (this.cActivePage === null) { fCB(); } else {
+
+      async.series([
+        function (fCB) { this.cActivePage.outro(fCB); }.bind(this),
+      ], function (err, results) {
+        LOG('Main : removeActivePage : complete');
+
+        // cleanup
+        this.cActivePage = null;
+        // this 'recursively' triggers the disconnectedCallbacks
+        DOM.empty(this.oComponentInstances['_container'].oDOMElements.domPageWrapper);
+
+        // continue
+        fCB();
+      }.bind(this));
+    };
+  };
+
+  createNewPage(fCB) {
+    const newPage = this.sQueuedPage;
+
+    // here we immediately trigger the callback so the transition doesn't block
+    // if we don't new pages get queued in the meantime and the wrong page can load in a rare race condition
+    fCB();
+
+    async.series([
+      function (fCB) {
+
+        if (newPage === 'home') { this.cActivePage = new Home(fCB); }
+        else if (newPage === 'the-veil') { this.cActivePage = new TheVeil(fCB); }
+        else if (newPage === 'the-man-in-the-wall') { this.cActivePage = new TheManInTheWall(fCB); }
+        else if (newPage === 'another-world-awaits') { this.cActivePage = new AnotherWorldAwaits(fCB); }
+        else if (newPage === '404') { this.cActivePage = new Error('404', fCB); };
+      }.bind(this),
+
+    ], function (err, results) {
+      this.oComponentInstances['_loader'].outro(function() {});
+
+      DOM.append(this.cActivePage, this.oComponentInstances['_container'].oDOMElements.domPageWrapper);
+      this.cActivePage.intro();
+
+    }.bind(this));
   };
 
   handleWindowBlurEvents(cB) {
@@ -189,58 +220,6 @@ class Main {
 
     cB();
 
-  };
-
-  /// CLASS LOGIC ///
-  removeActivePage(fCB) {
-    LOG('Main : removeActivePage : ' + this.sCurrActivePage);
-
-    this.oComponentInstances['_loader'].intro(function() {});
-
-    // happens on first page load
-    if (this.sCurrActivePage === null) { fCB(); } else {
-
-      async.series([
-        function (fCB) { this.cActivePage.outro(fCB); }.bind(this),
-      ], function (err, results) {
-        LOG('Main : removeActivePage : complete');
-
-        // cleanup
-        this.cActivePage = null;
-        // this 'recursively' triggers the disconnectedCallbacks
-        DOM.empty(this.oComponentInstances['_container'].oDOMElements.domPageWrapper);
-
-        // continue
-        fCB();
-      }.bind(this));
-    };
-  };
-
-  createNewPage(fCB) {
-    LOG('Main : createNewPage : ' + '(queued: ' + this.sQueuedPage + ')');
-
-    async.series([
-      function (fCB) {
-
-        if (this.sQueuedPage === 'home') { this.cActivePage = new Home(fCB); }
-        else if (this.sQueuedPage === 'the-veil') { this.cActivePage = new TheVeil(fCB); }
-        else if (this.sQueuedPage === 'the-man-in-the-wall') { this.cActivePage = new TheManInTheWall(fCB); }
-        else if (this.sQueuedPage === 'another-world-awaits') { this.cActivePage = new AnotherWorldAwaits(fCB); }
-        else if (this.sQueuedPage === '404') { this.cActivePage = new Error('404', fCB); };
-      }.bind(this),
-
-    ], function (err, results) {
-      LOG('Main : createNewPage : ' + '(queued: ' + this.sQueuedPage + ') : complete');
-
-      this.oComponentInstances['_loader'].outro(function() {});
-
-      DOM.append(this.cActivePage, this.oComponentInstances['_container'].oDOMElements.domPageWrapper);
-      DOM.updateMetadata(this.sQueuedPage);
-
-      this.cActivePage.intro();
-
-      fCB();
-    }.bind(this));
   };
 };
 

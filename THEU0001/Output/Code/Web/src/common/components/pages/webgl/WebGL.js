@@ -474,7 +474,13 @@ class WebGL extends HTMLElement {
   };
 
   createGui() {
-    this.gui = new dat.GUI({name: 'Studio GUI'});
+    this.gui = new dat.GUI({ autoPlace: true });
+    // TODO: if we want to place this in a shadow dom instance
+    // we need to move the css to that instance
+    // this.gui.domElement.style.position = 'absolute';
+    // this.gui.domElement.style.top = '0px';
+    // this.gui.domElement.style.right = '0px';
+    // DOM.append(this.gui.domElement, document.body);
 
     const folder_renderSettings = this.gui.addFolder('Render Settings');
     folder_renderSettings.open();
@@ -651,7 +657,6 @@ class WebGL extends HTMLElement {
   removeGui() {
     this.gui.destroy();
   };
-
 
   removeLoaders() {
     this.dracoLoader.dispose();

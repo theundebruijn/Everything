@@ -10,7 +10,6 @@
 
 .domCanvas {
   outline: none; /* prevents focus outline */
-  /* border: 1px solid red; */
 
   opacity: 0;
 }

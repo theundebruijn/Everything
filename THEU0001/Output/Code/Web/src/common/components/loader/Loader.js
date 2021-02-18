@@ -77,7 +77,7 @@ class Loader extends HTMLElement {
   ///////////////////////////
 
   __init(fCB) {
-    // LOG('Loader : __init');
+    LOG('Loader : __init');
 
     async.series([
       // As the CSS has been applied to the Shadow DOM we can start creating the WebGL environment.
@@ -116,23 +116,6 @@ class Loader extends HTMLElement {
 
       fCB();
 
-
-
-
-
-
-
-      // FRP.addStreamListener('window:onmousemove', { target: window, event: 'mousemove' }, function(data) {
-      //   this.domCanvasWrapper.style.left = data.offsetX -50 + 'px';
-      //   this.domCanvasWrapper.style.top = data.offsetY -50 + 'px';
-      // }.bind(this));
-
-
-
-
-
-
-
     }.bind(this));
   };
 
@@ -156,86 +139,42 @@ class Loader extends HTMLElement {
 
   /// ANIMATE ///
   intro() {
-    // LOG('Loader : intro');
+    LOG('Loader : intro');
+
+    if (this.tweens['sceneIntro']) this.tweens['sceneIntro'].kill();
+    if (this.tweens['sceneOutro']) this.tweens['sceneOutro'].kill();
 
     // resume render loop
     for (const tween in this.tweens) { this.tweens[tween].resume(); };
     this.renderer.setAnimationLoop(this.tick.bind(this));
 
-
-    // TODO: preload the loader?
-    // if (!this.scene) { fCB();return; };
-
-    if (this.tweens['sceneIntro']) this.tweens['sceneIntro'].kill();
-    if (this.tweens['sceneOutro']) this.tweens['sceneOutro'].kill();
-
-    // this.tweens['sceneIntro'] = TweenMax.fromTo(this.scene.position, 0.900, {
-    //   y: this.scene.position.y,
-    // }, {
-    //   y: 0, ease: Sine.easeOut, onComplete: function(fCB) {
-
-    //   }.bind(this),
-    // });
-
-
-    this.tweens['sceneIntro'] = TweenMax.fromTo(this.domCanvasWrapper, 0.300, {
-      opacity: 0.0,
-    }, {
-      opacity: 1.0, delay: 0.800, ease: Linear.easeNone, onComplete: function() {
-        // LOG('Loader : intro : complete');
+    this.tweens['sceneIntro'] = TweenMax.to(this.domCanvas, 0.500, {
+      opacity: 1.0, delay: 0.650, ease: Linear.easeNone, onComplete: function() {
+        LOG('Loader : intro : complete');
       }.bind(this),
     });
-
-
-
   };
 
   outro() {
-    // LOG('Loader : outro');
-
-
-
-
-    // TODO: preload the loader?
-    // if (!this.scene) { fCB(); return; };
+    LOG('Loader : outro');
 
     if (this.tweens['sceneIntro']) this.tweens['sceneIntro'].kill();
     if (this.tweens['sceneOutro']) this.tweens['sceneOutro'].kill();
 
-    // this.tweens['sceneOutro'] = TweenMax.fromTo(this.scene.position, 0.900, {
-    //   y: this.scene.position.y,
-    // }, {
-    //   y: -100, ease: Sine.easeIn, onComplete: function(fCB) {
-    //     // fCB();
-
-    //     // kill render loop
-    //     for (const tween in this.tweens) { this.tweens[tween].pause(); };
-    //     this.renderer.setAnimationLoop(null);
-
-    //   }.bind(this),
-    // });
-
-    this.tweens['sceneOutro'] = TweenMax.fromTo(this.domCanvasWrapper, 0.600, {
-      opacity: 1.0,
-    }, {
+    this.tweens['sceneOutro'] = TweenMax.to(this.domCanvas, 0.500, {
       opacity: 0.0, ease: Linear.easeNone, onComplete: function() {
-        // LOG('Loader : outro : complete');
-
+        LOG('Loader : outro : complete');
 
         // kill render loop
         for (const tween in this.tweens) { this.tweens[tween].pause(); };
         this.renderer.setAnimationLoop(null);
       }.bind(this),
     });
-
-
   };
 
   createCanvas() {
-
     // TODO: move this to an animation handler
     this.clock = new THREE.Clock();
-
 
     // We create a wrapper element as the canvas tag doesn't resize based on '%' stylings.
     this.domCanvasWrapper = DOM.create('div', { className: 'domCanvasWrapper' });
