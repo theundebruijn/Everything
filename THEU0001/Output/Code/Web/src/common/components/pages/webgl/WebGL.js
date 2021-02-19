@@ -246,9 +246,6 @@ class WebGL extends HTMLElement {
 
     this.renderer.setSize(this.domCanvas.clientWidth, this.domCanvas.clientHeight);
 
-    // TODO: implement GPU tiers ?
-    (this.bIsMobile) ? this.renderer.setPixelRatio(1.0) : this.renderer.setPixelRatio(1.5);
-
     this.renderer.outputEncoding = THREE.sRGBEncoding;
     this.renderer.toneMapping = THREE.ReinhardToneMapping;
     this.renderer.toneMappingExposure = 0.18; // exposure / f-stop
@@ -256,9 +253,32 @@ class WebGL extends HTMLElement {
     // LINK: https://threejs.org/examples/#webgl_lights_physical
     // LINK: https://github.com/mrdoob/three.js/blob/master/examples/webgl_lights_physical.html
     this.renderer.physicallyCorrectLights = true;
-
     this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+    // TODO : can we detect recent iPads specifically?
+    // TODO : what does the M1 report?
+
+    if (this.bIsMobile) {
+
+      this.renderer.setPixelRatio(1.0);
+      this.renderer.shadowMap.type = THREE.PCFShadowMap ;
+
+    } else if (this.nGPUTier === 1) { // tier 1 GPUs (intel integrated etc)
+
+      this.renderer.setPixelRatio(0.8);
+      this.renderer.shadowMap.type = THREE.BasicShadowMap;
+
+    } else if (this.nGPUTier === 2) {
+
+      this.renderer.setPixelRatio(1.0);
+      this.renderer.shadowMap.type = THREE.PCFShadowMap;
+
+    } else { // high end || anything outside the spec but hitting decent fps
+
+      this.renderer.setPixelRatio(1.5);
+      this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+    };
   };
 
   createControls() {
@@ -299,7 +319,7 @@ class WebGL extends HTMLElement {
 
       // TODO: this is _very_ heavy on mobile
       // can we make it work by tweaking the shader? or the model?
-      if (!this.bIsMobile) {
+      if (!this.bIsMobile && this.nGPUTier > 1) {
         const mirrorGeometry = new THREE.PlaneGeometry(22.1, 29.1, 1, 1);
         const mirror = new Reflector(mirrorGeometry, {
           clipBias: 0.000001,
@@ -320,7 +340,7 @@ class WebGL extends HTMLElement {
 
       // TODO: this is _very_ heavy on mobile
       // can we make it work by tweaking the shader? or the model?
-      if (!this.bIsMobile) {
+      if (!this.bIsMobile && this.nGPUTier > 1) {
         const mirrorGeometry = new THREE.PlaneGeometry(22.1, 29.1, 1, 1);
         const mirror = new Reflector(mirrorGeometry, {
           clipBias: 0.000001,
@@ -347,13 +367,15 @@ class WebGL extends HTMLElement {
 
     this.entities.lights['pointLight'].castShadow = true;
     this.entities.lights['pointLight'].shadow.bias = -0.0005;
-    if (!this.bIsMobile) {
+
+    if (!this.bIsMobile && this.nGPUTier > 1) {
       this.entities.lights['pointLight'].shadow.mapSize.width = 2048;
       this.entities.lights['pointLight'].shadow.mapSize.height = 2048;
     } else {
       this.entities.lights['pointLight'].shadow.mapSize.width = 512;
       this.entities.lights['pointLight'].shadow.mapSize.height = 512;
     };
+
     this.entities.lights['pointLight'].updateMatrixWorld(true);
     this.scene.add(this.entities.lights['pointLight']);
   };
@@ -364,38 +386,24 @@ class WebGL extends HTMLElement {
 
       this.oTweens['pointLightPosition'] = TweenMax.fromTo(this.entities.lights['pointLight'].position, 10, {
         x: this.entities.lights['pointLight'].position.x,
-      }, {
-        x: -20,
-        repeat: -1, yoyo: true, ease: Sine.easeInOut, onComplete: function() {},
+      }, { x: -20, repeat: -1, yoyo: true, ease: Sine.easeInOut, onComplete: function() {},
       });
 
     } else if (this.activePage === 'the-veil') {
 
       this.oTweens['pointLightPosition'] = TweenMax.fromTo(this.entities.lights['pointLight'].position, 10, {
         x: this.entities.lights['pointLight'].position.x,
-      }, {
-        x: -20,
-        repeat: -1, yoyo: true, ease: Sine.easeInOut, onComplete: function() {},
+      }, { x: -20, repeat: -1, yoyo: true, ease: Sine.easeInOut, onComplete: function() {},
       });
 
     } else if (this.activePage === 'the-man-in-the-wall') {
 
       this.oTweens['pointLightPosition'] = TweenMax.fromTo(this.entities.lights['pointLight'].position, 10, {
         x: this.entities.lights['pointLight'].position.x,
-      }, {
-        x: -10,
-        repeat: -1, yoyo: true, ease: Sine.easeInOut, onComplete: function() {},
+      }, { x: -10, repeat: -1, yoyo: true, ease: Sine.easeInOut, onComplete: function() {},
       });
 
-    } else if (this.activePage === 'another-world-awaits') {
-
-      // this.tweens['pointLightPosition'] = TweenMax.fromTo(this.entities.lights['pointLight'].position, 10, {
-      //   y: this.entities.lights['pointLight'].position.y,
-      // }, {
-      //   y: 50,
-      //   repeat: -1, yoyo: true, ease: Sine.easeInOut, onComplete: function() {},
-      // });
-    }
+    } else if (this.activePage === 'another-world-awaits') {}
   };
 
   loadResources(callback) {
@@ -415,7 +423,7 @@ class WebGL extends HTMLElement {
       resourceLoader.add('glft_scene', TheMainInTheWall, { loadType: Resource.LOAD_TYPE.XHR, xhrType: Resource.XHR_RESPONSE_TYPE.BUFFER });
     } else if (this.activePage === 'another-world-awaits') {
       resourceLoader.add('glft_scene', AnotherWorldAwaits, { loadType: Resource.LOAD_TYPE.XHR, xhrType: Resource.XHR_RESPONSE_TYPE.BUFFER });
-    }
+    };
 
     resourceLoader.use(function (resource, next) {
 
@@ -443,9 +451,6 @@ class WebGL extends HTMLElement {
         if (resource.isMesh) {
           resource.castShadow = true;
           resource.receiveShadow = true;
-
-          // needed to fade in the intro/outro methods
-          resource.material.transparent = true;
 
           // set texture map interpretation
           if (resource.material.map !== null) {

@@ -51,8 +51,7 @@ class Container extends HTMLElement  {
     // TODO: handle min-sizes
 
     // controls the page size
-    this.shadow.host['style'].width = window.innerWidth + 'px';
-    this.shadow.host['style'].height = window.innerHeight + 'px';
+
 
     DOM.append(_css, this.shadow);
   };
@@ -78,6 +77,8 @@ class Container extends HTMLElement  {
       function (fCB) { this.createDomElements(fCB); }.bind(this),
       function (fCB) { this.createComponentInstances(fCB); }.bind(this),
     ], function (err, results) {
+
+      this.createDomObservers();
 
       fCB();
     }.bind(this));
@@ -118,6 +119,37 @@ class Container extends HTMLElement  {
       fCB();
     }.bind(this));
 
+  };
+
+  // TODO : this doesn't trigger correctly on iOS landscape ?
+  // hhhm, https://bugs.webkit.org/show_bug.cgi?id=170595
+  createDomObservers() {
+
+    // Handler to set size of the domCanvasWrapper and its domCanvas child
+    // NOTE: We call this before creating the scene and camera to guarantee correct sizings.
+    //       The ResizeObserver makes sure we handle subsequent resizes of the domCanvasWrapper.
+    this.resizeObserver = new ResizeObserver(function(entries) {
+
+      console.log('resize!!!');
+
+      LOG('contentRect.width : ' + Math.round(entries[0].contentRect.width));
+      LOG('window.innerWidth : ' + window.innerWidth);
+      LOG('contentRect.width : ' +  Math.round(entries[0].contentRect.height));
+      LOG('window.innerHeight : ' + window.innerHeight);
+
+      this.onDocumentBodyResize(Math.round(entries[0].contentRect.width), Math.round(entries[0].contentRect.height));
+
+
+
+    }.bind(this));
+
+    this.resizeObserver.observe(document.body);
+  };
+
+  onDocumentBodyResize(updatedWidth, updatedHeight) {
+
+    this.shadow.host['style'].width = updatedWidth + 'px';
+    this.shadow.host['style'].height = updatedHeight + 'px';
   };
 
   /// ANIMATE ///
