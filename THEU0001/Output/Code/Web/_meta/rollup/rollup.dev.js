@@ -63,6 +63,10 @@ export default {
           dest: './_dev/static',
         },
         {
+          src: './_meta/assets/benchmarks/2020.11.20/',
+          dest: './_dev/static/benchmarks',
+        },
+        {
           src: './_meta/assets/draco/1.4.1/draco_decoder.js',
           dest: './_dev/static/draco',
         },

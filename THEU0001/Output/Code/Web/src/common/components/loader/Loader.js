@@ -417,9 +417,7 @@ class Loader extends HTMLElement {
     for (const tween in this.oTweens) { this.oTweens[tween].kill(); };
   };
 
-  removeGui() {
-    // this.gui['destroy']();
-  };
+  removeGui() {};
 
 
   removeLoaders() {

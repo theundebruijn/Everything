@@ -14,9 +14,17 @@
   font-display: block;
 }
 
+html {
+  width: 100%;
+  height: 100%;
+}
+
 body {
   margin: 0;
   /* background-color: #a08b68; */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  width: 100%;
+  height: 100%;
 }

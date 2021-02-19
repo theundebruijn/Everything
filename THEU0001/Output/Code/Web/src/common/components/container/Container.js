@@ -8,6 +8,8 @@ import async from 'async';
 /// LOCAL ///
 import { DOM } from '~/utils/DOM.js';
 import { CSS } from '~/utils/CSS.js';
+import { LOG } from '~/utils/LOG.js';
+
 import WebGLBackground from './webglBackground/WebGLBackground.js';
 
 /// ASSETS CSS ///
@@ -43,6 +45,14 @@ class Container extends HTMLElement  {
 
     const oCSSAssets = { sCSS: sCSS };
     const _css = CSS.createDomStyleElement(oCSSAssets);
+
+    // TODO: do this elegantly
+    // TODO: handle resizes
+    // TODO: handle min-sizes
+
+    // controls the page size
+    this.shadow.host['style'].width = window.innerWidth + 'px';
+    this.shadow.host['style'].height = window.innerHeight + 'px';
 
     DOM.append(_css, this.shadow);
   };
@@ -82,17 +92,6 @@ class Container extends HTMLElement  {
   };
 
 
-  ///////////////////////////////////
-  ///// WEB COMPONENT LIFECYCLE /////
-  ///////////////////////////////////
-
-  // connectedCallback() {
-
-
-
-  // };
-
-
   /////////////////////////
   ///// CLASS METHODS /////
   /////////////////////////
@@ -122,13 +121,8 @@ class Container extends HTMLElement  {
   };
 
   /// ANIMATE ///
-  intro(fCB) {
-    fCB();
-  };
-
-  outro(fCB) {
-    fCB();
-  };
+  intro(fCB) { fCB(); };
+  outro(fCB) { fCB();};
 
   /// DESTROY ///
   destroyDomElements() {

@@ -145,13 +145,9 @@ class Navigation extends HTMLElement  {
   createComponentInstances() {};
 
   /// ANIMATE ///
-  intro(fCB) {
-    fCB();
-  };
+  intro(fCB) { fCB(); };
 
-  outro(fCB) {
-    fCB();
-  };
+  outro(fCB) { fCB(); };
 
   /// DESTROY ///
   destroyDomElements() {

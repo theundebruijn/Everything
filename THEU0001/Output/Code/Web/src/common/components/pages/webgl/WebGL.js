@@ -42,9 +42,11 @@ class WebGL extends HTMLElement {
   constructor(oOptions, fCB) {
     super();
 
-    // console.log(ENV.getFeatures());
-
     this.oOptions = oOptions;
+
+    LOG(ENV.getGPU());
+    this.bIsMobile = ENV.getGPU().isMobile;
+    this.nGPUTier = ENV.getGPU().tier;
 
     this.activePage = this.oOptions.sContent;
 
@@ -101,8 +103,8 @@ class WebGL extends HTMLElement {
         this.createDomObservers();
         this.createBundledEntities();
         this.createBundledEntityTweens();
-        if (process.env.NODE_ENV === 'development') this.createHelpers();
-        if (process.env.NODE_ENV === 'development') this.createGui();
+        if (process.env.NODE_ENV === 'development' && !this.bIsMobile) this.createHelpers();
+        if (process.env.NODE_ENV === 'development' && !this.bIsMobile) this.createGui();
         this.createAnimationLoop();
 
         callback();
@@ -138,7 +140,7 @@ class WebGL extends HTMLElement {
       this.removeDomObservers();
       this.removeLoaders();
       this.removeTweens();
-      if (process.env.NODE_ENV === 'development') this.removeGui();
+      if (process.env.NODE_ENV === 'development' && !this.bIsMobile) this.removeGui();
       this.removeThree();
     }.bind(this), 10);
   };
@@ -243,7 +245,9 @@ class WebGL extends HTMLElement {
     });
 
     this.renderer.setSize(this.domCanvas.clientWidth, this.domCanvas.clientHeight);
-    this.renderer.setPixelRatio(1.5);
+
+    // TODO: implement GPU tiers ?
+    (this.bIsMobile) ? this.renderer.setPixelRatio(1.0) : this.renderer.setPixelRatio(1.5);
 
     this.renderer.outputEncoding = THREE.sRGBEncoding;
     this.renderer.toneMapping = THREE.ReinhardToneMapping;
@@ -276,11 +280,15 @@ class WebGL extends HTMLElement {
   };
 
   createBundledEntities() {
+
+    // TODO: we need simpler mobile meshes
+    // can we diff between ram size? ipad high end?
+
     // LINK: https://en.wikipedia.org/wiki/Lux
     // LINK: https://threejs.org/docs/#api/en/lights/shadows/LightShadow.bias
 
     if (this.activePage === 'home') {
-      this.entities.lights['pointLight'] = new THREE.PointLight(0xffffff, 50000.0, 500, 2.0);
+      this.entities.lights['pointLight'] = new THREE.PointLight(0xb9ace3, 50000.0, 500, 2.0);
       this.entities.lights['pointLight'].position.set(20, 20, 20);
 
       // TODO: why does this add a massive GPU load? (shadows?)
@@ -289,63 +297,65 @@ class WebGL extends HTMLElement {
 
     } else if (this.activePage === 'the-veil') {
 
-      const mirrorGeometry = new THREE.PlaneGeometry(22.1, 29.1, 1, 1);
-      const mirror = new Reflector(mirrorGeometry, {
-        clipBias: 0.000001,
-        textureWidth: 4096,
-        textureHeight:4096,
-        color:new THREE.Color(0x6e6e9b),
-      });
-      mirror.position.y = 1.66;
-      mirror.position.z = 1.675;
-      mirror.rotation.x = -0.006; // compensate for scene inaccuracy
-      this.scene.add(mirror);
+      // TODO: this is _very_ heavy on mobile
+      // can we make it work by tweaking the shader? or the model?
+      if (!this.bIsMobile) {
+        const mirrorGeometry = new THREE.PlaneGeometry(22.1, 29.1, 1, 1);
+        const mirror = new Reflector(mirrorGeometry, {
+          clipBias: 0.000001,
+          textureWidth: 4096,
+          textureHeight:4096,
+          color:new THREE.Color(0x6e6e9b),
+        });
+        mirror.position.y = 1.66;
+        mirror.position.z = 1.675;
+        mirror.rotation.x = -0.006; // compensate for scene inaccuracy
+        this.scene.add(mirror);
+      };
 
-      this.entities.lights['pointLight'] = new THREE.PointLight(0xffffff, 3500.0, 500, 2.0);
+      this.entities.lights['pointLight'] = new THREE.PointLight(0xb9ace3, 5000.0, 500, 2.0);
       this.entities.lights['pointLight'].position.set(20, 20, 10);
 
     } else if (this.activePage === 'the-man-in-the-wall') {
 
-      const mirrorGeometry = new THREE.PlaneGeometry(22.1, 29.1, 1, 1);
-      const mirror = new Reflector(mirrorGeometry, {
-        clipBias: 0.000001,
-        textureWidth: 4096,
-        textureHeight: 4096,
-        color:new THREE.Color(0x6e6e9b),
-      });
-      mirror.position.y = 0.01;
-      mirror.position.z = 0;
-      mirror.rotation.x = - Math.PI / 2;
-      this.scene.add(mirror);
+      // TODO: this is _very_ heavy on mobile
+      // can we make it work by tweaking the shader? or the model?
+      if (!this.bIsMobile) {
+        const mirrorGeometry = new THREE.PlaneGeometry(22.1, 29.1, 1, 1);
+        const mirror = new Reflector(mirrorGeometry, {
+          clipBias: 0.000001,
+          textureWidth: 4096,
+          textureHeight: 4096,
+          color:new THREE.Color(0x6e6e9b),
+        });
+        mirror.position.y = 0.01;
+        mirror.position.z = 0;
+        mirror.rotation.x = - Math.PI / 2;
+        this.scene.add(mirror);
+      };
 
-      this.entities.lights['pointLight'] = new THREE.PointLight(0xffffff, 2500.0, 500, 2.0);
+      this.entities.lights['pointLight'] = new THREE.PointLight(0xb9ace3, 2500.0, 500, 2.0);
       this.entities.lights['pointLight'].position.set(10, 10, 10);
 
     } else if (this.activePage === 'another-world-awaits') {
       this.entities.lights['pointLight'] = new THREE.PointLight(0xffffff, 2500000.0, 500, 2.0);
       this.entities.lights['pointLight'].position.set(0, 150, 0);
+    };
 
-      // TODO: why does this add a massive GPU load? (shadows?)
-      // this.entities.lights['pointLight2'] = new THREE.PointLight(0xffffff, 1500000.0, 500, 2.0);
-      // this.entities.lights['pointLight2'].position.set(275, 25, 0);
-
-    }
+    // TODO: this explodes on mobile (VRAM?)
+    // reducing shadow res might work
 
     this.entities.lights['pointLight'].castShadow = true;
     this.entities.lights['pointLight'].shadow.bias = -0.0005;
-    this.entities.lights['pointLight'].shadow.mapSize.width = 2048;
-    this.entities.lights['pointLight'].shadow.mapSize.height = 2048;
+    if (!this.bIsMobile) {
+      this.entities.lights['pointLight'].shadow.mapSize.width = 2048;
+      this.entities.lights['pointLight'].shadow.mapSize.height = 2048;
+    } else {
+      this.entities.lights['pointLight'].shadow.mapSize.width = 512;
+      this.entities.lights['pointLight'].shadow.mapSize.height = 512;
+    };
     this.entities.lights['pointLight'].updateMatrixWorld(true);
     this.scene.add(this.entities.lights['pointLight']);
-
-    // if (this.entities.lights['pointLight2']) {
-    //   this.entities.lights['pointLight2'].castShadow = true;
-    //   this.entities.lights['pointLight2'].shadow.bias = -0.0005;
-    //   this.entities.lights['pointLight2'].shadow.mapSize.width = 8192;
-    //   this.entities.lights['pointLight2'].shadow.mapSize.height = 8192;
-    //   this.entities.lights['pointLight2'].updateMatrixWorld(true);
-    //   this.scene.add(this.entities.lights['pointLight2']);
-    // }
   };
 
   createBundledEntityTweens() {
@@ -462,7 +472,6 @@ class WebGL extends HTMLElement {
     };
 
     this.scene.add(this.resources['glft_scene'].scene);
-
   };
 
   createLoadedEntityTweens() {
@@ -478,6 +487,7 @@ class WebGL extends HTMLElement {
 
   createGui() {
     this.gui = new dat.GUI({ autoPlace: true });
+
     // TODO: if we want to place this in a shadow dom instance
     // we need to move the css to that instance
     // this.gui.domElement.style.position = 'absolute';
@@ -591,12 +601,6 @@ class WebGL extends HTMLElement {
     this.entities.helpers['pointLightHelper'] = new THREE.PointLightHelper(this.entities.lights['pointLight'], 1.0, 0x808080);
     this.entities.helpers['pointLightHelper'].visible = false;
     this.scene.add(this.entities.helpers['pointLightHelper']);
-
-    if (this.entities.lights['pointLight2']) {
-      this.entities.helpers['pointLightHelper2'] = new THREE.PointLightHelper(this.entities.lights['pointLight2'], 1.0, 0x808080);
-      this.entities.helpers['pointLightHelper2'].visible = false;
-      this.scene.add(this.entities.helpers['pointLightHelper2']);
-    }
   };
 
   createAnimationLoop() {

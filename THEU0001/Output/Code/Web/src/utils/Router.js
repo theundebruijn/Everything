@@ -45,28 +45,13 @@ class Router {
   onNewPage() {
 
     const pathName = this.getPathName();
+    const stream = FRP.getStream('router:onNewPage');
 
-    if (pathName === '') {
-      const x = FRP.getStream('router:onNewPage');
-      x('home');
-
-    } else if (pathName === 'the-veil/') {
-      const x = FRP.getStream('router:onNewPage');
-      x('the-veil');
-
-    } else if (pathName === 'the-man-in-the-wall/') {
-      const x = FRP.getStream('router:onNewPage');
-      x('the-man-in-the-wall');
-
-    } else if (pathName === 'another-world-awaits/') {
-      const x = FRP.getStream('router:onNewPage');
-      x('another-world-awaits');
-
-    } else {
-      const x = FRP.getStream('router:onNewPage');
-      x('404');
-
-    }
+    if (pathName === '') { stream('home'); }
+    else if (pathName === 'the-veil/') { stream('the-veil'); }
+    else if (pathName === 'the-man-in-the-wall/') { stream('the-man-in-the-wall'); }
+    else if (pathName === 'another-world-awaits/') { stream('another-world-awaits'); }
+    else { stream('404'); }
   };
 };
 

@@ -3,7 +3,7 @@
 ///////////////////
 
 /// NPM ///
-import { getFeatures } from 'detect-features';
+import { getGPUTier  } from 'detect-gpu';
 
 
 ///////////////
@@ -17,13 +17,13 @@ const ENV = Object.create(null);
 ///// OBJ METHODS /////
 ///////////////////////
 
-ENV.detectFeatures = async function (fCB) {
-  this.features = await getFeatures();
+ENV.detectGPU = async function (fCB) {
+  this.gpu = await getGPUTier({ benchmarksURL: '/static/benchmarks/2020.11.20' });
   fCB();
 };
 
-ENV.getFeatures = function() {
-  return this.features;
+ENV.getGPU = function() {
+  return this.gpu;
 };
 
 
