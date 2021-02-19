@@ -2,14 +2,11 @@
   "allowJs": true,
   "compilerOptions": {
     "baseUrl": "./",
-    "paths": {
-      //Assuming your components/utilities live in ./src
-      //Update this path as necessary
-      "~/*": ["src/*"],
-    },
+    "paths": { "~/*": ["src/*"] },
+    "moduleResolution": "node",
     "target": "es2020",
     "checkJs": true,
   },
-  "include":  ["src/**/*"],
+  "include":  ["src/**/*", "_meta/types/**/*"],
   "exclude": ["node_modules", "_dev", "_dist", "_tmp"]
 }

@@ -21,6 +21,11 @@ case "$1" in
     docker exec -u thisisalocaluser -it theu0001-output-code-web /bin/bash -c "cd /usr/src/app && npm run clean"
     ;;
 
+  fund)
+    echo "theu0001-output-code-web -> fund";
+    docker exec -u thisisalocaluser -it theu0001-output-code-web /bin/bash -c "cd /usr/src/app && npm fund"
+    ;;
+
   install)
     echo "theu0001-output-code-web -> install";
     docker exec -u thisisalocaluser -it theu0001-output-code-web /bin/bash -c "cd /usr/src/app && npm install"

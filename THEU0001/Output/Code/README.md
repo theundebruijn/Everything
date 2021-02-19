@@ -27,7 +27,15 @@
 Microsoft Windows 10 `(x64)` `(enterprise)` — `version 20H2`, `build 19042.685`
 a wsl2 vm configured using the devops readme
 monorepo checkout configured using the monorepo readme
+
+notes:
+While we use strict ES6/ES2020 code that we _don't_ transpile this poses a couple gotchas. Especially in relation to VS Code's intellisense.
+A big one is that bound function calls (.bind()) aren't properly handled by the interpreter. One solution is to move to fat arrow calls (=>)
+but considering those still impose a hefty performance penalty let's try and avoid these.
+see: https://stackoverflow.com/a/20627988
 </sup>
+
+
 
 ##### DevOps
 <sup>1 / setup local docker env (wsl2)</sup>

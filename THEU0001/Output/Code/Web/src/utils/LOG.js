@@ -19,11 +19,11 @@ const LOG = loglevel.info;
 
 // no we inject the other log level methods on top
 // not super clean, but it allows the top level object to be directly callable
-LOG.trace = loglevel.trace;
-LOG.debug = loglevel.debug;
-LOG.info = loglevel.info;  // duplicate for completeness sake
-LOG.warn = loglevel.warn;
-LOG.error = loglevel.error;
+LOG['trace'] = loglevel.trace;
+LOG['debug'] = loglevel.debug;
+LOG['info'] = loglevel.info;  // duplicate for completeness sake
+LOG['warn'] = loglevel.warn;
+LOG['error'] = loglevel.error;
 
 
 ///////////////////////

@@ -46,7 +46,9 @@ class Loader extends HTMLElement {
     this.entities.lights = {};
     this.entities.helpers = {};
 
-    this.tweens = {};
+    this.mixer = null;
+
+    this.oTweens = {};
 
     /// PRE-INIT CONTRUCTS ///
     this.constructShadowDOM();
@@ -108,7 +110,7 @@ class Loader extends HTMLElement {
 
     ], function (err, results) {
       // LOG('Loader : __init : complete');
-      if (err) { return LOG.error(err); }
+      if (err) { return LOG['error'](err); }
 
       // Now the resources have been loaded we can compute the methods that rely on them.
       this.createLoadedEntities();
@@ -141,14 +143,14 @@ class Loader extends HTMLElement {
   intro() {
     LOG('Loader : intro');
 
-    if (this.tweens['sceneIntro']) this.tweens['sceneIntro'].kill();
-    if (this.tweens['sceneOutro']) this.tweens['sceneOutro'].kill();
+    if (this.oTweens['sceneIntro']) this.oTweens['sceneIntro'].kill();
+    if (this.oTweens['sceneOutro']) this.oTweens['sceneOutro'].kill();
 
     // resume render loop
-    for (const tween in this.tweens) { this.tweens[tween].resume(); };
+    for (const tween in this.oTweens) { this.oTweens[tween].resume(); };
     this.renderer.setAnimationLoop(this.tick.bind(this));
 
-    this.tweens['sceneIntro'] = TweenMax.to(this.domCanvas, 0.500, {
+    this.oTweens['sceneIntro'] = TweenMax.to(this.domCanvas, 0.500, {
       opacity: 1.0, delay: 0.650, ease: Linear.easeNone, onComplete: function() {
         LOG('Loader : intro : complete');
       }.bind(this),
@@ -158,15 +160,15 @@ class Loader extends HTMLElement {
   outro() {
     LOG('Loader : outro');
 
-    if (this.tweens['sceneIntro']) this.tweens['sceneIntro'].kill();
-    if (this.tweens['sceneOutro']) this.tweens['sceneOutro'].kill();
+    if (this.oTweens['sceneIntro']) this.oTweens['sceneIntro'].kill();
+    if (this.oTweens['sceneOutro']) this.oTweens['sceneOutro'].kill();
 
-    this.tweens['sceneOutro'] = TweenMax.to(this.domCanvas, 0.500, {
+    this.oTweens['sceneOutro'] = TweenMax.to(this.domCanvas, 0.500, {
       opacity: 0.0, ease: Linear.easeNone, onComplete: function() {
         LOG('Loader : outro : complete');
 
         // kill render loop
-        for (const tween in this.tweens) { this.tweens[tween].pause(); };
+        for (const tween in this.oTweens) { this.oTweens[tween].pause(); };
         this.renderer.setAnimationLoop(null);
       }.bind(this),
     });
@@ -274,7 +276,7 @@ class Loader extends HTMLElement {
   createBundledEntityTweens() {
 
 
-    this.tweens['pointLightPosition'] = TweenMax.fromTo(this.entities.lights['pointLight'].position, 10, {
+    this.oTweens['pointLightPosition'] = TweenMax.fromTo(this.entities.lights['pointLight'].position, 10, {
       x: this.entities.lights['pointLight'].position.x,
     }, {
       x: -20,
@@ -376,7 +378,7 @@ class Loader extends HTMLElement {
 
     // update animations
     const delta = this.clock.getDelta();
-    if (this.mixer) this.mixer.update(delta);
+    if (this.mixer !== null) this.mixer.update(delta);
 
     // update renderer
     this.renderer.render(this.scene, this.camera);
@@ -412,11 +414,11 @@ class Loader extends HTMLElement {
   };
 
   removeTweens() {
-    for (const tween in this.tweens) { this.tweens[tween].kill(); };
+    for (const tween in this.oTweens) { this.oTweens[tween].kill(); };
   };
 
   removeGui() {
-    this.gui.destroy();
+    // this.gui['destroy']();
   };
 
 
@@ -428,8 +430,8 @@ class Loader extends HTMLElement {
     if (this.scene) {
       for (let i = this.scene.children.length - 1; i >= 0; i--) {
         if (this.scene.children[i] instanceof THREE.Mesh) {
-          this.scene.children[i].geometry.dispose();
-          this.scene.children[i].material.dispose();
+          this.scene.children[i]['geometry'].dispose();
+          this.scene.children[i]['material'].dispose();
         }
         this.scene.remove(this.scene.children[i]);
       };

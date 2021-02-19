@@ -157,8 +157,10 @@ class Main {
 
         // cleanup
         this.cActivePage = null;
+
         // this 'recursively' triggers the disconnectedCallbacks
-        DOM.empty(this.oComponentInstances['_container'].oDOMElements.domPageWrapper);
+        // we need to refer to the object like so as the VS Code intellisense doesn't properly handle bound call scopes (see README.md)
+        DOM.empty(this['oComponentInstances']['_container'].oDOMElements.domPageWrapper);
 
         // continue
         fCB();
@@ -180,7 +182,7 @@ class Main {
         else if (newPage === 'the-veil') { this.cActivePage = new TheVeil(fCB); }
         else if (newPage === 'the-man-in-the-wall') { this.cActivePage = new TheManInTheWall(fCB); }
         else if (newPage === 'another-world-awaits') { this.cActivePage = new AnotherWorldAwaits(fCB); }
-        else if (newPage === '404') { this.cActivePage = new Error('404', fCB); };
+        // else if (newPage === '404') { this.cActivePage = new Error('404', fCB); };
       }.bind(this),
 
     ], function (err, results) {

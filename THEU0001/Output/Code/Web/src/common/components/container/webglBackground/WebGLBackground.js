@@ -269,21 +269,17 @@ class WebGLBackground extends HTMLElement {
     for (const tween in this.tweens) { this.tweens[tween].kill(); };
   };
 
-  removeGui() {
-    this.gui.destroy();
-  };
+  removeGui() {};
 
 
-  removeLoaders() {
-    this.dracoLoader.dispose();
-  };
+  removeLoaders() {};
 
   removeThree() {
     if (this.scene) {
       for (let i = this.scene.children.length - 1; i >= 0; i--) {
         if (this.scene.children[i] instanceof THREE.Mesh) {
-          this.scene.children[i].geometry.dispose();
-          this.scene.children[i].material.dispose();
+          this.scene.children[i]['geometry'].dispose();
+          this.scene.children[i]['material'].dispose();
         }
         this.scene.remove(this.scene.children[i]);
       };

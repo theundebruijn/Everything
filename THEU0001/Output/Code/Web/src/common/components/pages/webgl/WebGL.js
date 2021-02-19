@@ -29,7 +29,7 @@ import AnotherWorldAwaits from './assets/another-world-awaits.glb';
 import sReflectorFragment from './shaders/sReflectorFragment.glsl';
 
 // fragment shader override
-Reflector.ReflectorShader.fragmentShader = sReflectorFragment;
+Reflector['ReflectorShader'].fragmentShader = sReflectorFragment;
 
 
 /////////////////
@@ -56,7 +56,10 @@ class WebGL extends HTMLElement {
     this.entities.lights = {};
     this.entities.helpers = {};
 
+    this.mixer = null;
+
     this.oTweens = {};
+
     /// PRE-INIT CONTRUCTS ///
     this.constructShadowDOM();
 
@@ -116,7 +119,7 @@ class WebGL extends HTMLElement {
 
     ], function (err, results) {
       LOG('WebGL : __init : complete');
-      if (err) { return LOG.error(err); }
+      if (err) { return LOG['error'](err); }
 
       // Now the resources have been loaded we can compute the methods that rely on them.
       this.createLoadedEntities();
@@ -291,7 +294,7 @@ class WebGL extends HTMLElement {
         clipBias: 0.000001,
         textureWidth: 4096,
         textureHeight:4096,
-        color: 0x6e6e9b,
+        color:new THREE.Color(0x6e6e9b),
       });
       mirror.position.y = 1.66;
       mirror.position.z = 1.675;
@@ -308,7 +311,7 @@ class WebGL extends HTMLElement {
         clipBias: 0.000001,
         textureWidth: 4096,
         textureHeight: 4096,
-        color: 0x6e6e9b,
+        color:new THREE.Color(0x6e6e9b),
       });
       mirror.position.y = 0.01;
       mirror.position.z = 0;
@@ -482,7 +485,7 @@ class WebGL extends HTMLElement {
     // this.gui.domElement.style.right = '0px';
     // DOM.append(this.gui.domElement, document.body);
 
-    const folder_renderSettings = this.gui.addFolder('Render Settings');
+    const folder_renderSettings = this.gui['addFolder']('Render Settings');
     folder_renderSettings.open();
 
     const renderSettingsOptions = {
@@ -506,7 +509,7 @@ class WebGL extends HTMLElement {
 
     folder_renderSettings.add(renderSettingsOptions, 'pixelRatio').min(1).max(10).step(.1).onChange(function(value) { this.renderer.setPixelRatio(value); }.bind(this));
 
-    const folder_cameraSettings = this.gui.addFolder('Camera Settings');
+    const folder_cameraSettings = this.gui['addFolder']('Camera Settings');
     folder_cameraSettings.open();
 
     this.cameraSettingsOptions = {
@@ -527,7 +530,7 @@ class WebGL extends HTMLElement {
     folder_cameraSettings.add(this.cameraSettingsOptions, 'pos_y').name('pos Y').min(-1000).max(1000).step(.01).listen().onChange(function(value) { this.camera.position.y = value; }.bind(this));
     folder_cameraSettings.add(this.cameraSettingsOptions, 'pos_z').name('pos Z').min(-1000).max(1000).step(.01).listen().onChange(function(value) { this.camera.position.z = value; }.bind(this));
 
-    const folder_constrolsTarget = this.gui.addFolder('Controls Target');
+    const folder_constrolsTarget = this.gui['addFolder']('Controls Target');
     folder_constrolsTarget.open();
 
     this.controlsTargetOptions = {
@@ -542,7 +545,7 @@ class WebGL extends HTMLElement {
     folder_constrolsTarget.add(this.controlsTargetOptions, 'y').name('Y').min(-1000).max(1000).step(.01).listen().onChange(function(value) { this.controls.target.y = value; }.bind(this));
     folder_constrolsTarget.add(this.controlsTargetOptions, 'z').name('Z').min(-1000).max(1000).step(.01).listen().onChange(function(value) { this.controls.target.z = value; }.bind(this));
 
-    const folder_studioSettings = this.gui.addFolder('Studio Settings');
+    const folder_studioSettings = this.gui['addFolder']('Studio Settings');
     folder_studioSettings.open();
 
     const studioSettingsOptions = {
@@ -560,11 +563,11 @@ class WebGL extends HTMLElement {
     const obj = { grab_frameBuffer: function() {
       const dataURL = this.domCanvas.toDataURL('image/png');
       const newTab = window.open();
-      newTab.document.body.style.margin = 0;
+      newTab.document.body.style.margin = '0px';
       newTab.document.body.innerHTML = '<img src="'+ dataURL +'">';
     }.bind(this)};
 
-    this.gui.add(obj, 'grab_frameBuffer').name('grab framebuffer');
+    this.gui['add'](obj, 'grab_frameBuffer').name('grab framebuffer');
 
   };
 
@@ -615,7 +618,7 @@ class WebGL extends HTMLElement {
 
     // update animations
     const delta = this.clock.getDelta();
-    if (this.mixer) this.mixer.update(delta);
+    if (this.mixer !== null) this.mixer.update(delta);
 
     // update renderer
     this.renderer.render(this.scene, this.camera);
@@ -655,7 +658,7 @@ class WebGL extends HTMLElement {
   };
 
   removeGui() {
-    this.gui.destroy();
+    this.gui['destroy']();
   };
 
   removeLoaders() {
@@ -666,8 +669,8 @@ class WebGL extends HTMLElement {
     if (this.scene) {
       for (let i = this.scene.children.length - 1; i >= 0; i--) {
         if (this.scene.children[i] instanceof THREE.Mesh) {
-          this.scene.children[i].geometry.dispose();
-          this.scene.children[i].material.dispose();
+          this.scene.children[i]['geometry'].dispose();
+          this.scene.children[i]['material'].dispose();
         }
         this.scene.remove(this.scene.children[i]);
       };
