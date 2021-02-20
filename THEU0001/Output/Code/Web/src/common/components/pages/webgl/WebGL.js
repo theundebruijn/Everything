@@ -21,10 +21,14 @@ import { LOG } from '~/utils/LOG.js';
 
 /// ASSETS ///
 import sCSS from './WebGL.css';
-import Home from './assets/home.glb';
-import TheMainInTheWall from './assets/the-man-in-the-wall.glb';
-import TheVeil from './assets/the-veil.glb';
-import AnotherWorldAwaits from './assets/another-world-awaits.glb';
+import home_LOD0 from './assets/home_LOD0.glb';
+import home_LOD1 from './assets/home_LOD1.glb';
+import theMainInTheWall_LOD0 from './assets/the-man-in-the-wall_LOD0.glb';
+import theMainInTheWall_LOD1 from './assets/the-man-in-the-wall_LOD1.glb';
+import theVeil_LOD0 from './assets/the-veil_LOD0.glb';
+import theVeil_LOD1 from './assets/the-veil_LOD1.glb';
+import anotherWorldAwaits_LOD0 from './assets/another-world-awaits_LOD0.glb';
+import anotherWorldAwaits_LOD1 from './assets/another-world-awaits_LOD1.glb';
 
 import sReflectorFragment from './shaders/sReflectorFragment.glsl';
 
@@ -416,13 +420,45 @@ class WebGL extends HTMLElement {
     gltfLoader.setDRACOLoader(this.dracoLoader);
 
     if (this.activePage === 'home') {
-      resourceLoader.add('glft_scene', Home, { loadType: Resource.LOAD_TYPE.XHR, xhrType: Resource.XHR_RESPONSE_TYPE.BUFFER });
-    } else if (this.activePage === 'the-veil') {
-      resourceLoader.add('glft_scene', TheVeil, { loadType: Resource.LOAD_TYPE.XHR, xhrType: Resource.XHR_RESPONSE_TYPE.BUFFER });
+
+      if (this.bIsMobile || this.nGPUTier === 1) {
+        LOG('111');
+        resourceLoader.add('glft_scene', home_LOD1, { loadType: Resource.LOAD_TYPE.XHR, xhrType: Resource.XHR_RESPONSE_TYPE.BUFFER });
+      } else {
+        LOG('222');
+        resourceLoader.add('glft_scene', home_LOD0, { loadType: Resource.LOAD_TYPE.XHR, xhrType: Resource.XHR_RESPONSE_TYPE.BUFFER });
+      }
+
+    }  else if (this.activePage === 'the-veil') {
+
+      if (this.bIsMobile || this.nGPUTier === 1) {
+        LOG('111');
+        resourceLoader.add('glft_scene', theVeil_LOD1, { loadType: Resource.LOAD_TYPE.XHR, xhrType: Resource.XHR_RESPONSE_TYPE.BUFFER });
+      } else {
+        LOG('222');
+        resourceLoader.add('glft_scene', theVeil_LOD0, { loadType: Resource.LOAD_TYPE.XHR, xhrType: Resource.XHR_RESPONSE_TYPE.BUFFER });
+      }
+
     } else if (this.activePage === 'the-man-in-the-wall') {
-      resourceLoader.add('glft_scene', TheMainInTheWall, { loadType: Resource.LOAD_TYPE.XHR, xhrType: Resource.XHR_RESPONSE_TYPE.BUFFER });
+
+      if (this.bIsMobile || this.nGPUTier === 1) {
+        LOG('111');
+        resourceLoader.add('glft_scene', theMainInTheWall_LOD1, { loadType: Resource.LOAD_TYPE.XHR, xhrType: Resource.XHR_RESPONSE_TYPE.BUFFER });
+      } else {
+        LOG('222');
+        resourceLoader.add('glft_scene', theMainInTheWall_LOD0, { loadType: Resource.LOAD_TYPE.XHR, xhrType: Resource.XHR_RESPONSE_TYPE.BUFFER });
+      }
+
     } else if (this.activePage === 'another-world-awaits') {
-      resourceLoader.add('glft_scene', AnotherWorldAwaits, { loadType: Resource.LOAD_TYPE.XHR, xhrType: Resource.XHR_RESPONSE_TYPE.BUFFER });
+
+      if (this.bIsMobile || this.nGPUTier === 1) {
+        LOG('111');
+        resourceLoader.add('glft_scene', anotherWorldAwaits_LOD1, { loadType: Resource.LOAD_TYPE.XHR, xhrType: Resource.XHR_RESPONSE_TYPE.BUFFER });
+      } else {
+        LOG('222');
+        resourceLoader.add('glft_scene', anotherWorldAwaits_LOD0, { loadType: Resource.LOAD_TYPE.XHR, xhrType: Resource.XHR_RESPONSE_TYPE.BUFFER });
+      }
+
     };
 
     resourceLoader.use(function (resource, next) {

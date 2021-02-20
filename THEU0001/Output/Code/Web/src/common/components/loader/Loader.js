@@ -19,7 +19,7 @@ import { CSS } from '~/utils/CSS.js';
 
 /// ASSETS ///
 import sCSS from './Loader.css';
-import LoaderAsset from './assets/loader.glb';
+import loader_LOD0 from './assets/loader_LOD0.glb';
 import { LOG } from '../../../utils/LOG';
 
 
@@ -295,7 +295,7 @@ class Loader extends HTMLElement {
     gltfLoader.setDRACOLoader(this.dracoLoader);
 
 
-    resourceLoader.add('glft_scene', LoaderAsset, { loadType: Resource.LOAD_TYPE.XHR, xhrType: Resource.XHR_RESPONSE_TYPE.BUFFER });
+    resourceLoader.add('glft_scene', loader_LOD0, { loadType: Resource.LOAD_TYPE.XHR, xhrType: Resource.XHR_RESPONSE_TYPE.BUFFER });
 
 
     resourceLoader.use(function (resource, next) {
