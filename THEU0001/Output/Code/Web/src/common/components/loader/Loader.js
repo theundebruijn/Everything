@@ -13,6 +13,7 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 /// LOCAL ///
+import { FRP } from '~/utils/FRP.js';
 import { ENV } from '~/utils/ENV.js';
 import { DOM } from '~/utils/DOM.js';
 import { CSS } from '~/utils/CSS.js';
@@ -35,14 +36,29 @@ class Loader extends HTMLElement {
 
     this.oOptions = oOptions;
 
-    this.bIsMobile = ENV.getGPU().isMobile;
-    this.nGPUTier = ENV.getGPU().tier;
+    async.parallel([
+      function (fCB) { this.createEnvironment(fCB); }.bind(this),
+      function (fCB) { this.createDataStructures(fCB); }.bind(this),
+      function (fCB) { this.createShadowDOM(fCB); }.bind(this),
+    ], function (err, results) {
 
+      this.__init(fCB);
+
+    }.bind(this));
+  };
+
+  createEnvironment(fCB) {
+    this.env = Object.create(null);
+    this.env.bIsMobile = ENV.getGPU().isMobile;
+    this.env.nGPUTier = ENV.getGPU().tier;
+
+    fCB();
+  };
+
+  createDataStructures(fCB) {
     this.activePage = this.oOptions.sContent;
 
-    // Create holders for entities we need to keep track of.
     this.resources = {};
-
     this.entities = {};
     this.entities.meshes = {};
     this.entities.lights = {};
@@ -52,20 +68,18 @@ class Loader extends HTMLElement {
 
     this.oTweens = {};
 
-    /// PRE-INIT CONTRUCTS ///
-    this.constructShadowDOM();
-
-
-    this.__init(fCB);
+    fCB();
   };
 
-  constructShadowDOM() {
+  createShadowDOM(fCB) {
     this.shadow = this.attachShadow({ mode: 'open' });
 
     const oCSSAssets = { sCSS: sCSS };
     const _css = CSS.createDomStyleElement(oCSSAssets);
 
     DOM.append(_css, this.shadow);
+
+    fCB();
   };
 
 
@@ -81,7 +95,7 @@ class Loader extends HTMLElement {
   ///////////////////////////
 
   __init(fCB) {
-    LOG('Loader : __init');
+    LOG.info('Loader : __init');
 
     async.series([
       // As the CSS has been applied to the Shadow DOM we can start creating the WebGL environment.
@@ -98,6 +112,8 @@ class Loader extends HTMLElement {
         if (process.env.NODE_ENV === 'development') this.createGui();
         this.createAnimationLoop();
 
+        this.createEventListeners();
+
         callback();
       }.bind(this),
 
@@ -111,7 +127,7 @@ class Loader extends HTMLElement {
       }.bind(this),
 
     ], function (err, results) {
-      // LOG('Loader : __init : complete');
+      // LOG.info('Loader : __init : complete');
       if (err) { return LOG['error'](err); }
 
       // Now the resources have been loaded we can compute the methods that rely on them.
@@ -143,7 +159,7 @@ class Loader extends HTMLElement {
 
   /// ANIMATE ///
   intro() {
-    LOG('Loader : intro');
+    LOG.info('Loader : intro');
 
     if (this.oTweens['sceneIntro']) this.oTweens['sceneIntro'].kill();
     if (this.oTweens['sceneOutro']) this.oTweens['sceneOutro'].kill();
@@ -153,21 +169,21 @@ class Loader extends HTMLElement {
     this.renderer.setAnimationLoop(this.tick.bind(this));
 
     this.oTweens['sceneIntro'] = TweenMax.to(this.domCanvas, 0.500, {
-      opacity: 1.0, delay: 0.650, ease: Linear.easeNone, onComplete: function() {
-        LOG('Loader : intro : complete');
+      opacity: 1.0, delay: 0.500, ease: Linear.easeNone, onComplete: function() {
+        LOG.info('Loader : intro : complete');
       }.bind(this),
     });
   };
 
   outro() {
-    LOG('Loader : outro');
+    LOG.info('Loader : outro');
 
     if (this.oTweens['sceneIntro']) this.oTweens['sceneIntro'].kill();
     if (this.oTweens['sceneOutro']) this.oTweens['sceneOutro'].kill();
 
     this.oTweens['sceneOutro'] = TweenMax.to(this.domCanvas, 0.500, {
       opacity: 0.0, ease: Linear.easeNone, onComplete: function() {
-        LOG('Loader : outro : complete');
+        LOG.info('Loader : outro : complete');
 
         // kill render loop
         for (const tween in this.oTweens) { this.oTweens[tween].pause(); };
@@ -225,17 +241,17 @@ class Loader extends HTMLElement {
     this.renderer.shadowMap.enabled = true;
 
 
-    if (this.bIsMobile) {
+    if (this.env.bIsMobile) {
 
       this.renderer.setPixelRatio(1.0);
       this.renderer.shadowMap.type = THREE.PCFShadowMap ;
 
-    } else if (this.nGPUTier === 1) { // tier 1 GPUs (intel integrated etc)
+    } else if (this.env.nGPUTier === 1) { // tier 1 GPUs (intel integrated etc)
 
       this.renderer.setPixelRatio(0.8);
       this.renderer.shadowMap.type = THREE.BasicShadowMap;
 
-    } else if (this.nGPUTier === 2) {
+    } else if (this.env.nGPUTier === 2) {
 
       this.renderer.setPixelRatio(1.0);
       this.renderer.shadowMap.type = THREE.PCFShadowMap;
@@ -282,7 +298,7 @@ class Loader extends HTMLElement {
     this.entities.lights['pointLight'].castShadow = true;
     this.entities.lights['pointLight'].shadow.bias = -0.0005;
 
-    if (!this.bIsMobile && this.nGPUTier > 1) {
+    if (!this.env.bIsMobile && this.env.nGPUTier > 1) {
       this.entities.lights['pointLight'].shadow.mapSize.width = 2048;
       this.entities.lights['pointLight'].shadow.mapSize.height = 2048;
     } else {
@@ -412,6 +428,20 @@ class Loader extends HTMLElement {
 
     // update renderer
     this.renderer.render(this.scene, this.camera);
+  };
+
+
+  //////////////////////////
+  ///// EVENT HANDLERS /////
+  //////////////////////////
+
+  createEventListeners() {
+    FRP.addStreamListener('loader:triggerAnimation', null, function(sType) {
+
+      if (sType === 'intro') { this.intro(); }
+      else if (sType === 'outro') { this.outro(); }
+
+    }.bind(this));
   };
 
 

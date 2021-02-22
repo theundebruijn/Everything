@@ -11,6 +11,7 @@ import * as THREE from 'three';
 import { FRP } from '~/utils/FRP.js';
 import { DOM } from '~/utils/DOM.js';
 import { CSS } from '~/utils/CSS.js';
+import { LOG } from '~/utils/LOG.js';
 
 /// ASSETS ///
 import sCSS from './WebGLBackground.css';
@@ -26,21 +27,31 @@ class WebGLBackground extends HTMLElement {
   constructor(fCB) {
     super();
 
-    this.tweens = {};
+    async.parallel([
+      function (fCB) { this.createDataStructures(fCB); }.bind(this),
+      function (fCB) { this.createShadowDOM(fCB); }.bind(this),
+    ], function (err, results) {
 
-    /// PRE-INIT CONTRUCTS ///
-    this.constructShadowDOM();
+      this.__init(fCB);
 
-    this.__init(fCB);
+    }.bind(this));
   };
 
-  constructShadowDOM() {
+  createDataStructures(fCB) {
+    this.tweens = {};
+
+    fCB();
+  };
+
+  createShadowDOM(fCB) {
     this.shadow = this.attachShadow({ mode: 'open' });
 
     const oCSSAssets = { sCSS: sCSS };
     const _css = CSS.createDomStyleElement(oCSSAssets);
 
     DOM.append(_css, this.shadow);
+
+    fCB();
   };
 
 
@@ -86,7 +97,7 @@ class WebGLBackground extends HTMLElement {
       }.bind(this),
 
     ], function (err, results) {
-      if (err) { return console.log(err); }
+      if (err) { return LOG.error(err); }
 
       // Now the resources have been loaded we can compute the methods that rely on them.
       this.createLoadedEntities();

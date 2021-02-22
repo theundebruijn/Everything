@@ -28,28 +28,34 @@ class Title extends HTMLElement {
 
     this.oOptions = oOptions;
 
-    ///////////////////////////
-    ///// CLASS VARIABLES /////
-    ///////////////////////////
+    async.parallel([
+      function (fCB) { this.createDataStructures(fCB); }.bind(this),
+      function (fCB) { this.createShadowDOM(fCB); }.bind(this),
+    ], function (err, results) {
 
+      this.__init(fCB);
+
+    }.bind(this));
+  };
+
+  createDataStructures(fCB) {
     this.oDOMElements = Object.create(null);
     this.oComponentInstances = Object.create(null);
 
     this.oTweens = Object.create(null);
 
-    /// PRE-INIT CONTRUCTS ///
-    this.constructShadowDOM();
-
-    this.__init(fCB);
+    fCB();
   };
 
-  constructShadowDOM() {
+  createShadowDOM(fCB) {
     this.shadow = this.attachShadow({ mode: 'open' });
 
     const oCSSAssets = { sCSS: sCSS };
     const _css = CSS.createDomStyleElement(oCSSAssets);
 
     DOM.append(_css, this.shadow);
+
+    fCB();
   };
 
 
@@ -68,13 +74,13 @@ class Title extends HTMLElement {
   // triggered by the web component connectedCallback
   // we're attached to the DOM at this point
   __init(fCB) {
-    LOG('Title : __init');
+    LOG.info('Title : __init');
 
     async.series([
       function (fCB) { this.createDomElements(fCB); }.bind(this),
       function (fCB) { this.createComponentInstances(fCB); }.bind(this),
     ], function (err, results) {
-      LOG('Title : __init : complete');
+      LOG.info('Title : __init : complete');
 
       fCB();
     }.bind(this));
@@ -137,7 +143,7 @@ class Title extends HTMLElement {
 
   /// ANIMATE ///
   intro(fCB) {
-    LOG('Title : intro');
+    LOG.info('Title : intro');
 
     async.parallel([
       function (fCB) {
@@ -166,14 +172,14 @@ class Title extends HTMLElement {
 
       }.bind(this),
     ], function (err, results) {
-      LOG('Title : intro : complete');
+      LOG.info('Title : intro : complete');
       fCB();
 
     }.bind(this));
   };
 
   outro(fCB) {
-    LOG('Title : outro');
+    LOG.info('Title : outro');
 
     this.removeTweens();
 
@@ -189,7 +195,7 @@ class Title extends HTMLElement {
       this.oTweens['aTitleSplitOutro' + i] = TweenMax.to(this.oDOMElements['domTitleSplit' + i], 0.600,
         { css: { translateX: 0, opacity: 0.0 }, delay: (i*0.1), ease: Linear.easeNone, onComplete: function() {
           if (i === this.oDOMElements['domTitleWrapper'].children.length -1) {
-            LOG('Title : outro : complete');
+            LOG.info('Title : outro : complete');
 
             fCB();
           };

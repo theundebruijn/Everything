@@ -14,6 +14,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { Reflector } from 'three/examples/jsm/objects/Reflector';
 
 /// LOCAL ///
+import { FRP } from '~/utils/FRP.js';
 import { ENV } from '~/utils/ENV.js';
 import { DOM } from '~/utils/DOM.js';
 import { CSS } from '~/utils/CSS.js';
@@ -48,7 +49,18 @@ class WebGL extends HTMLElement {
 
     this.oOptions = oOptions;
 
-    LOG(ENV.getGPU());
+    async.parallel([
+      function (fCB) { this.createEnvironment(fCB); }.bind(this),
+      function (fCB) { this.createDataStructures(fCB); }.bind(this),
+      function (fCB) { this.createShadowDOM(fCB); }.bind(this),
+    ], function (err, results) {
+
+      this.__init(fCB);
+
+    }.bind(this));
+  };
+
+  createEnvironment(fCB) {
     this.env = Object.create(null);
     this.env.bIsMobile = ENV.getGPU().isMobile;
     this.env.nGPUTier = ENV.getGPU().tier;
@@ -66,26 +78,24 @@ class WebGL extends HTMLElement {
       };
     };
 
+    fCB();
+  };
+
+  createDataStructures(fCB) {
     this.activePage = this.oOptions.sContent;
 
-    // Create holders for entities we need to keep track of.
     this.resources = {};
-
     this.entities = {};
     this.entities.meshes = {};
     this.entities.lights = {};
     this.entities.helpers = {};
-
-    this.mixer = null;
-
     this.oTweens = {};
-
+    this.mixer = null;
 
     this.fAnimateToPositionInterval = null;
     this.nAnimationToPositionCounter = 0;
     this.aPositions = new Array(Object.create(null), Object.create(null), Object.create(null));
 
-    // TODO: maybe home has just 1 ?
     if (this.activePage === 'home') {
       this.aPositions[0] = { camera: { fov: 20, posX: -60, posY: -65, posZ: 95 }, target: { posX: 0, posY: 0, posZ: 0 } };
       this.aPositions[1] = { camera: { fov: 20, posX: 100, posY: -6, posZ: 14 }, target: { posX: -9.5, posY: 2, posZ: 18.5 } };
@@ -102,23 +112,20 @@ class WebGL extends HTMLElement {
       this.aPositions[0] = { camera: { fov: 60, posX: -300, posY: 300, posZ: 600 }, target: { posX: 0, posY: 0, posZ: 0 } };
       this.aPositions[1] = { camera: { fov: 60, posX: 0, posY: 0, posZ: 0 }, target: { posX: 0, posY: 0, posZ: 0 } };
       this.aPositions[2] = { camera: { fov: 60, posX: 0, posY: 0, posZ: 0 }, target: { posX: 0, posY: 0, posZ: 0 } };
-    }
+    };
 
-    console.log(this.aPositions);
-
-    /// PRE-INIT CONTRUCTS ///
-    this.constructShadowDOM();
-
-    this.__init(fCB);
+    fCB();
   };
 
-  constructShadowDOM() {
+  createShadowDOM(fCB) {
     this.shadow = this.attachShadow({ mode: 'open' });
 
     const oCSSAssets = { sCSS: sCSS };
     const _css = CSS.createDomStyleElement(oCSSAssets);
 
     DOM.append(_css, this.shadow);
+
+    fCB();
   };
 
 
@@ -134,7 +141,7 @@ class WebGL extends HTMLElement {
   ///////////////////////////
 
   __init(fCB) {
-    LOG('WebGL : __init');
+    LOG.info('WebGL : __init');
 
     async.series([
       // As the CSS has been applied to` the Shadow DOM we can start creating the WebGL environment.
@@ -164,7 +171,7 @@ class WebGL extends HTMLElement {
       }.bind(this),
 
     ], function (err, results) {
-      LOG('WebGL : __init : complete');
+      LOG.info('WebGL : __init : complete');
       if (err) { return LOG['error'](err); }
 
       // Now the resources have been loaded we can compute the methods that rely on them.
@@ -196,14 +203,11 @@ class WebGL extends HTMLElement {
 
   /// ANIMATE ///
   intro(fCB) {
-    LOG('WebGL : intro');
-
-    // if (this.activePage === 'home') {
-
-    // };
+    LOG.info('WebGL : intro');
 
     this.camera.fov = this.aPositions[0].camera.fov;
 
+    // TODO : create a separate intro position (just for another world awaits ?)
     this.oTweens['cameraIntro'] = TweenMax.fromTo(this.camera.position, 2.000, {
       x: this.aPositions[0].camera.posX / 3, y: this.aPositions[0].camera.posY / 3, z: this.aPositions[0].camera.posZ / 3,
     }, {
@@ -211,19 +215,18 @@ class WebGL extends HTMLElement {
       ease: Sine.easeOut, onComplete: function() {}.bind(this),
     });
 
-
-    // this.animateToPosition(0);
-
-    // TODO: create an interval that loops which we clear on destroy
+    // TODO: clear and recreate interval on window blur/focus ?
+    // or perhaps a boolean check
     this.fAnimateToPositionInterval = setInterval(function() {
+
+      // @ts-ignore // tsc doesn't properly parse bound scopes so we have to ignore
       this.nAnimationToPositionCounter++;
-
-      if (this.nAnimationToPositionCounter > this.aPositions.length-1) { this.nAnimationToPositionCounter = 0; };
-
+      // @ts-ignore // tsc doesn't properly parse bound inputs so we have to ignore
+      if (this.nAnimationToPositionCounter > this.aPositions.length -1) { this.nAnimationToPositionCounter = 0; };
+      // @ts-ignore // tsc doesn't properly parse bound inputs so we have to ignore
       this.animateToPosition(this.nAnimationToPositionCounter);
 
-      // this.animateToPosition(2);
-    }.bind(this), 20000);
+    }.bind(this), 30 * 1000);
 
     // if (this.activePage === 'the-veil') { this.camera.fov = 20; targetX = -97; targetY = 13; targetZ = 30; }
     // if (this.activePage === 'the-man-in-the-wall') { this.camera.fov = 20; targetX = -41; targetY = 45; targetZ = 58; }
@@ -233,7 +236,9 @@ class WebGL extends HTMLElement {
 
     this.oTweens['domCanvasIntro'] = TweenMax.to(this.domCanvas, 2.000, {
       opacity: 1.0, delay: 0.00, ease: Linear.easeNone, onComplete: function() {
-        LOG('WebGL : intro : complete');
+        LOG.info('WebGL : intro : complete');
+
+        this.controls.enabled = true;
 
         fCB();
       }.bind(this),
@@ -242,7 +247,9 @@ class WebGL extends HTMLElement {
   };
 
   outro(fCB) {
-    LOG('WebGL : outro');
+    LOG.info('WebGL : outro');
+
+    this.controls.enabled = false;
 
     // this.removeTweens();
 
@@ -260,7 +267,7 @@ class WebGL extends HTMLElement {
 
     this.oTweens['domCanvasOutro'] = TweenMax.to(this.domCanvas, 0.500, {
       opacity: 0.0, delay: 0.500, ease: Linear.easeNone, onComplete: function() {
-        LOG('WebGL : outro : complete');
+        LOG.info('WebGL : outro : complete');
 
         fCB();
       }.bind(this),
@@ -269,19 +276,30 @@ class WebGL extends HTMLElement {
   };
 
   animateToPosition(nPosition) {
+    const stream = FRP.getStream('loader:triggerAnimation');
+    stream('intro');
+
+    this.controls.enabled = false;
 
     this.camera.fov = this.aPositions[nPosition].camera.fov;
-
-    this.oTweens['cameraIntro'] = TweenMax.to(this.camera.position, 5.000, {
-      x: this.aPositions[nPosition].camera.posX, y: this.aPositions[nPosition].camera.posY, z: this.aPositions[nPosition].camera.posZ,
-      ease: Sine.easeInOut, onComplete: function() {}.bind(this),
-    });
 
     this.oTweens['controlsIntro'] = TweenMax.to(this.controls.target, 2.500, {
       x: this.aPositions[nPosition].target.posX, y: this.aPositions[nPosition].target.posY, z: this.aPositions[nPosition].target.posZ,
       ease: Sine.easeInOut, onComplete: function() {}.bind(this),
     });
-  }
+
+    this.oTweens['cameraIntro'] = TweenMax.to(this.camera.position, 5.000, {
+      x: this.aPositions[nPosition].camera.posX, y: this.aPositions[nPosition].camera.posY, z: this.aPositions[nPosition].camera.posZ,
+      ease: Sine.easeInOut, onComplete: function() {
+
+        const stream = FRP.getStream('loader:triggerAnimation');
+        stream('outro');
+
+        this.controls.enabled = true;
+
+      }.bind(this),
+    });
+  };
 
   createCanvas() {
 
@@ -371,6 +389,8 @@ class WebGL extends HTMLElement {
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.enableDamping = true;
     this.controls.dampingFactor = 0.04;
+
+    this.controls.enabled = false;
   };
 
   createDomObservers() {
@@ -508,40 +528,32 @@ class WebGL extends HTMLElement {
     if (this.activePage === 'home') {
 
       if (this.env.bIsMobile || this.env.nGPUTier === 1) {
-        LOG('111');
         resourceLoader.add('glft_scene', home_LOD1, { loadType: Resource.LOAD_TYPE.XHR, xhrType: Resource.XHR_RESPONSE_TYPE.BUFFER });
       } else {
-        LOG('222');
         resourceLoader.add('glft_scene', home_LOD0, { loadType: Resource.LOAD_TYPE.XHR, xhrType: Resource.XHR_RESPONSE_TYPE.BUFFER });
       }
 
     }  else if (this.activePage === 'the-veil') {
 
       if (this.env.bIsMobile || this.env.nGPUTier === 1) {
-        LOG('111');
         resourceLoader.add('glft_scene', theVeil_LOD1, { loadType: Resource.LOAD_TYPE.XHR, xhrType: Resource.XHR_RESPONSE_TYPE.BUFFER });
       } else {
-        LOG('222');
         resourceLoader.add('glft_scene', theVeil_LOD0, { loadType: Resource.LOAD_TYPE.XHR, xhrType: Resource.XHR_RESPONSE_TYPE.BUFFER });
       }
 
     } else if (this.activePage === 'the-man-in-the-wall') {
 
       if (this.env.bIsMobile || this.env.nGPUTier === 1) {
-        LOG('111');
         resourceLoader.add('glft_scene', theMainInTheWall_LOD1, { loadType: Resource.LOAD_TYPE.XHR, xhrType: Resource.XHR_RESPONSE_TYPE.BUFFER });
       } else {
-        LOG('222');
         resourceLoader.add('glft_scene', theMainInTheWall_LOD0, { loadType: Resource.LOAD_TYPE.XHR, xhrType: Resource.XHR_RESPONSE_TYPE.BUFFER });
       }
 
     } else if (this.activePage === 'another-world-awaits') {
 
       if (this.env.bIsMobile || this.env.nGPUTier === 1) {
-        LOG('111');
         resourceLoader.add('glft_scene', anotherWorldAwaits_LOD1, { loadType: Resource.LOAD_TYPE.XHR, xhrType: Resource.XHR_RESPONSE_TYPE.BUFFER });
       } else {
-        LOG('222');
         resourceLoader.add('glft_scene', anotherWorldAwaits_LOD0, { loadType: Resource.LOAD_TYPE.XHR, xhrType: Resource.XHR_RESPONSE_TYPE.BUFFER });
       }
 
@@ -614,6 +626,7 @@ class WebGL extends HTMLElement {
 
   createGui() {
     this.gui = new dat.GUI({ autoPlace: true });
+    this.gui['close'](); // start in closed state
 
     // TODO: if we want to place this in a shadow dom instance
     // we need to move the css to that instance

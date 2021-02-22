@@ -11,27 +11,19 @@ import { default as loglevel } from 'loglevel';
 ///// OBJ /////
 ///////////////
 
-// we substitute the LOG object as a ref to the loglevel trace
-// this makes calling LOG(x)'s real simple
-// nesting the loglevel.trace call in a property method doesn't work as the
-// initial stack trace becomes the LOG object iself
-const LOG = loglevel.info;
-
-// no we inject the other log level methods on top
-// not super clean, but it allows the top level object to be directly callable
-LOG['trace'] = loglevel.trace;
-LOG['debug'] = loglevel.debug;
-LOG['info'] = loglevel.info;  // duplicate for completeness sake
-LOG['warn'] = loglevel.warn;
-LOG['error'] = loglevel.error;
+const LOG = Object.create(null);
 
 
-///////////////////////
-///// OBJ METHODS /////
-///////////////////////
+//////////////////////////
+///// OBJ PROPERTIES /////
+//////////////////////////
 
-// LOG.trace = loglevel.trace;
-
+LOG.trace = loglevel.trace; // 0
+LOG.debug = loglevel.debug; // 1
+LOG.info = loglevel.info; // 2
+LOG.warn = loglevel.warn; // 3
+LOG.error = loglevel.error; // 4
+// 5 = silent
 
 
 //////////////////////

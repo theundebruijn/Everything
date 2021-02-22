@@ -39,10 +39,17 @@ class Main {
   /// CONSTRUCTOR ///
   constructor() {
 
-    ///////////////////////////
-    ///// CLASS VARIABLES /////
-    ///////////////////////////
+    async.parallel([
+      function (fCB) { this.createDataStructures(fCB); }.bind(this),
+      function (fCB) { this.updateDOM(fCB); }.bind(this),
+    ], function (err, results) {
 
+      this.__init();
+
+    }.bind(this));
+  };
+
+  createDataStructures(fCB) {
     this.oComponentInstances = Object.create(null);
 
     // here we store the class instance of the active page
@@ -54,15 +61,10 @@ class Main {
     // and only at the very last moment set the page we load next
     this.sQueuedPage = null;
 
-
-    /// PRE-INIT CONTRUCTS ///
-    this.constructCSS();
-
-    /// INIT (NON WEB COMPONENT) ///
-    this.__init();
+    fCB();
   };
 
-  constructCSS() {
+  updateDOM(fCB) {
     const oCSSAssets = {
       sCSS: sCSS,
       fonts: {
@@ -73,6 +75,8 @@ class Main {
 
     const _css = CSS.createDomStyleElement(oCSSAssets);
     DOM.append(_css, document.head);
+
+    fCB();
   };
 
 
@@ -81,7 +85,7 @@ class Main {
   ///////////////////////////
 
   __init() {
-    LOG('Main : __init');
+    LOG.info('Main : __init');
 
     async.series([
       function (fCB) { ENV.detectGPU(fCB); }.bind(this),
@@ -89,7 +93,7 @@ class Main {
       function (fCB) { this.handleRouterEvents(fCB); }.bind(this),
       function (fCB) { this.handleWindowBlurEvents(fCB); }.bind(this),
     ], function (err, results) {
-      LOG('Main : __init : complete');
+      LOG.info('Main : __init : complete');
 
       // trigger inital page
       this.oComponentInstances['_router'].onNewPage();
@@ -145,7 +149,8 @@ class Main {
   };
 
   removeActivePage(fCB) {
-    this.oComponentInstances['_loader'].intro(function() {});
+    const stream = FRP.getStream('loader:triggerAnimation');
+    stream('intro');
 
     // happens on first page load
     if (this.cActivePage === null) { fCB(); } else {
@@ -153,7 +158,7 @@ class Main {
       async.series([
         function (fCB) { this.cActivePage.outro(fCB); }.bind(this),
       ], function (err, results) {
-        LOG('Main : removeActivePage : complete');
+        LOG.info('Main : removeActivePage : complete');
 
         // cleanup
         this.cActivePage = null;
@@ -186,7 +191,8 @@ class Main {
       }.bind(this),
 
     ], function (err, results) {
-      this.oComponentInstances['_loader'].outro(function() {});
+      const stream = FRP.getStream('loader:triggerAnimation');
+      stream('outro');
 
       DOM.append(this.cActivePage, this.oComponentInstances['_container'].oDOMElements.domPageWrapper);
       this.cActivePage.intro();

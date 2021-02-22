@@ -28,26 +28,32 @@ class TheManInTheWall extends HTMLElement  {
   constructor(fCB) {
     super();
 
-    ///////////////////////////
-    ///// CLASS VARIABLES /////
-    ///////////////////////////
+    async.parallel([
+      function (fCB) { this.createDataStructures(fCB); }.bind(this),
+      function (fCB) { this.createShadowDOM(fCB); }.bind(this),
+    ], function (err, results) {
 
+      this.__init(fCB);
+
+    }.bind(this));
+  };
+
+  createDataStructures(fCB) {
     this.oDOMElements = Object.create(null);
     this.oComponentInstances = Object.create(null);
 
-    /// PRE-INIT CONTRUCTS ///
-    this.constructShadowDOM();
-
-    this.__init(fCB);
+    fCB();
   };
 
-  constructShadowDOM() {
+  createShadowDOM(fCB) {
     this.shadow = this.attachShadow({ mode: 'open' });
 
     const oCSSAssets = { sCSS: sCSS };
     const _css = CSS.createDomStyleElement(oCSSAssets);
 
     DOM.append(_css, this.shadow);
+
+    fCB();
   };
 
 
@@ -66,13 +72,13 @@ class TheManInTheWall extends HTMLElement  {
   // triggered by the web component connectedCallback
   // we're attached to the DOM at this point
   __init(fCB) {
-    LOG('TheManInTheWall : __init');
+    LOG.info('TheManInTheWall : __init');
 
     async.series([
       function (fCB) { this.createDomElements(fCB); }.bind(this),
       function (fCB) { this.createComponentInstances(fCB); }.bind(this),
     ], function (err, results) {
-      LOG('TheManInTheWall : __init : complete');
+      LOG.info('TheManInTheWall : __init : complete');
 
       fCB();
     }.bind(this));
@@ -112,7 +118,7 @@ class TheManInTheWall extends HTMLElement  {
 
   /// ANIMATE ///
   intro() {
-    LOG('TheManInTheWall : intro');
+    LOG.info('TheManInTheWall : intro');
 
     const _stream = FRP.getStream('_webglBackground:onBackgroundChange');
     _stream({ sColor: 0xa08b68, nDuration: 3.500 });
@@ -121,19 +127,19 @@ class TheManInTheWall extends HTMLElement  {
       function (fCB) { this.oComponentInstances['_webgl'].intro(fCB); }.bind(this),
       function (fCB) { this.oComponentInstances['_title'].intro(fCB); }.bind(this),
     ], function (err, results) {
-      LOG('TheManInTheWall : intro : complete');
+      LOG.info('TheManInTheWall : intro : complete');
 
     }.bind(this));
   };
 
   outro(fCB) {
-    LOG('TheManInTheWall : outro');
+    LOG.info('TheManInTheWall : outro');
 
     async.parallel([
       function (fCB) { this.oComponentInstances['_webgl'].outro(fCB); }.bind(this),
       function (fCB) { this.oComponentInstances['_title'].outro(fCB); }.bind(this),
     ], function (err, results) {
-      LOG('TheManInTheWall : outro : complete');
+      LOG.info('TheManInTheWall : outro : complete');
 
       fCB();
     }.bind(this));

@@ -28,26 +28,32 @@ class Home extends HTMLElement  {
   constructor(fCB) {
     super();
 
-    ///////////////////////////
-    ///// CLASS VARIABLES /////
-    ///////////////////////////
+    async.parallel([
+      function (fCB) { this.createDataStructures(fCB); }.bind(this),
+      function (fCB) { this.createShadowDOM(fCB); }.bind(this),
+    ], function (err, results) {
 
+      this.__init(fCB);
+
+    }.bind(this));
+  };
+
+  createDataStructures(fCB) {
     this.oDOMElements = Object.create(null);
     this.oComponentInstances = Object.create(null);
 
-    /// PRE-INIT CONTRUCTS ///
-    this.constructShadowDOM();
-
-    this.__init(fCB);
+    fCB();
   };
 
-  constructShadowDOM() {
+  createShadowDOM(fCB) {
     this.shadow = this.attachShadow({ mode: 'open' });
 
     const oCSSAssets = { sCSS: sCSS };
     const _css = CSS.createDomStyleElement(oCSSAssets);
 
     DOM.append(_css, this.shadow);
+
+    fCB();
   };
 
 
@@ -66,13 +72,13 @@ class Home extends HTMLElement  {
   // triggered by the web component connectedCallback
   // we're attached to the DOM at this point
   __init(fCB) {
-    LOG('Home : __init');
+    LOG.info('Home : __init');
 
     async.series([
       function (fCB) { this.createDomElements(fCB); }.bind(this),
       function (fCB) { this.createComponentInstances(fCB); }.bind(this),
     ], function (err, results) {
-      LOG('Home : __init : complete');
+      LOG.info('Home : __init : complete');
 
       fCB();
     }.bind(this));
@@ -112,7 +118,7 @@ class Home extends HTMLElement  {
 
   /// ANIMATE ///
   intro() {
-    LOG('Home : intro');
+    LOG.info('Home : intro');
 
     const _stream = FRP.getStream('_webglBackground:onBackgroundChange');
     _stream({ sColor: 0xfdfbf8, nDuration: 3.500 });
@@ -121,19 +127,19 @@ class Home extends HTMLElement  {
       function (fCB) { this.oComponentInstances['_webgl'].intro(fCB); }.bind(this),
       function (fCB) { this.oComponentInstances['_title'].intro(fCB); }.bind(this),
     ], function (err, results) {
-      LOG('Home : intro : complete');
+      LOG.info('Home : intro : complete');
 
     }.bind(this));
   };
 
   outro(fCB) {
-    LOG('Home : outro');
+    LOG.info('Home : outro');
 
     async.parallel([
       function (fCB) { this.oComponentInstances['_webgl'].outro(fCB); }.bind(this),
       function (fCB) { this.oComponentInstances['_title'].outro(fCB); }.bind(this),
     ], function (err, results) {
-      LOG('Home : outro : complete');
+      LOG.info('Home : outro : complete');
 
       fCB();
     }.bind(this));

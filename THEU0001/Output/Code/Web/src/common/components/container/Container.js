@@ -26,21 +26,24 @@ class Container extends HTMLElement  {
   constructor(fCB) {
     super();
 
-    ///////////////////////////
-    ///// CLASS VARIABLES /////
-    ///////////////////////////
+    async.parallel([
+      function (fCB) { this.createDataStructures(fCB); }.bind(this),
+      function (fCB) { this.createShadowDOM(fCB); }.bind(this),
+    ], function (err, results) {
 
+      this.__init(fCB);
+
+    }.bind(this));
+  };
+
+  createDataStructures(fCB) {
     this.oDOMElements = Object.create(null);
     this.oComponentInstances = Object.create(null);
 
-    /// PRE-INIT CONTRUCTS ///
-    this.constructShadowDOM();
-
-
-    this.__init(fCB);
+    fCB();
   };
 
-  constructShadowDOM() {
+  createShadowDOM(fCB) {
     this.shadow = this.attachShadow({ mode: 'open' });
 
     const oCSSAssets = { sCSS: sCSS };
@@ -54,6 +57,8 @@ class Container extends HTMLElement  {
 
 
     DOM.append(_css, this.shadow);
+
+    fCB();
   };
 
 
@@ -130,12 +135,10 @@ class Container extends HTMLElement  {
     //       The ResizeObserver makes sure we handle subsequent resizes of the domCanvasWrapper.
     this.resizeObserver = new ResizeObserver(function(entries) {
 
-      console.log('resize!!!');
-
-      LOG('contentRect.width : ' + Math.round(entries[0].contentRect.width));
-      LOG('window.innerWidth : ' + window.innerWidth);
-      LOG('contentRect.width : ' +  Math.round(entries[0].contentRect.height));
-      LOG('window.innerHeight : ' + window.innerHeight);
+      LOG.info('contentRect.width : ' + Math.round(entries[0].contentRect.width));
+      LOG.info('window.innerWidth : ' + window.innerWidth);
+      LOG.info('contentRect.width : ' +  Math.round(entries[0].contentRect.height));
+      LOG.info('window.innerHeight : ' + window.innerHeight);
 
       this.onDocumentBodyResize(Math.round(entries[0].contentRect.width), Math.round(entries[0].contentRect.height));
 
