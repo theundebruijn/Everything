@@ -49,8 +49,22 @@ class WebGL extends HTMLElement {
     this.oOptions = oOptions;
 
     LOG(ENV.getGPU());
-    this.bIsMobile = ENV.getGPU().isMobile;
-    this.nGPUTier = ENV.getGPU().tier;
+    this.env = Object.create(null);
+    this.env.bIsMobile = ENV.getGPU().isMobile;
+    this.env.nGPUTier = ENV.getGPU().tier;
+    this.env.sGPU = ENV.getGPU().gpu;
+
+    let num = null;
+    this.env.bIsRecentAppleGPU = false;
+
+    if (this.env.sGPU !== undefined) { // undefined through device emulation in chromium
+      if (this.env.sGPU.includes('apple a')) {
+        num = this.env.sGPU.replace(/[^0-9]/g,'');
+        if (num >= 12) {
+          this.env.bIsRecentAppleGPU = true;
+        };
+      };
+    };
 
     this.activePage = this.oOptions.sContent;
 
@@ -65,6 +79,28 @@ class WebGL extends HTMLElement {
     this.mixer = null;
 
     this.oTweens = {};
+
+    this.aPositions = new Array(Object.create(null), Object.create(null), Object.create(null));
+
+    if (this.activePage === 'home') {
+      this.aPositions[0] = { camera: { fov: 20, posX: -60, posY: -65, posZ: 95 }, target: { posX: 0, posY: 0, posZ: 0 } };
+      this.aPositions[1] = { camera: { fov: 20, posX: 0, posY: 0, posZ: 0 }, target: { posX: 0, posY: 0, posZ: 0 } };
+      this.aPositions[2] = { camera: { fov: 20, posX: 0, posY: 0, posZ: 0 }, target: { posX: 0, posY: 0, posZ: 0 } };
+    } else if (this.activePage === 'the-veil') {
+      this.aPositions[0] = { camera: { fov: 20, posX: -97, posY: 13, posZ: 30 }, target: { posX: 0, posY: 0, posZ: 0 } };
+      this.aPositions[1] = { camera: { fov: 20, posX: 0, posY: 0, posZ: 0 }, target: { posX: 0, posY: 0, posZ: 0 } };
+      this.aPositions[2] = { camera: { fov: 20, posX: 0, posY: 0, posZ: 0 }, target: { posX: 0, posY: 0, posZ: 0 } };
+    } else if (this.activePage === 'the-man-in-the-wall') {
+      this.aPositions[0] = { camera: { fov: 20, posX: -41, posY: 45, posZ: 58 }, target: { posX: 0, posY: 0, posZ: 0 } };
+      this.aPositions[1] = { camera: { fov: 20, posX: 0, posY: 0, posZ: 0 }, target: { posX: 0, posY: 0, posZ: 0 } };
+      this.aPositions[2] = { camera: { fov: 20, posX: 0, posY: 0, posZ: 0 }, target: { posX: 0, posY: 0, posZ: 0 } };
+    } else if (this.activePage === 'another-world-awaits') {
+      this.aPositions[0] = { camera: { fov: 60, posX: -300, posY: 300, posZ: 600 }, target: { posX: 0, posY: 0, posZ: 0 } };
+      this.aPositions[1] = { camera: { fov: 60, posX: 0, posY: 0, posZ: 0 }, target: { posX: 0, posY: 0, posZ: 0 } };
+      this.aPositions[2] = { camera: { fov: 60, posX: 0, posY: 0, posZ: 0 }, target: { posX: 0, posY: 0, posZ: 0 } };
+    }
+
+    console.log(this.aPositions);
 
     /// PRE-INIT CONTRUCTS ///
     this.constructShadowDOM();
@@ -107,8 +143,8 @@ class WebGL extends HTMLElement {
         this.createDomObservers();
         this.createBundledEntities();
         this.createBundledEntityTweens();
-        if (process.env.NODE_ENV === 'development' && !this.bIsMobile) this.createHelpers();
-        if (process.env.NODE_ENV === 'development' && !this.bIsMobile) this.createGui();
+        if (process.env.NODE_ENV === 'development' && !this.env.bIsMobile) this.createHelpers();
+        if (process.env.NODE_ENV === 'development' && !this.env.bIsMobile) this.createGui();
         this.createAnimationLoop();
 
         callback();
@@ -144,7 +180,7 @@ class WebGL extends HTMLElement {
       this.removeDomObservers();
       this.removeLoaders();
       this.removeTweens();
-      if (process.env.NODE_ENV === 'development' && !this.bIsMobile) this.removeGui();
+      if (process.env.NODE_ENV === 'development' && !this.env.bIsMobile) this.removeGui();
       this.removeThree();
     }.bind(this), 10);
   };
@@ -158,20 +194,17 @@ class WebGL extends HTMLElement {
   intro(fCB) {
     LOG('WebGL : intro');
 
-    let targetX, targetY, targetZ;
+    // if (this.activePage === 'home') {
 
-    if (this.activePage === 'home') { this.camera.fov = 20; targetX = 128; targetY = 0; targetZ = 21.5; };
-    if (this.activePage === 'the-veil') { this.camera.fov = 20; targetX = -97; targetY = 13; targetZ = 30; }
-    if (this.activePage === 'the-man-in-the-wall') { this.camera.fov = 20; targetX = -41; targetY = 45; targetZ = 58; }
-    if (this.activePage === 'another-world-awaits') { this.camera.fov = 60; targetX = -300; targetY = 300; targetZ = 600; }
+    // };
 
-    this.oTweens['cameraIntroX'] = TweenMax.fromTo(this.camera.position, 2.000, {
-      x: targetX / 3, y: targetY / 3, z: targetZ / 3,
-    }, {
-      x: targetX, y: targetY, z: targetZ, ease: Sine.easeOut, onComplete: function(fCB) {
+    this.animateToPosition(0);
 
-      }.bind(this),
-    });
+    // if (this.activePage === 'the-veil') { this.camera.fov = 20; targetX = -97; targetY = 13; targetZ = 30; }
+    // if (this.activePage === 'the-man-in-the-wall') { this.camera.fov = 20; targetX = -41; targetY = 45; targetZ = 58; }
+    // if (this.activePage === 'another-world-awaits') { this.camera.fov = 60; targetX = -300; targetY = 300; targetZ = 600; }
+
+
 
     this.oTweens['domCanvasIntro'] = TweenMax.to(this.domCanvas, 2.000, {
       opacity: 1.0, delay: 0.00, ease: Linear.easeNone, onComplete: function() {
@@ -209,6 +242,22 @@ class WebGL extends HTMLElement {
     });
 
   };
+
+  animateToPosition(nPosition) {
+
+    this.camera.fov = this.aPositions[nPosition].camera.fov;
+    const targetX = this.aPositions[nPosition].camera.posX;
+    const targetY = this.aPositions[nPosition].camera.posY;
+    const targetZ = this.aPositions[0].camera.posZ;
+
+    this.oTweens['cameraIntroX'] = TweenMax.fromTo(this.camera.position, 2.000, {
+      x: targetX / 3, y: targetY / 3, z: targetZ / 3,
+    }, {
+      x: targetX, y: targetY, z: targetZ, ease: Sine.easeOut, onComplete: function(fCB) {
+
+      }.bind(this),
+    });
+  }
 
   createCanvas() {
 
@@ -262,17 +311,26 @@ class WebGL extends HTMLElement {
     // TODO : can we detect recent iPads specifically?
     // TODO : what does the M1 report?
 
-    if (this.bIsMobile) {
+    if (this.env.bIsMobile) {
 
-      this.renderer.setPixelRatio(1.0);
-      this.renderer.shadowMap.type = THREE.PCFShadowMap ;
+      if (this.env.bIsRecentAppleGPU) {
 
-    } else if (this.nGPUTier === 1) { // tier 1 GPUs (intel integrated etc)
+        this.renderer.setPixelRatio(1.0);
+        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+      } else {
+
+        this.renderer.setPixelRatio(1.0);
+        this.renderer.shadowMap.type = THREE.PCFShadowMap;
+
+      }
+
+    } else if (this.env.nGPUTier === 1) { // tier 1 GPUs (intel integrated etc)
 
       this.renderer.setPixelRatio(0.8);
       this.renderer.shadowMap.type = THREE.BasicShadowMap;
 
-    } else if (this.nGPUTier === 2) {
+    } else if (this.env.nGPUTier === 2) {
 
       this.renderer.setPixelRatio(1.0);
       this.renderer.shadowMap.type = THREE.PCFShadowMap;
@@ -323,7 +381,7 @@ class WebGL extends HTMLElement {
 
       // TODO: this is _very_ heavy on mobile
       // can we make it work by tweaking the shader? or the model?
-      if (!this.bIsMobile && this.nGPUTier > 1) {
+      if (!this.env.bIsMobile && this.env.nGPUTier > 1) {
         const mirrorGeometry = new THREE.PlaneGeometry(22.1, 29.1, 1, 1);
         const mirror = new Reflector(mirrorGeometry, {
           clipBias: 0.000001,
@@ -344,7 +402,7 @@ class WebGL extends HTMLElement {
 
       // TODO: this is _very_ heavy on mobile
       // can we make it work by tweaking the shader? or the model?
-      if (!this.bIsMobile && this.nGPUTier > 1) {
+      if (!this.env.bIsMobile && this.env.nGPUTier > 1) {
         const mirrorGeometry = new THREE.PlaneGeometry(22.1, 29.1, 1, 1);
         const mirror = new Reflector(mirrorGeometry, {
           clipBias: 0.000001,
@@ -372,12 +430,16 @@ class WebGL extends HTMLElement {
     this.entities.lights['pointLight'].castShadow = true;
     this.entities.lights['pointLight'].shadow.bias = -0.0005;
 
-    if (!this.bIsMobile && this.nGPUTier > 1) {
+    if (!this.env.bIsMobile && this.env.nGPUTier > 1) {
+
       this.entities.lights['pointLight'].shadow.mapSize.width = 2048;
       this.entities.lights['pointLight'].shadow.mapSize.height = 2048;
+
     } else {
+
       this.entities.lights['pointLight'].shadow.mapSize.width = 512;
       this.entities.lights['pointLight'].shadow.mapSize.height = 512;
+
     };
 
     this.entities.lights['pointLight'].updateMatrixWorld(true);
@@ -421,7 +483,7 @@ class WebGL extends HTMLElement {
 
     if (this.activePage === 'home') {
 
-      if (this.bIsMobile || this.nGPUTier === 1) {
+      if (this.env.bIsMobile || this.env.nGPUTier === 1) {
         LOG('111');
         resourceLoader.add('glft_scene', home_LOD1, { loadType: Resource.LOAD_TYPE.XHR, xhrType: Resource.XHR_RESPONSE_TYPE.BUFFER });
       } else {
@@ -431,7 +493,7 @@ class WebGL extends HTMLElement {
 
     }  else if (this.activePage === 'the-veil') {
 
-      if (this.bIsMobile || this.nGPUTier === 1) {
+      if (this.env.bIsMobile || this.env.nGPUTier === 1) {
         LOG('111');
         resourceLoader.add('glft_scene', theVeil_LOD1, { loadType: Resource.LOAD_TYPE.XHR, xhrType: Resource.XHR_RESPONSE_TYPE.BUFFER });
       } else {
@@ -441,7 +503,7 @@ class WebGL extends HTMLElement {
 
     } else if (this.activePage === 'the-man-in-the-wall') {
 
-      if (this.bIsMobile || this.nGPUTier === 1) {
+      if (this.env.bIsMobile || this.env.nGPUTier === 1) {
         LOG('111');
         resourceLoader.add('glft_scene', theMainInTheWall_LOD1, { loadType: Resource.LOAD_TYPE.XHR, xhrType: Resource.XHR_RESPONSE_TYPE.BUFFER });
       } else {
@@ -451,7 +513,7 @@ class WebGL extends HTMLElement {
 
     } else if (this.activePage === 'another-world-awaits') {
 
-      if (this.bIsMobile || this.nGPUTier === 1) {
+      if (this.env.bIsMobile || this.env.nGPUTier === 1) {
         LOG('111');
         resourceLoader.add('glft_scene', anotherWorldAwaits_LOD1, { loadType: Resource.LOAD_TYPE.XHR, xhrType: Resource.XHR_RESPONSE_TYPE.BUFFER });
       } else {

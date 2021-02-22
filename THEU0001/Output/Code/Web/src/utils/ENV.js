@@ -4,6 +4,7 @@
 
 /// NPM ///
 import { getGPUTier  } from 'detect-gpu';
+import { LOG } from './LOG';
 
 
 ///////////////

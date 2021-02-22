@@ -83,7 +83,7 @@ class Main {
   __init() {
     LOG('Main : __init');
 
-    async.parallel([
+    async.series([
       function (fCB) { ENV.detectGPU(fCB); }.bind(this),
       function (fCB) { this.createComponentInstances(fCB); }.bind(this),
       function (fCB) { this.handleRouterEvents(fCB); }.bind(this),

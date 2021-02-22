@@ -101,8 +101,8 @@ class TheVeil extends HTMLElement  {
     ], function (err, results) {
 
       // order is important! even with z-indexes
-      DOM.append(this.oComponentInstances['_webgl'], this.shadow);
       DOM.append(this.oComponentInstances['_title'], this.shadow);
+      DOM.append(this.oComponentInstances['_webgl'], this.shadow);
 
       fCB();
     }.bind(this));

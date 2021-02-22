@@ -13,7 +13,7 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 /// LOCAL ///
-import { FRP } from '~/utils/FRP.js';
+import { ENV } from '~/utils/ENV.js';
 import { DOM } from '~/utils/DOM.js';
 import { CSS } from '~/utils/CSS.js';
 
@@ -35,8 +35,10 @@ class Loader extends HTMLElement {
 
     this.oOptions = oOptions;
 
-    this.activePage = this.oOptions.sContent;
+    this.bIsMobile = ENV.getGPU().isMobile;
+    this.nGPUTier = ENV.getGPU().tier;
 
+    this.activePage = this.oOptions.sContent;
 
     // Create holders for entities we need to keep track of.
     this.resources = {};
@@ -212,7 +214,6 @@ class Loader extends HTMLElement {
     });
 
     this.renderer.setSize(this.domCanvas.clientWidth, this.domCanvas.clientHeight);
-    this.renderer.setPixelRatio(1.5);
 
     this.renderer.outputEncoding = THREE.sRGBEncoding;
     this.renderer.toneMapping = THREE.ReinhardToneMapping;
@@ -221,9 +222,31 @@ class Loader extends HTMLElement {
     // LINK: https://threejs.org/examples/#webgl_lights_physical
     // LINK: https://github.com/mrdoob/three.js/blob/master/examples/webgl_lights_physical.html
     this.renderer.physicallyCorrectLights = true;
-
     this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+
+    if (this.bIsMobile) {
+
+      this.renderer.setPixelRatio(1.0);
+      this.renderer.shadowMap.type = THREE.PCFShadowMap ;
+
+    } else if (this.nGPUTier === 1) { // tier 1 GPUs (intel integrated etc)
+
+      this.renderer.setPixelRatio(0.8);
+      this.renderer.shadowMap.type = THREE.BasicShadowMap;
+
+    } else if (this.nGPUTier === 2) {
+
+      this.renderer.setPixelRatio(1.0);
+      this.renderer.shadowMap.type = THREE.PCFShadowMap;
+
+    } else { // high end || anything outside the spec but hitting decent fps
+
+      this.renderer.setPixelRatio(1.5);
+      this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+    };
+
   };
 
   createControls() {
@@ -258,8 +281,15 @@ class Loader extends HTMLElement {
 
     this.entities.lights['pointLight'].castShadow = true;
     this.entities.lights['pointLight'].shadow.bias = -0.0005;
-    this.entities.lights['pointLight'].shadow.mapSize.width = 2048;
-    this.entities.lights['pointLight'].shadow.mapSize.height = 2048;
+
+    if (!this.bIsMobile && this.nGPUTier > 1) {
+      this.entities.lights['pointLight'].shadow.mapSize.width = 2048;
+      this.entities.lights['pointLight'].shadow.mapSize.height = 2048;
+    } else {
+      this.entities.lights['pointLight'].shadow.mapSize.width = 512;
+      this.entities.lights['pointLight'].shadow.mapSize.height = 512;
+    };
+
     this.entities.lights['pointLight'].updateMatrixWorld(true);
     this.scene.add(this.entities.lights['pointLight']);
 

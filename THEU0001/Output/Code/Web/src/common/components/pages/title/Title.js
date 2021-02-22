@@ -102,12 +102,12 @@ class Title extends HTMLElement {
     /// CHAPTER ///
     this.oDOMElements['domChapter'] = DOM.create('div', { className: 'domChapter' }, this.oOptions.sChapter);
     this.oDOMElements['domChapter'].style.color = this.oOptions.sColor;
-    DOM.append(this.oDOMElements['domChapter'], this.shadow);
+    DOM.addClass('positionBottom', this.oDOMElements['domChapter']);
 
     /// TITLE ///
     this.oDOMElements['domTitleWrapper'] = DOM.create('div', { className: 'domTitleWrapper' });
     this.oDOMElements['domTitleWrapper'].style.color = this.oOptions.sColor;
-    DOM.append(this.oDOMElements['domTitleWrapper'], this.shadow);
+    DOM.addClass('positionBottom', this.oDOMElements['domTitleWrapper']);
 
     const aTitleSplit = this.oOptions.sTitle.split('\n');
 
@@ -124,6 +124,10 @@ class Title extends HTMLElement {
         DOM.append(this.oDOMElements['domTitleCharacterSplit' + ii], this.oDOMElements['domTitleSplit' + i]);
       };
     };
+
+    /// APPEND ///
+    DOM.append(this.oDOMElements['domChapter'], this.shadow);
+    DOM.append(this.oDOMElements['domTitleWrapper'], this.shadow);
 
 
     fCB();

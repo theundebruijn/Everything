@@ -97,13 +97,14 @@ class Home extends HTMLElement  {
   createComponentInstances(fCB) {
 
     async.series([
-      function (fCB) {  this.oComponentInstances['_title'] = new Title({ sChapter: 'home', sTitle: 'project\ngiantesque', sColor: '#000000' }, fCB); }.bind(this),
+      function (fCB) {  this.oComponentInstances['_title'] = new Title({ sChapter: 'home', sTitle: 'project\ngiantesque', sColor: '#000000', sPosition: 'bottom' }, fCB); }.bind(this),
       function (fCB) {  this.oComponentInstances['_webgl'] = new WebGL({ sType: 'page', sContent: 'home' }, fCB); }.bind(this),
     ], function (err, results) {
 
       // order is important! even with z-indexes
-      DOM.append(this.oComponentInstances['_webgl'], this.shadow);
       DOM.append(this.oComponentInstances['_title'], this.shadow);
+      DOM.append(this.oComponentInstances['_webgl'], this.shadow);
+
 
       fCB();
     }.bind(this));

@@ -75,7 +75,7 @@ export default {
         },
         {
           src: './_meta/assets/benchmarks/2020.11.20/',
-          dest: './_dev/static/benchmarks',
+          dest: './_dist/static/benchmarks',
         },
         {
           src: './_meta/assets/draco/1.4.1/draco_decoder.js',

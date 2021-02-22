@@ -5,8 +5,6 @@
 
 .domChapter {
   position: absolute;
-  top: 250px;
-  left: 200px;
   max-width: 810px;
   font-family: 'Lausanne 500';
   font-weight: 500;
@@ -19,11 +17,17 @@
   opacity: 0.0;
 }
 
+.domChapter.positionTop {
+  top: 250px;
+}
+
+.domChapter.positionBottom {
+  bottom: 80px;
+  left: 100px;
+}
+
 .domTitleWrapper {
   position: absolute;
-  top: 300px;
-  left: 200px;
-  max-width: 810px;
   font-family: 'Saol Display';
   font-weight: 600;
   font-style: normal;
@@ -37,4 +41,13 @@
   display: inline-block;
 
   opacity: 0.0;
+}
+
+.domTitleWrapper.positionTop {
+  top: 300px;
+}
+
+.domTitleWrapper.positionBottom {
+  bottom: 120px;
+  left: 100px;
 }

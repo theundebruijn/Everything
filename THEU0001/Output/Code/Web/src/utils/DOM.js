@@ -48,6 +48,14 @@ DOM.empty = function(domEl) {
   domEl.textContent = '';
 };
 
+DOM.addClass = function(sClassName, domEl) {
+  domEl.classList.add(sClassName);
+};
+
+DOM.removeClass = function(sClassName, domEl) {
+  domEl.classList.remove(sClassName);
+};
+
 // NOTE: this is handled separately for generating the static index.html files.
 // The postbuild process uses the same JSON object as this class.
 // This method handles the runtime updates when navigating the SPA website.
