@@ -80,20 +80,24 @@ class WebGL extends HTMLElement {
 
     this.oTweens = {};
 
+
+    this.fAnimateToPositionInterval = null;
+    this.nAnimationToPositionCounter = 0;
     this.aPositions = new Array(Object.create(null), Object.create(null), Object.create(null));
 
+    // TODO: maybe home has just 1 ?
     if (this.activePage === 'home') {
       this.aPositions[0] = { camera: { fov: 20, posX: -60, posY: -65, posZ: 95 }, target: { posX: 0, posY: 0, posZ: 0 } };
-      this.aPositions[1] = { camera: { fov: 20, posX: 0, posY: 0, posZ: 0 }, target: { posX: 0, posY: 0, posZ: 0 } };
-      this.aPositions[2] = { camera: { fov: 20, posX: 0, posY: 0, posZ: 0 }, target: { posX: 0, posY: 0, posZ: 0 } };
+      this.aPositions[1] = { camera: { fov: 20, posX: 100, posY: -6, posZ: 14 }, target: { posX: -9.5, posY: 2, posZ: 18.5 } };
+      this.aPositions[2] = { camera: { fov: 20, posX: 0, posY: -75, posZ: 102 }, target: { posX: 0, posY: 17, posZ: 11 } };
     } else if (this.activePage === 'the-veil') {
       this.aPositions[0] = { camera: { fov: 20, posX: -97, posY: 13, posZ: 30 }, target: { posX: 0, posY: 0, posZ: 0 } };
-      this.aPositions[1] = { camera: { fov: 20, posX: 0, posY: 0, posZ: 0 }, target: { posX: 0, posY: 0, posZ: 0 } };
-      this.aPositions[2] = { camera: { fov: 20, posX: 0, posY: 0, posZ: 0 }, target: { posX: 0, posY: 0, posZ: 0 } };
+      this.aPositions[1] = { camera: { fov: 20, posX: -5, posY: 6, posZ: 61 }, target: { posX: -3.5, posY: 5.5, posZ: 0 } };
+      this.aPositions[2] = { camera: { fov: 20, posX: 42.5, posY: -40, posZ: 36.5 }, target: { posX: 1, posY: 5, posZ: 1.5 } };
     } else if (this.activePage === 'the-man-in-the-wall') {
       this.aPositions[0] = { camera: { fov: 20, posX: -41, posY: 45, posZ: 58 }, target: { posX: 0, posY: 0, posZ: 0 } };
-      this.aPositions[1] = { camera: { fov: 20, posX: 0, posY: 0, posZ: 0 }, target: { posX: 0, posY: 0, posZ: 0 } };
-      this.aPositions[2] = { camera: { fov: 20, posX: 0, posY: 0, posZ: 0 }, target: { posX: 0, posY: 0, posZ: 0 } };
+      this.aPositions[1] = { camera: { fov: 20, posX: 43, posY: 1.5, posZ: -12 }, target: { posX: -0.85, posY: 2.5, posZ: 8 } };
+      this.aPositions[2] = { camera: { fov: 20, posX: -15.5, posY: 6.5, posZ: -39.5 }, target: { posX: -0.85, posY: 3.5, posZ: 6.5 } };
     } else if (this.activePage === 'another-world-awaits') {
       this.aPositions[0] = { camera: { fov: 60, posX: -300, posY: 300, posZ: 600 }, target: { posX: 0, posY: 0, posZ: 0 } };
       this.aPositions[1] = { camera: { fov: 60, posX: 0, posY: 0, posZ: 0 }, target: { posX: 0, posY: 0, posZ: 0 } };
@@ -198,7 +202,28 @@ class WebGL extends HTMLElement {
 
     // };
 
-    this.animateToPosition(0);
+    this.camera.fov = this.aPositions[0].camera.fov;
+
+    this.oTweens['cameraIntro'] = TweenMax.fromTo(this.camera.position, 2.000, {
+      x: this.aPositions[0].camera.posX / 3, y: this.aPositions[0].camera.posY / 3, z: this.aPositions[0].camera.posZ / 3,
+    }, {
+      x: this.aPositions[0].camera.posX, y: this.aPositions[0].camera.posY, z: this.aPositions[0].camera.posZ,
+      ease: Sine.easeOut, onComplete: function() {}.bind(this),
+    });
+
+
+    // this.animateToPosition(0);
+
+    // TODO: create an interval that loops which we clear on destroy
+    this.fAnimateToPositionInterval = setInterval(function() {
+      this.nAnimationToPositionCounter++;
+
+      if (this.nAnimationToPositionCounter > this.aPositions.length-1) { this.nAnimationToPositionCounter = 0; };
+
+      this.animateToPosition(this.nAnimationToPositionCounter);
+
+      // this.animateToPosition(2);
+    }.bind(this), 20000);
 
     // if (this.activePage === 'the-veil') { this.camera.fov = 20; targetX = -97; targetY = 13; targetZ = 30; }
     // if (this.activePage === 'the-man-in-the-wall') { this.camera.fov = 20; targetX = -41; targetY = 45; targetZ = 58; }
@@ -246,16 +271,15 @@ class WebGL extends HTMLElement {
   animateToPosition(nPosition) {
 
     this.camera.fov = this.aPositions[nPosition].camera.fov;
-    const targetX = this.aPositions[nPosition].camera.posX;
-    const targetY = this.aPositions[nPosition].camera.posY;
-    const targetZ = this.aPositions[0].camera.posZ;
 
-    this.oTweens['cameraIntroX'] = TweenMax.fromTo(this.camera.position, 2.000, {
-      x: targetX / 3, y: targetY / 3, z: targetZ / 3,
-    }, {
-      x: targetX, y: targetY, z: targetZ, ease: Sine.easeOut, onComplete: function(fCB) {
+    this.oTweens['cameraIntro'] = TweenMax.to(this.camera.position, 5.000, {
+      x: this.aPositions[nPosition].camera.posX, y: this.aPositions[nPosition].camera.posY, z: this.aPositions[nPosition].camera.posZ,
+      ease: Sine.easeInOut, onComplete: function() {}.bind(this),
+    });
 
-      }.bind(this),
+    this.oTweens['controlsIntro'] = TweenMax.to(this.controls.target, 2.500, {
+      x: this.aPositions[nPosition].target.posX, y: this.aPositions[nPosition].target.posY, z: this.aPositions[nPosition].target.posZ,
+      ease: Sine.easeInOut, onComplete: function() {}.bind(this),
     });
   }
 
@@ -762,6 +786,8 @@ class WebGL extends HTMLElement {
 
   removeTweens() {
     for (const tween in this.oTweens) { this.oTweens[tween].kill(); };
+
+    if (this.fAnimateToPositionInterval) clearInterval(this.fAnimateToPositionInterval);
   };
 
   removeGui() {
