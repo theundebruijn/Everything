@@ -8,10 +8,10 @@ import { TweenMax, Linear } from 'gsap';
 import * as THREE from 'three';
 
 /// LOCAL ///
-import { FRP } from '~/utils/FRP.js';
-import { DOM } from '~/utils/DOM.js';
-import { CSS } from '~/utils/CSS.js';
-import { LOG } from '~/utils/LOG.js';
+import { FRP } from '~/_utils/FRP.js';
+import { DOM } from '~/_utils/DOM.js';
+import { CSS } from '~/_utils/CSS.js';
+import { LOG } from '~/_utils/LOG.js';
 
 /// ASSETS ///
 import sCSS from './WebGLBackground.css';
@@ -68,6 +68,7 @@ class WebGLBackground extends HTMLElement {
   ///////////////////////////
 
   __init(fCB) {
+    LOG.info('~/components/webglBackground/WebGLBackground :: __init');
 
     async.series([
       // As the CSS has been applied to the Shadow DOM we can start creating the WebGL environment.
@@ -98,7 +99,6 @@ class WebGLBackground extends HTMLElement {
 
     ], function (err, results) {
       if (err) { return LOG.error(err); }
-
       // Now the resources have been loaded we can compute the methods that rely on them.
       this.createLoadedEntities();
       this.createLoadedEntityTweens();
@@ -107,6 +107,7 @@ class WebGLBackground extends HTMLElement {
 
       this.createStreamListeners();
 
+      LOG.info('~/components/webglBackground/WebGLBackground :: __init (complete)');
       fCB();
 
     }.bind(this));
@@ -309,7 +310,7 @@ class WebGLBackground extends HTMLElement {
 ///// WEB COMPONENT DEFINITION /////
 ////////////////////////////////////
 
-customElements.define('theu0001-common-webglbackground', WebGLBackground);
+customElements.define('theu0001-components-container-webglbackground', WebGLBackground);
 
 
 //////////////////////

@@ -2,28 +2,57 @@
 ///// IMPORTS /////
 ///////////////////
 
-/// LOCAL ///
-import { DOM } from '~/utils/DOM.js';
+import { FRP } from '~/_utils/FRP.js';
 
-///////////////
-///// OBJ /////
-///////////////
+/////////////////
+///// CLASS /////
+/////////////////
 
-const CSS = Object.create(null);
+class Router {
 
-
-///////////////////////
-///// OBJ METHODS /////
-///////////////////////
-
-CSS.createDomStyleElement = function (oCSSAssets) {
-  let _css = oCSSAssets.sCSS;
-
-  for (const i in oCSSAssets.fonts) {
-    _css = _css.replace(oCSSAssets.fonts[i].sPath, oCSSAssets.fonts[i].sBuildPath);
+  /// CONSTRUCTOR ///
+  constructor() {
+    this.createStreams();
   };
 
-  return DOM.create('style', {}, _css);
+
+  /////////////////////////
+  ///// CLASS METHODS /////
+  /////////////////////////
+
+  createStreams() {
+    // FRP.createStream('router:onPopState');
+    FRP.addStreamListener('router:onNewPage', null, null);
+
+    FRP.addStreamListener('router:onPopState', { target: window, event: 'popstate'}, function(data) {
+      this.onNewPage();
+    }.bind(this));
+  };
+
+  /**
+   * Determines the pathName based on 'window.location.pathname'.
+   */
+  getPathName() {
+    let pathName = window.location.pathname;
+    if (pathName.charAt(0) === '/') { pathName = pathName.substr(1); };
+
+    return pathName;
+  };
+
+  /**
+   * Determines the page to be loaded based on the determined pathName.
+   */
+  onNewPage() {
+
+    const pathName = this.getPathName();
+    const stream = FRP.getStream('router:onNewPage');
+
+    if (pathName === '') { stream('home'); }
+    else if (pathName === 'the-veil/') { stream('the-veil'); }
+    else if (pathName === 'the-man-in-the-wall/') { stream('the-man-in-the-wall'); }
+    else if (pathName === 'another-world-awaits/') { stream('another-world-awaits'); }
+    else { stream('404'); }
+  };
 };
 
 
@@ -31,7 +60,7 @@ CSS.createDomStyleElement = function (oCSSAssets) {
 ///// ES6 EXPORT /////
 //////////////////////
 
-export { CSS };
+export default Router;
 
 
 ////////////////////////////////////////////////////////////

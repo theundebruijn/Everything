@@ -6,9 +6,9 @@
 import async from 'async';
 
 /// LOCAL ///
-import { DOM } from '~/utils/DOM.js';
-import { CSS } from '~/utils/CSS.js';
-import { LOG } from '~/utils/LOG.js';
+import { DOM } from '~/_utils/DOM.js';
+import { CSS } from '~/_utils/CSS.js';
+import { LOG } from '~/_utils/LOG.js';
 
 import WebGLBackground from './webglBackground/WebGLBackground.js';
 
@@ -77,11 +77,13 @@ class Container extends HTMLElement  {
   // triggered by the web component connectedCallback
   // we're attached to the DOM at this point
   __init(fCB) {
+    LOG.info('~/components/container/Container :: __init');
 
     async.series([
       function (fCB) { this.createDomElements(fCB); }.bind(this),
       function (fCB) { this.createComponentInstances(fCB); }.bind(this),
     ], function (err, results) {
+      LOG.info('~/components/container/Container :: __init (complete)');
 
       this.createDomObservers();
 
@@ -135,14 +137,12 @@ class Container extends HTMLElement  {
     //       The ResizeObserver makes sure we handle subsequent resizes of the domCanvasWrapper.
     this.resizeObserver = new ResizeObserver(function(entries) {
 
-      LOG.info('contentRect.width : ' + Math.round(entries[0].contentRect.width));
-      LOG.info('window.innerWidth : ' + window.innerWidth);
-      LOG.info('contentRect.width : ' +  Math.round(entries[0].contentRect.height));
-      LOG.info('window.innerHeight : ' + window.innerHeight);
+      // LOG.info('contentRect.width : ' + Math.round(entries[0].contentRect.width));
+      // LOG.info('window.innerWidth : ' + window.innerWidth);
+      // LOG.info('contentRect.width : ' +  Math.round(entries[0].contentRect.height));
+      // LOG.info('window.innerHeight : ' + window.innerHeight);
 
       this.onDocumentBodyResize(Math.round(entries[0].contentRect.width), Math.round(entries[0].contentRect.height));
-
-
 
     }.bind(this));
 
@@ -178,7 +178,7 @@ class Container extends HTMLElement  {
 ///// WEB COMPONENT DEFINITION /////
 ////////////////////////////////////
 
-customElements.define('theu0001-common-container', Container);
+customElements.define('theu0001-components-container', Container);
 
 
 //////////////////////

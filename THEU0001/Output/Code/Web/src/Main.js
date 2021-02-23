@@ -6,27 +6,30 @@
 import async from 'async';
 
 /// LOCAL ///
-import { ENV } from '~/utils/ENV.js';
-import { FRP } from '~/utils/FRP.js';
-import { DOM } from '~/utils/DOM.js';
-import { CSS } from '~/utils/CSS.js';
-import { LOG } from '~/utils/LOG.js';
+// NOTE: imports using an alias create a separate(!) instance from relatively imported classes/objects
+// to guarantee 'singleton-like' behaviour we need to use the same syntax as our sub components do
+import { ENV } from '~/_utils/ENV.js';
+import { FRP } from '~/_utils/FRP.js';
+import { DOM } from '~/_utils/DOM.js';
+import { CSS } from '~/_utils/CSS.js';
+import { LOG } from '~/_utils/LOG.js';
 
-import Router from '~/utils/Router.js';
+import Router from './_utils/Router.js';
+import Navigation from './components/navigation/Navigation.js';
+import Container from './components/container/Container.js';
+import Loader from './components/loader/Loader.js';
 
-import Navigation from '~/common/components/navigation/Navigation.js';
-import Container from '~/common/components/container/Container.js';
-import Loader from '~/common/components/loader/Loader.js';
-
-import Home from '~/pages/home/Home.js';
-import TheVeil from '~/pages/theVeil/TheVeil.js';
-import TheManInTheWall from '~/pages/theManInTheWall/TheManInTheWall.js';
-import AnotherWorldAwaits from '~/pages/anotherWorldAwaits/AnotherWorldAwaits.js';
+import Home from './pages/home/Home.js';
+import TheVeil from './pages/theVeil/TheVeil.js';
+import TheManInTheWall from './pages/theManInTheWall/TheManInTheWall.js';
+import AnotherWorldAwaits from './pages/anotherWorldAwaits/AnotherWorldAwaits.js';
 
 /// ASSETS CSS ///
 import sCSS from './Main.css';
-import saoldisplay_semibold from './assets/fonts/SaolDisplay-Semibold.woff2';
-import lausanne_550 from './assets/fonts/Lausanne-550.woff2';
+import saoldisplay_regular from './_assets/fonts/SaolDisplay-Regular.woff2';
+import saoldisplay_regularitalic from './_assets/fonts/SaolDisplay-RegularItalic.woff2';
+import saoldisplay_semibold from './_assets/fonts/SaolDisplay-Semibold.woff2';
+import lausanne_500 from './_assets/fonts/Lausanne-500.woff2';
 
 
 ////////////////
@@ -67,8 +70,10 @@ class Main {
     const oCSSAssets = {
       sCSS: sCSS,
       fonts: {
+        saoldisplay_regular: { sPath: './assets/fonts/SaolDisplay-Regular.woff2', sBuildPath: saoldisplay_regular },
+        saoldisplay_regularitalic: { sPath: './assets/fonts/SaolDisplay-RegularItalic.woff2', sBuildPath: saoldisplay_regularitalic },
         saoldisplay_semibold: { sPath: './assets/fonts/SaolDisplay-Semibold.woff2', sBuildPath: saoldisplay_semibold },
-        lausanne_550: { sPath: './assets/fonts/Lausanne-550.woff2', sBuildPath: lausanne_550 },
+        lausanne_500: { sPath: './assets/fonts/Lausanne-500.woff2', sBuildPath: lausanne_500 },
       },
     };
 
@@ -84,7 +89,7 @@ class Main {
   ///////////////////////////
 
   __init() {
-    LOG.info('Main : __init');
+    LOG.info('~/Main :: __init');
 
     async.series([
       function (fCB) { ENV.detectGPU(fCB); }.bind(this),
@@ -92,7 +97,7 @@ class Main {
       function (fCB) { this.handleRouterEvents(fCB); }.bind(this),
       function (fCB) { this.handleWindowBlurEvents(fCB); }.bind(this),
     ], function (err, results) {
-      LOG.info('Main : __init : complete');
+      LOG.info('~/Main :: __init (complete)');
 
       // trigger inital page
       this.oComponentInstances['_router'].onNewPage();
@@ -157,8 +162,6 @@ class Main {
       async.series([
         function (fCB) { this.cActivePage.outro(fCB); }.bind(this),
       ], function (err, results) {
-        LOG.info('Main : removeActivePage : complete');
-
         // cleanup
         this.cActivePage = null;
 

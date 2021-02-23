@@ -6,9 +6,10 @@
 import async from 'async';
 
 /// LOCAL ///
-import { FRP } from '~/utils/FRP.js';
-import { DOM } from '~/utils/DOM.js';
-import { CSS } from '~/utils/CSS.js';
+import { FRP } from '~/_utils/FRP.js';
+import { DOM } from '~/_utils/DOM.js';
+import { CSS } from '~/_utils/CSS.js';
+import { LOG } from '~/_utils/LOG.js';
 
 /// ASSETS CSS ///
 import sCSS from './Navigation.css';
@@ -67,9 +68,12 @@ class Navigation extends HTMLElement  {
   // triggered by the web component connectedCallback
   // we're attached to the DOM at this point
   __init(fCB) {
+    LOG.info('~/components/Navigation :: __init');
+
     this.createDomElements();
     this.createComponentInstances();
 
+    LOG.info('~/components/Navigation :: __init (complete)');
     fCB();
   };
 
@@ -176,7 +180,7 @@ class Navigation extends HTMLElement  {
 ///// WEB COMPONENT DEFINITION /////
 ////////////////////////////////////
 
-customElements.define('theu0001-common-navigation', Navigation);
+customElements.define('theu0001-components-navigation', Navigation);
 
 
 //////////////////////

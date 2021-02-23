@@ -6,13 +6,13 @@
 import async from 'async';
 
 /// LOCAL ///
-import { FRP } from '~/utils/FRP.js';
-import { DOM } from '~/utils/DOM.js';
-import { CSS } from '~/utils/CSS.js';
-import { LOG } from '~/utils/LOG.js';
+import { FRP } from '~/_utils/FRP.js';
+import { DOM } from '~/_utils/DOM.js';
+import { CSS } from '~/_utils/CSS.js';
+import { LOG } from '~/_utils/LOG.js';
 
-import Title from '~/common/components/pages/title/Title.js';
-import WebGL from '~/common/components/pages/webgl/WebGL.js';
+import Title from '~/pages/_common/components/title/Title.js';
+import WebGL from '~/pages/_common/components/webgl/WebGL.js';
 
 /// ASSETS CSS ///
 import sCSS from './AnotherWorldAwaits.css';
@@ -72,13 +72,13 @@ class AnotherWorldAwaits extends HTMLElement  {
   // triggered by the web component connectedCallback
   // we're attached to the DOM at this point
   __init(fCB) {
-    LOG.info('AnotherWorldAwaits : __init');
+    LOG.info('~/pages/anotherWorldAwaits/AnotherWorldAwaits :: __init');
 
     async.series([
       function (fCB) { this.createDomElements(fCB); }.bind(this),
       function (fCB) { this.createComponentInstances(fCB); }.bind(this),
     ], function (err, results) {
-      LOG.info('AnotherWorldAwaits : __init : complete');
+      LOG.info('~/pages/anotherWorldAwaits/AnotherWorldAwaits :: __init (complete)');
 
       fCB();
     }.bind(this));
@@ -117,7 +117,7 @@ class AnotherWorldAwaits extends HTMLElement  {
 
   /// ANIMATE ///
   intro() {
-    LOG.info('AnotherWorldAwaits : intro');
+    LOG.info('~/pages/anotherWorldAwaits/AnotherWorldAwaits :: intro');
 
     const _stream = FRP.getStream('_webglBackground:onBackgroundChange');
     _stream({ sColor: 0x0E0E14, nDuration: 3.500 });
@@ -126,19 +126,19 @@ class AnotherWorldAwaits extends HTMLElement  {
       function (fCB) { this.oComponentInstances['_webgl'].intro(fCB); }.bind(this),
       function (fCB) { this.oComponentInstances['_title'].intro(fCB); }.bind(this),
     ], function (err, results) {
-      LOG.info('AnotherWorldAwaits : intro : complete');
+      LOG.info('~/pages/anotherWorldAwaits/AnotherWorldAwaits :: intro (complete)');
 
     }.bind(this));
   };
 
   outro(fCB) {
-    LOG.info('AnotherWorldAwaits : outro');
+    LOG.info('~/pages/anotherWorldAwaits/AnotherWorldAwaits :: outro');
 
     async.parallel([
       function (fCB) { this.oComponentInstances['_webgl'].outro(fCB); }.bind(this),
       function (fCB) { this.oComponentInstances['_title'].outro(fCB); }.bind(this),
     ], function (err, results) {
-      LOG.info('AnotherWorldAwaits : outro : complete');
+      LOG.info('~/pages/anotherWorldAwaits/AnotherWorldAwaits :: outro (complete)');
 
       fCB();
     }.bind(this));

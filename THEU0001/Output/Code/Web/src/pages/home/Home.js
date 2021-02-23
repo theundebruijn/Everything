@@ -6,13 +6,13 @@
 import async from 'async';
 
 /// LOCAL ///
-import { FRP } from '~/utils/FRP.js';
-import { DOM } from '~/utils/DOM.js';
-import { CSS } from '~/utils/CSS.js';
-import { LOG } from '~/utils/LOG.js';
+import { FRP } from '~/_utils/FRP.js';
+import { DOM } from '~/_utils/DOM.js';
+import { CSS } from '~/_utils/CSS.js';
+import { LOG } from '~/_utils/LOG.js';
 
-import Title from '~/common/components/pages/title/Title.js';
-import WebGL from '~/common/components/pages/webgl/WebGL.js';
+import Text from './components/text/Text.js';
+import WebGL from '~/pages/_common/components/webgl/WebGL.js';
 
 /// ASSETS CSS ///
 import sCSS from './Home.css';
@@ -72,13 +72,13 @@ class Home extends HTMLElement  {
   // triggered by the web component connectedCallback
   // we're attached to the DOM at this point
   __init(fCB) {
-    LOG.info('Home : __init');
+    LOG.info('~/pages/home/Home :: __init');
 
     async.series([
       function (fCB) { this.createDomElements(fCB); }.bind(this),
       function (fCB) { this.createComponentInstances(fCB); }.bind(this),
     ], function (err, results) {
-      LOG.info('Home : __init : complete');
+      LOG.info('~/pages/home/Home :: __init : complete');
 
       fCB();
     }.bind(this));
@@ -103,13 +103,13 @@ class Home extends HTMLElement  {
   createComponentInstances(fCB) {
 
     async.series([
-      function (fCB) {  this.oComponentInstances['_title'] = new Title({ sChapter: 'home', sTitle: 'project\ngiantesque', sColor: '#000000', sPosition: 'bottom' }, fCB); }.bind(this),
+      function (fCB) {  this.oComponentInstances['_text'] = new Text(fCB); }.bind(this),
       function (fCB) {  this.oComponentInstances['_webgl'] = new WebGL({ sType: 'page', sContent: 'home' }, fCB); }.bind(this),
     ], function (err, results) {
 
       // order is important! even with z-indexes
       DOM.append(this.oComponentInstances['_webgl'], this.shadow);
-      DOM.append(this.oComponentInstances['_title'], this.shadow);
+      DOM.append(this.oComponentInstances['_text'], this.shadow);
 
       fCB();
     }.bind(this));
@@ -118,28 +118,28 @@ class Home extends HTMLElement  {
 
   /// ANIMATE ///
   intro() {
-    LOG.info('Home : intro');
+    LOG.info('~/pages/home/Home :: intro');
 
     const _stream = FRP.getStream('_webglBackground:onBackgroundChange');
     _stream({ sColor: 0xfdfbf8, nDuration: 3.500 });
 
     async.parallel([
       function (fCB) { this.oComponentInstances['_webgl'].intro(fCB); }.bind(this),
-      function (fCB) { this.oComponentInstances['_title'].intro(fCB); }.bind(this),
+      function (fCB) { this.oComponentInstances['_text'].intro(fCB); }.bind(this),
     ], function (err, results) {
-      LOG.info('Home : intro : complete');
+      LOG.info('~/pages/home/Home :: intro : complete');
 
     }.bind(this));
   };
 
   outro(fCB) {
-    LOG.info('Home : outro');
+    LOG.info('~/pages/home/Home :: outro');
 
     async.parallel([
       function (fCB) { this.oComponentInstances['_webgl'].outro(fCB); }.bind(this),
-      function (fCB) { this.oComponentInstances['_title'].outro(fCB); }.bind(this),
+      function (fCB) { this.oComponentInstances['_text'].outro(fCB); }.bind(this),
     ], function (err, results) {
-      LOG.info('Home : outro : complete');
+      LOG.info('~/pages/home/Home :: outro : complete');
 
       fCB();
     }.bind(this));

@@ -6,22 +6,22 @@
 import async from 'async';
 import { TweenMax, Linear, Sine } from 'gsap';
 import { Loader as ResourceLoader, Resource } from 'resource-loader';
-import * as dat from 'dat.gui';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 /// LOCAL ///
-import { FRP } from '~/utils/FRP.js';
-import { ENV } from '~/utils/ENV.js';
-import { DOM } from '~/utils/DOM.js';
-import { CSS } from '~/utils/CSS.js';
+import { FRP } from '~/_utils/FRP.js';
+import { ENV } from '~/_utils/ENV.js';
+import { DOM } from '~/_utils/DOM.js';
+import { CSS } from '~/_utils/CSS.js';
+import { LOG } from '~/_utils/LOG.js';
 
-/// ASSETS ///
+/// ASSETS CSS ///
 import sCSS from './Loader.css';
+
+/// ASSETS WEBGL ///
 import loader_LOD0 from './assets/loader_LOD0.glb';
-import { LOG } from '../../../utils/LOG';
 
 
 /////////////////
@@ -95,7 +95,7 @@ class Loader extends HTMLElement {
   ///////////////////////////
 
   __init(fCB) {
-    LOG.info('Loader : __init');
+    LOG.info('~/components/loader/Loader :: __init');
 
     async.series([
       // As the CSS has been applied to the Shadow DOM we can start creating the WebGL environment.
@@ -127,13 +127,12 @@ class Loader extends HTMLElement {
       }.bind(this),
 
     ], function (err, results) {
-      // LOG.info('Loader : __init : complete');
       if (err) { return LOG['error'](err); }
-
       // Now the resources have been loaded we can compute the methods that rely on them.
       this.createLoadedEntities();
       this.createLoadedEntityTweens();
 
+      LOG.info('~/components/loader/Loader :: __init (complete)');
       fCB();
 
     }.bind(this));
@@ -159,10 +158,10 @@ class Loader extends HTMLElement {
 
   /// ANIMATE ///
   intro() {
-    LOG.info('Loader : intro');
+    LOG.info('~/components/loader/Loader :: intro');
 
-    if (this.oTweens['sceneIntro']) this.oTweens['sceneIntro'].kill();
-    if (this.oTweens['sceneOutro']) this.oTweens['sceneOutro'].kill();
+    // if (this.oTweens['sceneIntro']) this.oTweens['sceneIntro'].kill();
+    // if (this.oTweens['sceneOutro']) this.oTweens['sceneOutro'].kill();
 
     // resume render loop
     for (const tween in this.oTweens) { this.oTweens[tween].resume(); };
@@ -170,20 +169,20 @@ class Loader extends HTMLElement {
 
     this.oTweens['sceneIntro'] = TweenMax.to(this.domCanvas, 0.500, {
       opacity: 1.0, delay: 0.500, ease: Linear.easeNone, onComplete: function() {
-        LOG.info('Loader : intro : complete');
+        LOG.info('~/components/loader/Loader :: intro (complete)');
       }.bind(this),
     });
   };
 
   outro() {
-    LOG.info('Loader : outro');
+    LOG.info('~/components/loader/Loader :: outro');
 
-    if (this.oTweens['sceneIntro']) this.oTweens['sceneIntro'].kill();
-    if (this.oTweens['sceneOutro']) this.oTweens['sceneOutro'].kill();
+    // if (this.oTweens['sceneIntro']) this.oTweens['sceneIntro'].kill();
+    // if (this.oTweens['sceneOutro']) this.oTweens['sceneOutro'].kill();
 
     this.oTweens['sceneOutro'] = TweenMax.to(this.domCanvas, 0.500, {
       opacity: 0.0, ease: Linear.easeNone, onComplete: function() {
-        LOG.info('Loader : outro : complete');
+        LOG.info('~/components/loader/Loader :: outro (complete)');
 
         // kill render loop
         for (const tween in this.oTweens) { this.oTweens[tween].pause(); };
@@ -207,7 +206,6 @@ class Loader extends HTMLElement {
 
   createScene() {
     this.scene = new THREE.Scene();
-    // this.scene.position.y = -100;
     this.camera = new THREE.PerspectiveCamera(45, this.domCanvas.clientWidth / this.domCanvas.clientHeight, 1, 10000);
 
     this.camera.fov = 20;
@@ -265,11 +263,7 @@ class Loader extends HTMLElement {
 
   };
 
-  createControls() {
-    // this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-    // this.controls.enableDamping = true;
-    // this.controls.dampingFactor = 0.04;
-  };
+  createControls() {};
 
   createDomObservers() {
 
@@ -291,10 +285,6 @@ class Loader extends HTMLElement {
     this.entities.lights['pointLight'] = new THREE.PointLight(0xc4c4f5, 50000.0, 500, 2.0);
     this.entities.lights['pointLight'].position.set(20, 20, 20);
 
-    // TODO: why does this add a massive GPU load? (shadows?)
-    // this.entities.lights['pointLight2'] = new THREE.PointLight(0xa08b68, 5000.0, 500, 2.0);
-    // this.entities.lights['pointLight2'].position.set(0, 10, 20);
-
     this.entities.lights['pointLight'].castShadow = true;
     this.entities.lights['pointLight'].shadow.bias = -0.0005;
 
@@ -308,15 +298,6 @@ class Loader extends HTMLElement {
 
     this.entities.lights['pointLight'].updateMatrixWorld(true);
     this.scene.add(this.entities.lights['pointLight']);
-
-    // if (this.entities.lights['pointLight2']) {
-    //   this.entities.lights['pointLight2'].castShadow = true;
-    //   this.entities.lights['pointLight2'].shadow.bias = -0.0005;
-    //   this.entities.lights['pointLight2'].shadow.mapSize.width = 8192;
-    //   this.entities.lights['pointLight2'].shadow.mapSize.height = 8192;
-    //   this.entities.lights['pointLight2'].updateMatrixWorld(true);
-    //   this.scene.add(this.entities.lights['pointLight2']);
-    // }
   };
 
   createBundledEntityTweens() {
@@ -384,43 +365,20 @@ class Loader extends HTMLElement {
 
   createLoadedEntities() {
     this.scene.add(this.resources['glft_scene'].scene);
-
   };
 
-  createLoadedEntityTweens() {
-    // if (this.activePage === 'another-world-awaits') {
-    //   this.tweens['pointLightIntensity'] = TweenMax.fromTo(this.resources['test'].scene.children[1].position, 10, {
-    //     y: this.resources['test'].scene.children[1].position.y -50,
-    //   }, {
-    //     y: this.resources['test'].scene.children[1].position.y,
-    //     repeat: -1, yoyo: true, ease: Sine.easeInOut, onComplete: function() {},
-    //   });
-    // }
-  };
+  createLoadedEntityTweens() {};
 
-  createGui() {
-  };
+  createGui() {};
 
-  createHelpers() { };
+  createHelpers() {};
 
   createAnimationLoop() {
     this.renderer.setAnimationLoop(this.tick.bind(this));
   };
 
   tick() {
-    // update controls
-    // this.controls.update();
-
     this.scene.rotation.y = this.scene.rotation.y + 0.035;
-
-    // update dat.gui
-    // if (this.cameraSettingsOptions) this.cameraSettingsOptions.pos_x = this.camera.position.x;
-    // if (this.cameraSettingsOptions) this.cameraSettingsOptions.pos_y = this.camera.position.y;
-    // if (this.cameraSettingsOptions) this.cameraSettingsOptions.pos_z = this.camera.position.z;
-
-    // if (this.controlsTargetOptions) this.controlsTargetOptions.x = this.controls.target.x;
-    // if (this.controlsTargetOptions) this.controlsTargetOptions.y = this.controls.target.y;
-    // if (this.controlsTargetOptions) this.controlsTargetOptions.z = this.controls.target.z;
 
     // update animations
     const delta = this.clock.getDelta();
@@ -479,7 +437,6 @@ class Loader extends HTMLElement {
 
   removeGui() {};
 
-
   removeLoaders() {
     this.dracoLoader.dispose();
   };
@@ -508,7 +465,7 @@ class Loader extends HTMLElement {
 ///// WEB COMPONENT DEFINITION /////
 ////////////////////////////////////
 
-customElements.define('theu0001-common-loader', Loader);
+customElements.define('theu0001-components-loader', Loader);
 
 
 //////////////////////

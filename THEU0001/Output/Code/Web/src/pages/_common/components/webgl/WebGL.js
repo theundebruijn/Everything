@@ -14,11 +14,11 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { Reflector } from 'three/examples/jsm/objects/Reflector';
 
 /// LOCAL ///
-import { FRP } from '~/utils/FRP.js';
-import { ENV } from '~/utils/ENV.js';
-import { DOM } from '~/utils/DOM.js';
-import { CSS } from '~/utils/CSS.js';
-import { LOG } from '~/utils/LOG.js';
+import { FRP } from '~/_utils/FRP.js';
+import { ENV } from '~/_utils/ENV.js';
+import { DOM } from '~/_utils/DOM.js';
+import { CSS } from '~/_utils/CSS.js';
+import { LOG } from '~/_utils/LOG.js';
 
 /// ASSETS CSS ///
 import sCSS from './WebGL.css';
@@ -146,7 +146,7 @@ class WebGL extends HTMLElement {
   ///////////////////////////
 
   __init(fCB) {
-    LOG.info('WebGL : __init');
+    LOG.info('~/pages/_common/components/webgl/WebGL :: __init');
 
     this.createCanvas();
     this.createScene();
@@ -163,7 +163,7 @@ class WebGL extends HTMLElement {
       function (fCB) { this.loadResources(fCB); }.bind(this),
       function (fCB) { this.processResources(fCB); }.bind(this),
     ], function (err, results) {
-      LOG.info('WebGL : __init : complete');
+      LOG.info('~/pages/_common/components/webgl/WebGL :: __init (complete)');
       if (err) { return LOG['error'](err); }
 
       this.createLoadedEntities();
@@ -191,7 +191,7 @@ class WebGL extends HTMLElement {
 
   /// ANIMATE ///
   intro(fCB) {
-    LOG.info('WebGL : intro');
+    LOG.info('~/pages/_common/components/webgl/WebGL :: intro');
 
     this.createIntervals();
 
@@ -208,7 +208,7 @@ class WebGL extends HTMLElement {
 
     this.oTweens['domCanvasIntro'] = TweenMax.to(this.domCanvas, 2.000, {
       opacity: 1.0, delay: 0.00, ease: Linear.easeNone, onComplete: function() {
-        LOG.info('WebGL : intro : complete');
+        LOG.info('~/pages/_common/components/webgl/WebGL :: intro (complete)');
 
         this.controls.enabled = true;
 
@@ -219,7 +219,7 @@ class WebGL extends HTMLElement {
   };
 
   outro(fCB) {
-    LOG.info('WebGL : outro');
+    LOG.info('~/pages/_common/components/webgl/WebGL :: outro');
 
     this.controls.enabled = false;
 
@@ -237,7 +237,7 @@ class WebGL extends HTMLElement {
 
     this.oTweens['domCanvasOutro'] = TweenMax.to(this.domCanvas, 0.500, {
       opacity: 0.0, delay: 0.500, ease: Linear.easeNone, onComplete: function() {
-        LOG.info('WebGL : outro : complete');
+        LOG.info('~/pages/_common/components/webgl/WebGL :: outro (complete)');
 
         fCB();
       }.bind(this),
@@ -444,15 +444,12 @@ class WebGL extends HTMLElement {
     this.entities.lights['pointLight'].shadow.bias = -0.0005;
 
     if (!this.env.bIsMobile && this.env.nGPUTier > 1) {
-
       this.entities.lights['pointLight'].shadow.mapSize.width = 2048;
       this.entities.lights['pointLight'].shadow.mapSize.height = 2048;
 
     } else {
-
       this.entities.lights['pointLight'].shadow.mapSize.width = 512;
       this.entities.lights['pointLight'].shadow.mapSize.height = 512;
-
     };
 
     this.entities.lights['pointLight'].updateMatrixWorld(true);
@@ -803,7 +800,7 @@ class WebGL extends HTMLElement {
 ///// WEB COMPONENT DEFINITION /////
 ////////////////////////////////////
 
-customElements.define('theu0001-common-webgl', WebGL);
+customElements.define('theu0001-pages-_common-components-webgl', WebGL);
 
 
 //////////////////////
