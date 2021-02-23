@@ -20,8 +20,10 @@ import { DOM } from '~/utils/DOM.js';
 import { CSS } from '~/utils/CSS.js';
 import { LOG } from '~/utils/LOG.js';
 
-/// ASSETS ///
+/// ASSETS CSS ///
 import sCSS from './WebGL.css';
+
+/// ASSETS WEBGL ///
 import home_LOD0 from './assets/home_LOD0.glb';
 import home_LOD1 from './assets/home_LOD1.glb';
 import theMainInTheWall_LOD0 from './assets/the-man-in-the-wall_LOD0.glb';
@@ -31,9 +33,10 @@ import theVeil_LOD1 from './assets/the-veil_LOD1.glb';
 import anotherWorldAwaits_LOD0 from './assets/another-world-awaits_LOD0.glb';
 import anotherWorldAwaits_LOD1 from './assets/another-world-awaits_LOD1.glb';
 
+/// SHADERS WEBGL ///
 import sReflectorFragment from './shaders/sReflectorFragment.glsl';
 
-// fragment shader override
+// THREE Reflector shader override
 Reflector['ReflectorShader'].fragmentShader = sReflectorFragment;
 
 
@@ -90,6 +93,7 @@ class WebGL extends HTMLElement {
     this.entities.lights = {};
     this.entities.helpers = {};
     this.oTweens = {};
+    this.oIntervals = {};
     this.mixer = null;
 
     this.fAnimateToPositionInterval = null;
@@ -136,6 +140,7 @@ class WebGL extends HTMLElement {
   connectedCallback() {};
   disconnectedCallback() { this.destroy(); };
 
+
   ///////////////////////////
   ///// CLASS LIFECYCLE /////
   ///////////////////////////
@@ -143,38 +148,24 @@ class WebGL extends HTMLElement {
   __init(fCB) {
     LOG.info('WebGL : __init');
 
+    this.createCanvas();
+    this.createScene();
+    this.createRenderer();
+    this.createControls();
+    this.createDomObservers();
+    this.createBundledEntities();
+    this.createBundledEntityTweens();
+    if (process.env.NODE_ENV === 'development' && !this.env.bIsMobile) this.createHelpers();
+    if (process.env.NODE_ENV === 'development' && !this.env.bIsMobile) this.createGui();
+    this.createAnimationLoop();
+
     async.series([
-      // As the CSS has been applied to` the Shadow DOM we can start creating the WebGL environment.
-      // NOTE: no need to wait on async loading of resources.
-      function (callback) {
-        this.createCanvas();
-        this.createScene();
-        this.createRenderer();
-        this.createControls();
-        this.createDomObservers();
-        this.createBundledEntities();
-        this.createBundledEntityTweens();
-        if (process.env.NODE_ENV === 'development' && !this.env.bIsMobile) this.createHelpers();
-        if (process.env.NODE_ENV === 'development' && !this.env.bIsMobile) this.createGui();
-        this.createAnimationLoop();
-
-        callback();
-      }.bind(this),
-
-      // Async call for loading resources over XHR.
-      function (callback) {
-        this.loadResources(callback);
-      }.bind(this),
-
-      function (callback) {
-        this.processResources(callback);
-      }.bind(this),
-
+      function (fCB) { this.loadResources(fCB); }.bind(this),
+      function (fCB) { this.processResources(fCB); }.bind(this),
     ], function (err, results) {
       LOG.info('WebGL : __init : complete');
       if (err) { return LOG['error'](err); }
 
-      // Now the resources have been loaded we can compute the methods that rely on them.
       this.createLoadedEntities();
       this.createLoadedEntityTweens();
 
@@ -184,16 +175,13 @@ class WebGL extends HTMLElement {
   };
 
   destroy() {
-    // TODO: replace with proper outro
-    // this timeout prevents a white flash when we immediately remove the draw calls
-    setTimeout(function () {
-      this.removeAnimationLoop();
-      this.removeDomObservers();
-      this.removeLoaders();
-      this.removeTweens();
-      if (process.env.NODE_ENV === 'development' && !this.env.bIsMobile) this.removeGui();
-      this.removeThree();
-    }.bind(this), 10);
+    this.removeAnimationLoop();
+    this.removeDomObservers();
+    this.removeLoaders();
+    this.removeTweens();
+    this.removeIntervals();
+    if (process.env.NODE_ENV === 'development' && !this.env.bIsMobile) this.removeGui();
+    this.removeThree();
   };
 
 
@@ -205,34 +193,18 @@ class WebGL extends HTMLElement {
   intro(fCB) {
     LOG.info('WebGL : intro');
 
+    this.createIntervals();
+
     this.camera.fov = this.aPositions[0].camera.fov;
 
     // TODO : create a separate intro position (just for another world awaits ?)
+
     this.oTweens['cameraIntro'] = TweenMax.fromTo(this.camera.position, 2.000, {
       x: this.aPositions[0].camera.posX / 3, y: this.aPositions[0].camera.posY / 3, z: this.aPositions[0].camera.posZ / 3,
     }, {
       x: this.aPositions[0].camera.posX, y: this.aPositions[0].camera.posY, z: this.aPositions[0].camera.posZ,
       ease: Sine.easeOut, onComplete: function() {}.bind(this),
     });
-
-    // TODO: clear and recreate interval on window blur/focus ?
-    // or perhaps a boolean check
-    this.fAnimateToPositionInterval = setInterval(function() {
-
-      // @ts-ignore // tsc doesn't properly parse bound scopes so we have to ignore
-      this.nAnimationToPositionCounter++;
-      // @ts-ignore // tsc doesn't properly parse bound inputs so we have to ignore
-      if (this.nAnimationToPositionCounter > this.aPositions.length -1) { this.nAnimationToPositionCounter = 0; };
-      // @ts-ignore // tsc doesn't properly parse bound inputs so we have to ignore
-      this.animateToPosition(this.nAnimationToPositionCounter);
-
-    }.bind(this), 30 * 1000);
-
-    // if (this.activePage === 'the-veil') { this.camera.fov = 20; targetX = -97; targetY = 13; targetZ = 30; }
-    // if (this.activePage === 'the-man-in-the-wall') { this.camera.fov = 20; targetX = -41; targetY = 45; targetZ = 58; }
-    // if (this.activePage === 'another-world-awaits') { this.camera.fov = 60; targetX = -300; targetY = 300; targetZ = 600; }
-
-
 
     this.oTweens['domCanvasIntro'] = TweenMax.to(this.domCanvas, 2.000, {
       opacity: 1.0, delay: 0.00, ease: Linear.easeNone, onComplete: function() {
@@ -250,8 +222,6 @@ class WebGL extends HTMLElement {
     LOG.info('WebGL : outro');
 
     this.controls.enabled = false;
-
-    // this.removeTweens();
 
     this.oTweens['cameraOutroX'] = TweenMax.to(this.camera.position, 2.000, {
       x: this.camera.position.x * 3, ease: Sine.easeIn, onComplete: function() {}.bind(this),
@@ -305,7 +275,6 @@ class WebGL extends HTMLElement {
 
     // TODO: move this to an animation handler
     this.clock = new THREE.Clock();
-
 
     // We create a wrapper element as the canvas tag doesn't resize based on '%' stylings.
     this.domCanvasWrapper = DOM.create('div', { className: 'domCanvasWrapper' });
@@ -516,7 +485,7 @@ class WebGL extends HTMLElement {
     } else if (this.activePage === 'another-world-awaits') {}
   };
 
-  loadResources(callback) {
+  loadResources(fCB) {
     const resourceLoader = new ResourceLoader();
     const gltfLoader = new GLTFLoader();
     this.dracoLoader = new DRACOLoader(); // class scope reference so we can dispose it.
@@ -571,11 +540,11 @@ class WebGL extends HTMLElement {
     }.bind(this));
 
     resourceLoader.load(function (resourceLoader, resources) {
-      if (callback) callback();
+      fCB();
     }.bind(this));
   };
 
-  processResources(callback) {
+  processResources(fCB) {
     const maxAnisotropy = this.renderer.capabilities.getMaxAnisotropy();
 
     for (const resource in this.resources) {
@@ -594,7 +563,7 @@ class WebGL extends HTMLElement {
       }.bind(this));
     };
 
-    callback();
+    fCB();
   };
 
   createLoadedEntities() {
@@ -613,27 +582,11 @@ class WebGL extends HTMLElement {
     this.scene.add(this.resources['glft_scene'].scene);
   };
 
-  createLoadedEntityTweens() {
-    // if (this.activePage === 'another-world-awaits') {
-    //   this.tweens['pointLightIntensity'] = TweenMax.fromTo(this.resources['test'].scene.children[1].position, 10, {
-    //     y: this.resources['test'].scene.children[1].position.y -50,
-    //   }, {
-    //     y: this.resources['test'].scene.children[1].position.y,
-    //     repeat: -1, yoyo: true, ease: Sine.easeInOut, onComplete: function() {},
-    //   });
-    // }
-  };
+  createLoadedEntityTweens() {};
 
   createGui() {
     this.gui = new dat.GUI({ autoPlace: true });
     this.gui['close'](); // start in closed state
-
-    // TODO: if we want to place this in a shadow dom instance
-    // we need to move the css to that instance
-    // this.gui.domElement.style.position = 'absolute';
-    // this.gui.domElement.style.top = '0px';
-    // this.gui.domElement.style.right = '0px';
-    // DOM.append(this.gui.domElement, document.body);
 
     const folder_renderSettings = this.gui['addFolder']('Render Settings');
     folder_renderSettings.open();
@@ -768,6 +721,16 @@ class WebGL extends HTMLElement {
     this.renderer.render(this.scene, this.camera);
   };
 
+  createIntervals() {
+    this.oIntervals['animateToPositionInterval'] = setInterval(this.animateToPositionIntervallCall.bind(this), 30 * 1000);
+  };
+
+  animateToPositionIntervallCall() {
+    this.nAnimationToPositionCounter++;
+    if (this.nAnimationToPositionCounter > this.aPositions.length -1) { this.nAnimationToPositionCounter = 0; };
+    this.animateToPosition(this.nAnimationToPositionCounter);
+  };
+
 
   //////////////////////////////
   ///// DOM EVENT HANDLERS /////
@@ -800,7 +763,12 @@ class WebGL extends HTMLElement {
   removeTweens() {
     for (const tween in this.oTweens) { this.oTweens[tween].kill(); };
 
-    if (this.fAnimateToPositionInterval) clearInterval(this.fAnimateToPositionInterval);
+  };
+
+  removeIntervals() {
+    for (const interval in this.oIntervals) {
+      clearInterval(this.oIntervals[interval]);
+    };
   };
 
   removeGui() {

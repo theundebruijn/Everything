@@ -17,7 +17,6 @@ import Router from '~/utils/Router.js';
 import Navigation from '~/common/components/navigation/Navigation.js';
 import Container from '~/common/components/container/Container.js';
 import Loader from '~/common/components/loader/Loader.js';
-// import WebGL from '~/common/components/pages/webgl/WebGL.js';
 
 import Home from '~/pages/home/Home.js';
 import TheVeil from '~/pages/theVeil/TheVeil.js';

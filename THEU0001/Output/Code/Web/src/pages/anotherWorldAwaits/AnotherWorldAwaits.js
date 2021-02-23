@@ -113,7 +113,6 @@ class AnotherWorldAwaits extends HTMLElement  {
 
       fCB();
     }.bind(this));
-
   };
 
   /// ANIMATE ///
