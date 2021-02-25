@@ -23,7 +23,7 @@
   direction: rtl;
 }
 
-/* here we now use the ::first-letter selector to select the 'last' letter */
+/* here we use the ::first-letter selector to style the 'last' letter */
 .domProjectWrapper::first-letter {
   letter-spacing: normal;
 }
@@ -68,22 +68,22 @@
 
 .domTitleLineOneCharacter.One, .domTitleLineTwoCharacter.One {
   left: 0%;
-  transform: translateX(-50%) translateY(-56%);
+  transform: translateX(-30%) translateY(-56%);
 }
 
 .domTitleLineOneCharacter.Two, .domTitleLineTwoCharacter.Two {
   left: 25%;
-  transform: translateX(-55%) translateY(-56%);
+  transform: translateX(-40%) translateY(-56%);
 }
 
 .domTitleLineOneCharacter.Three, .domTitleLineTwoCharacter.Three {
   left: 50%;
-  transform: translateX(-60%) translateY(-56%);
+  transform: translateX(-50%) translateY(-56%);
 }
 
 .domTitleLineOneCharacter.Four, .domTitleLineTwoCharacter.Four {
   left: 75%;
-  transform: translateX(-65%) translateY(-56%);
+  transform: translateX(-60%) translateY(-56%);
 }
 
 .domTitleLineOneCharacter.Five, .domTitleLineTwoCharacter.Five {

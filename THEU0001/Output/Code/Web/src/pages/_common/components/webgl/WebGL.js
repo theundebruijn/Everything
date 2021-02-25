@@ -358,6 +358,12 @@ class WebGL extends HTMLElement {
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.enableDamping = true;
     this.controls.dampingFactor = 0.04;
+    this.controls.zoomSpeed = 0.5;
+
+    if (process.env.NODE_ENV === 'production') {
+      this.controls.enablePan = false;
+      // this.controls.enableZoom = false;
+    };
 
     this.controls.enabled = false;
   };
