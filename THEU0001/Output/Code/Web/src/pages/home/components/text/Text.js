@@ -102,8 +102,43 @@ class Text extends HTMLElement {
 
   /// CREATE ///
   createDomElements(fCB) {
+    /// PROJECT ///
+    this.oDOMElements['domProjectWrapper'] = DOM.create('div', { className: 'domProjectWrapper' }, 'tcejorp');
 
-    /// CHAPTER ///
+    /// GIANTESQUE ///
+    this.oDOMElements['domTitleWrapper'] = DOM.create('div', { className: 'domTitleWrapper'});
+
+    this.oDOMElements['domTitleLineOneWrapper'] = DOM.create('div', { className: 'domTitleLineOneWrapper' });
+
+    this.oDOMElements['domTitleLineOneCharacterOne'] = DOM.create('div', { className: 'domTitleLineOneCharacter One' }, 'g');
+    this.oDOMElements['domTitleLineOneCharacterTwo'] = DOM.create('div', { className: 'domTitleLineOneCharacter Two' }, 'i');
+    this.oDOMElements['domTitleLineOneCharacterThree'] = DOM.create('div', { className: 'domTitleLineOneCharacter Three' }, 'a');
+    this.oDOMElements['domTitleLineOneCharacterFour'] = DOM.create('div', { className: 'domTitleLineOneCharacter Four' }, 'n');
+    this.oDOMElements['domTitleLineOneCharacterFive'] = DOM.create('div', { className: 'domTitleLineOneCharacter Five' }, 't');
+
+    DOM.append(this.oDOMElements['domTitleLineOneCharacterOne'], this.oDOMElements['domTitleLineOneWrapper']);
+    DOM.append(this.oDOMElements['domTitleLineOneCharacterTwo'], this.oDOMElements['domTitleLineOneWrapper']);
+    DOM.append(this.oDOMElements['domTitleLineOneCharacterThree'], this.oDOMElements['domTitleLineOneWrapper']);
+    DOM.append(this.oDOMElements['domTitleLineOneCharacterFour'], this.oDOMElements['domTitleLineOneWrapper']);
+    DOM.append(this.oDOMElements['domTitleLineOneCharacterFive'], this.oDOMElements['domTitleLineOneWrapper']);
+
+
+    this.oDOMElements['domTitleLineTwoWrapper'] = DOM.create('div', { className: 'domTitleLineTwoWrapper' });
+
+    this.oDOMElements['domTitleLineTwoCharacterOne'] = DOM.create('div', { className: 'domTitleLineTwoCharacter One' }, 'e');
+    this.oDOMElements['domTitleLineTwoCharacterTwo'] = DOM.create('div', { className: 'domTitleLineTwoCharacter Two' }, 's');
+    this.oDOMElements['domTitleLineTwoCharacterThree'] = DOM.create('div', { className: 'domTitleLineTwoCharacter Three' }, 'q');
+    this.oDOMElements['domTitleLineTwoCharacterFour'] = DOM.create('div', { className: 'domTitleLineTwoCharacter Four' }, 'u');
+    this.oDOMElements['domTitleLineTwoCharacterFive'] = DOM.create('div', { className: 'domTitleLineTwoCharacter Five' }, 'e');
+
+    DOM.append(this.oDOMElements['domTitleLineTwoCharacterOne'], this.oDOMElements['domTitleLineTwoWrapper']);
+    DOM.append(this.oDOMElements['domTitleLineTwoCharacterTwo'], this.oDOMElements['domTitleLineTwoWrapper']);
+    DOM.append(this.oDOMElements['domTitleLineTwoCharacterThree'], this.oDOMElements['domTitleLineTwoWrapper']);
+    DOM.append(this.oDOMElements['domTitleLineTwoCharacterFour'], this.oDOMElements['domTitleLineTwoWrapper']);
+    DOM.append(this.oDOMElements['domTitleLineTwoCharacterFive'], this.oDOMElements['domTitleLineTwoWrapper']);
+
+    DOM.append(this.oDOMElements['domTitleLineOneWrapper'], this.oDOMElements['domTitleWrapper']);
+    DOM.append(this.oDOMElements['domTitleLineTwoWrapper'], this.oDOMElements['domTitleWrapper']);
     // this.oDOMElements['domChapter'] = DOM.create('div', { className: 'domChapter' }, this.oOptions.sChapter);
     // this.oDOMElements['domChapter'].style.color = this.oOptions.sColor;
     // DOM.addClass('positionBottom', this.oDOMElements['domChapter']);
@@ -129,9 +164,9 @@ class Text extends HTMLElement {
     //   };
     // };
 
-    // /// APPEND ///
-    // DOM.append(this.oDOMElements['domChapter'], this.shadow);
-    // DOM.append(this.oDOMElements['domTitleWrapper'], this.shadow);
+    /// APPEND ///
+    DOM.append(this.oDOMElements['domProjectWrapper'], this.shadow);
+    DOM.append(this.oDOMElements['domTitleWrapper'], this.shadow);
 
 
     fCB();
