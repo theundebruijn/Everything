@@ -66,11 +66,11 @@ gcsfuse --version
 <sup>3/ install lfs-folderstore — https://github.com/sinbad/lfs-folderstore</sup>  
 ```zsh
 # zsh (theundebruijn)
-wget https://github.com/sinbad/lfs-folderstore/releases/download/v1.0.0/lfs-folderstore-linux-amd64-v1.0.0.zip -P ~
+wget https://github.com/sinbad/lfs-folderstore/releases/download/v1.0.1/lfs-folderstore-linux-amd64-v1.0.1.zip -P ~
 cd ~
-7z x lfs-folderstore-linux-amd64-v1.0.0.zip
+7z x lfs-folderstore-linux-amd64-v1.0.1.zip
 sudo mv ./lfs-folderstore-linux-amd64/lfs-folderstore /usr/local/bin/ && sudo chmod +x /usr/local/bin/lfs-folderstore
-rm -rf ~/lfs-folderstore-linux-amd64 && rm ~/lfs-folderstore-linux-amd64-v1.0.0.zip
+rm -rf ~/lfs-folderstore-linux-amd64 && rm ~/lfs-folderstore-linux-amd64-v1.0.1.zip
 lfs-folderstore --version
 ```
 ##### monorepo workflow
@@ -111,7 +111,10 @@ git config --add lfs.customtransfer.lfs-folder.path lfs-folderstore
 git config --add lfs.customtransfer.lfs-folder.args "/home/theundebruijn/.gcsfuse_mountpoint"
 git config --add lfs.standalonetransferagent lfs-folder
 git sparse-checkout init --cone
-git sparse-checkout set THEU0000/Input/Resources THEU0000/Output/Design THEU0001/Input/Resources THEU0001/Output/Publishing THEU0001/Output/3D
+# this performs a _full_ checkout of the project folder (incl. the bits that are also checked out in wsl2)
+# feel free to perform a more sparse checkout one when it becomes a little much
+git sparse-checkout set THEU0000 THEU0001
+# git sparse-checkout set THEU0000/Input/Resources THEU0000/Output/Design THEU0001/Input/Resources THEU0001/Output/Publishing THEU0001/Output/3D
 git reset --hard main
 ```
 <sup>howto / update the sparse-checkout mapping (post checkout)</sup>  
