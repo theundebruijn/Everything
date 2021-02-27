@@ -2,3 +2,55 @@
   width: 100%;
   height: 100%;
 }
+
+.domNavButton {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: 50%;
+  transform: translateY(-50%) translateX(-50%);
+  margin: 400px 0 0 0;
+  width: 275px;
+  height: 45px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  mix-blend-mode: exclusion;
+}
+
+.domNavButton .domNavButtonCopy {
+  text-align: center;
+  line-height: 45px;
+  font-family: 'Lausanne 500';
+  font-weight: 500;
+  font-style: normal;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 10px;
+  color: white;
+
+  /* cute little hack where we reverse the text order */
+  /* this allows us to the ::first-letter selector */
+  /* as there currently is none for the last letter */
+  unicode-bidi: bidi-override;
+  direction: rtl;
+}
+
+/* here we use the ::first-letter selector to style the 'last' letter */
+.domNavButton .domNavButtonCopy::first-letter {
+  letter-spacing: normal;
+}
+
+
+/* .domNavTEST {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 50%;
+  width: 50%;
+  height: 100%;
+
+  background-color: white;
+  mix-blend-mode: exclusion;
+
+  pointer-events: none;
+} */

@@ -181,42 +181,25 @@ class Text extends HTMLElement {
     async.parallel([
       function (fCB) {
 
-        /// CHAPTER ///
-        // this.oTweens['domChapter'] = TweenMax.fromTo(this.oDOMElements['domChapter'], 1.000,
-        //   { css: { opacity: 0.0 } }, { css: { opacity: 1.0 }, delay: 2.000, ease: Linear.easeNone, onComplete() {
-        //     fCB();
-        //   }},
-        // );
-
-        fCB();
-
-      }.bind(this),
-
-      function (fCB) {
-
-        /// TITLE ///
-        // const aTitleSplit = this.oOptions.sTitle.split('\n');
-
-        // LOG.info(this.oDOMElements['domTitleLineOneWrapper'].children);
-
-
-        this.oTweens['domProjectWrapper'] = TweenMax.to(this.oDOMElements['domProjectWrapper'], 1.200, {
+        /// PROJECT ///
+        this.oTweens['domProjectWrapperIntro'] = TweenMax.to(this.oDOMElements['domProjectWrapper'], 1.200, {
           opacity: 1.0, delay: 1.800, ease: Linear.easeNone, onComplete: function () {}.bind(this),
         });
 
-
-
+        /// TITLE ///
         const nDomTitleLineOneWrapperArrayLength = this.oDOMElements['domTitleLineOneWrapper'].children.length;
         let targetX;
         for (let i = 0; i < nDomTitleLineOneWrapperArrayLength; i++) {
+
           if (i === 0) { targetX = '-30%'; }
           else if (i === 1) { targetX = '-40%'; }
           else if (i === 2) { targetX = '-50%'; }
           else if (i === 3) { targetX = '-60%'; }
           else if (i === 4) { targetX = '-70%'; }
-          this.oTweens['domTitleLineOneWrapper' + i] = TweenMax.fromTo(this.oDOMElements['domTitleLineOneWrapper'].children[i], 1.200,
-            { css: { translateX: '-250px', opacity: 0.0 } }, {
-              css: { translateX: targetX, opacity: 1.0 }, delay: 0.00 + (i * 0.1), ease: Sine.easeOut, onComplete() {
+
+          this.oTweens['domTitleLineOneWrapperIntro' + i] = TweenMax.fromTo(this.oDOMElements['domTitleLineOneWrapper'].children[i], 1.200,
+            { css: { translateX: '-200px', opacity: 0.0 } }, {
+              css: { translateX: targetX, opacity: 1.0 }, delay: 0.200 + (i * 0.09), ease: Sine.easeOut, onComplete() {
                 if (i === nDomTitleLineOneWrapperArrayLength - 1) { LOG.info('BOOOM');  }
               },
             },
@@ -226,15 +209,16 @@ class Text extends HTMLElement {
 
         const nDomTitleLineTwoWrapperArrayLength = this.oDOMElements['domTitleLineTwoWrapper'].children.length;
         for (let i = 0; i < nDomTitleLineTwoWrapperArrayLength; i++) {
+
           if (i === 0) { targetX = '-30%'; }
           else if (i === 1) { targetX = '-40%'; }
           else if (i === 2) { targetX = '-50%'; }
           else if (i === 3) { targetX = '-60%'; }
           else if (i === 4) { targetX = '-70%'; }
 
-          this.oTweens['domTitleLineTwoWrapper' + i] = TweenMax.fromTo(this.oDOMElements['domTitleLineTwoWrapper'].children[i], 1.200,
-            { css: { translateX: '-250px', opacity: 0.0 } }, {
-              css: { translateX: targetX, opacity: 1.0 }, delay: 0.300 + (i * 0.1), ease: Sine.easeOut, onComplete() {
+          this.oTweens['domTitleLineTwoWrapperIntro' + i] = TweenMax.fromTo(this.oDOMElements['domTitleLineTwoWrapper'].children[i], 1.200,
+            { css: { translateX: '-200px', opacity: 0.0 } }, {
+              css: { translateX: targetX, opacity: 1.0 }, delay: 0.600 + (i * 0.09), ease: Sine.easeOut, onComplete() {
                 if (i === nDomTitleLineTwoWrapperArrayLength - 1) { LOG.info('BOOOM2'); fCB(); }
               },
             },
@@ -255,29 +239,24 @@ class Text extends HTMLElement {
 
     this.removeTweens();
 
-    // this.oTweens['outro'] = TweenMax.to(this.oDOMElements['domTitleWrapper'], 1.200, {
-    //   opacity: 0.0, ease: Linear.easeNone, onComplete: function() { fCB(); }.bind(this),
-    // });
+    /// TITLE ///
+    this.oTweens['domTitleLineOneWrapperOutro'] = TweenMax.to(this.oDOMElements['domTitleLineOneWrapper'], 0.900, {
+      opacity: 0.0, delay: 0.000, ease: Linear.easeNone, onComplete: function () {}.bind(this),
+    });
 
-    this.oTweens['domChapterOutro'] = TweenMax.to(this.oDOMElements['domChapter'], 0.500,
-      { css: { translateX: 0, opacity: 0.0 }, ease: Linear.easeNone, onComplete: function() {
-        LOG.info('~/pages/home/components/text/Text :: outro (complete)');
-      }.bind(this) });
+    /// PROJECT ///
+    this.oTweens['domProjectWrapperOutro'] = TweenMax.to(this.oDOMElements['domProjectWrapper'], 0.900, {
+      opacity: 0.0, delay: 0.050, ease: Linear.easeNone, onComplete: function () {}.bind(this),
+    });
 
+    /// TITLE ///
+    this.oTweens['domTitleLineTwoWrapperOutro'] = TweenMax.to(this.oDOMElements['domTitleLineTwoWrapper'], 0.900, {
+      opacity: 0.0, delay: 0.100, ease: Linear.easeNone, onComplete: function () {
 
-    // for (let i = 0; i < this.oDOMElements['domTitleWrapper'].children.length; i++) {
-    //   this.oTweens['aTitleSplitOutro' + i] = TweenMax.to(this.oDOMElements['domTitleSplit' + i], 0.600,
-    //     { css: { translateX: 0, opacity: 0.0 }, delay: (i*0.1), ease: Linear.easeNone, onComplete: function() {
-    //       if (i === this.oDOMElements['domTitleWrapper'].children.length -1) {
-    //         LOG.info('Title : outro : complete');
+        fCB();
 
-    //         fCB();
-    //       };
-    //     }.bind(this) },
-    //   );
-    // };
-
-    fCB();
+      }.bind(this),
+    });
   };
 
 

@@ -16,6 +16,7 @@ import WebGL from '~/pages/_common/components/webgl/WebGL.js';
 
 /// ASSETS CSS ///
 import sCSS from './Home.css';
+import { dom } from 'dat.gui';
 
 
 ///////////////////////////////
@@ -98,7 +99,20 @@ class Home extends HTMLElement  {
   /////////////////////////
 
   /// CREATE ///
-  createDomElements(fCB) { fCB(); };
+  createDomElements(fCB) {
+
+    // this.oDOMElements['domNavTEST'] = DOM.create('div', { className: 'domNavTEST' });
+
+    this.oDOMElements['domNavButton'] = DOM.create('div', { className: 'domNavButton' });
+    this.oDOMElements['domNavButtonCopy'] = DOM.create('div', { className: 'domNavButtonCopy' }, 'stibihxe nepo');
+
+    DOM.append(this.oDOMElements['domNavButtonCopy'], this.oDOMElements['domNavButton']);
+    DOM.append(this.oDOMElements['domNavButton'], this.shadow);
+
+    // DOM.append(this.oDOMElements['domNavTEST'], this.shadow);
+
+    fCB();
+  };
 
   createComponentInstances(fCB) {
 
@@ -121,10 +135,12 @@ class Home extends HTMLElement  {
     LOG.info('~/pages/home/Home :: intro');
 
     const _stream = FRP.getStream('_webglBackground:onBackgroundChange');
-    _stream({ sColor: 0xfdfbf8, nDuration: 3.500 });
+    // _stream({ sColor: 0xfdfbf8, nDuration: 3.500 });
+    // _stream({ sColor: 0xffffff, nDuration: 3.500 });
+    _stream({ sColor: 0xfffaf0, nDuration: 0.500 });
 
     async.parallel([
-      function (fCB) { this.oComponentInstances['_webgl'].intro(fCB, 0.100); }.bind(this),
+      function (fCB) { this.oComponentInstances['_webgl'].intro(fCB, 0.00); }.bind(this),
       function (fCB) { this.oComponentInstances['_text'].intro(fCB); }.bind(this),
     ], function (err, results) {
       LOG.info('~/pages/home/Home :: intro : complete');

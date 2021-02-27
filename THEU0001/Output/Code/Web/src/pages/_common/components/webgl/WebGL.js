@@ -103,7 +103,7 @@ class WebGL extends HTMLElement {
     if (this.activePage === 'home') {
       this.aPositions[0] = { camera: { fov: 20, posX: -60, posY: -65, posZ: 95 }, target: { posX: 0, posY: 0, posZ: 0 } };
       this.aPositions[1] = { camera: { fov: 20, posX: 100, posY: -6, posZ: 14 }, target: { posX: -9.5, posY: 2, posZ: 18.5 } };
-      this.aPositions[2] = { camera: { fov: 20, posX: 0, posY: -75, posZ: 102 }, target: { posX: 0, posY: 17, posZ: 11 } };
+      this.aPositions[2] = { camera: { fov: 20, posX: 0, posY: -75, posZ: 102 }, target: { posX: 0, posY: 11.5, posZ: 5.5 } };
     } else if (this.activePage === 'the-veil') {
       this.aPositions[0] = { camera: { fov: 20, posX: -97, posY: 13, posZ: 30 }, target: { posX: 0, posY: 0, posZ: 0 } };
       this.aPositions[1] = { camera: { fov: 20, posX: -5, posY: 6, posZ: 61 }, target: { posX: -3.5, posY: 5.5, posZ: 0 } };
@@ -237,11 +237,11 @@ class WebGL extends HTMLElement {
       z: this.camera.position.z * 3, ease: Sine.easeIn, onComplete: function() {}.bind(this),
     });
 
-    this.oTweens['domCanvasOutro'] = TweenMax.to(this.domCanvas, 0.500, {
-      opacity: 0.0, delay: 0.500, ease: Linear.easeNone, onComplete: function() {
+    this.oTweens['domCanvasOutro'] = TweenMax.to(this.domCanvas, 1.000, {
+      opacity: 0.0, delay: 0.000, ease: Linear.easeNone, onComplete: function() {
         LOG.info('~/pages/_common/components/webgl/WebGL :: outro (complete)');
 
-        fCB();
+        setTimeout(function() { fCB(); }, 50); // slight extra delay before we proceed
       }.bind(this),
     });
 
@@ -275,6 +275,11 @@ class WebGL extends HTMLElement {
 
   createCanvas() {
 
+
+
+
+
+
     // TODO: move this to an animation handler
     this.clock = new THREE.Clock();
 
@@ -285,6 +290,12 @@ class WebGL extends HTMLElement {
     this.domCanvas = DOM.create('canvas', { id: 'domCanvas', className: 'domCanvas' });
     this.domCanvasContext = this.domCanvas.getContext('webgl', { powerPreference: 'high-performance', preserveDrawingBuffer: true });
     DOM.append(this.domCanvas, this.domCanvasWrapper);
+
+
+    // TODO: move this to createDmomElements node
+    // this.oDOMElements['domNavTEST'] = DOM.create('div', { className: 'domNavTEST' });
+    this.domFilter = DOM.create('div', { className: 'domFilter' });
+    DOM.append(this.domFilter, this.shadow);
   };
 
   createScene() {
@@ -362,7 +373,7 @@ class WebGL extends HTMLElement {
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.enableDamping = true;
     this.controls.dampingFactor = 0.04;
-    this.controls.zoomSpeed = 0.5;
+    this.controls.zoomSpeed = 0.75;
 
     if (process.env.NODE_ENV === 'production') {
       this.controls.enablePan = false;

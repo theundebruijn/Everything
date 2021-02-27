@@ -35,6 +35,9 @@
   text-transform: uppercase;
   letter-spacing: 40px;
   pointer-events: none;
+
+  color: #000000;
+  mix-blend-mode: difference;
 }
 
 .domTitleWrapper .domTitleSplit .domTitleCharacterSplit {

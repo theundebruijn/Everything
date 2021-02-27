@@ -12,8 +12,8 @@
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 100px;
-  color: #BCBCBC;
-
+  color: white;
+  mix-blend-mode: exclusion;
   pointer-events: none;
 
   /* cute little hack where we reverse the text order */
@@ -23,6 +23,7 @@
   direction: rtl;
 
   opacity: 0;
+
 }
 
 /* here we use the ::first-letter selector to style the 'last' letter */
@@ -48,17 +49,19 @@
   font-family: 'Saol Display';
   font-size: 228px;
   text-transform: uppercase;
-  color: #221915;
+  /* color: #221915; */
+  color: #ffd0d0;
+  mix-blend-mode: difference;
 }
 
 .domTitleLineOneWrapper {
-  margin-top: -185px;
+  margin-top: -195px;
   font-weight: normal;
   font-style: italic;
 }
 
 .domTitleLineTwoWrapper {
-  margin-top: 185px;
+  margin-top: 160px;
   font-weight: normal;
   font-style: normal;
 }
