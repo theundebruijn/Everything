@@ -124,7 +124,7 @@ class Home extends HTMLElement  {
     _stream({ sColor: 0xfdfbf8, nDuration: 3.500 });
 
     async.parallel([
-      function (fCB) { this.oComponentInstances['_webgl'].intro(fCB); }.bind(this),
+      function (fCB) { this.oComponentInstances['_webgl'].intro(fCB, 0.100); }.bind(this),
       function (fCB) { this.oComponentInstances['_text'].intro(fCB); }.bind(this),
     ], function (err, results) {
       LOG.info('~/pages/home/Home :: intro : complete');

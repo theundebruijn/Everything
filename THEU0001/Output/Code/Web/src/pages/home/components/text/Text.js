@@ -4,7 +4,7 @@
 
 /// NPM ///
 import async from 'async';
-import { TweenMax, Linear } from 'gsap';
+import { TweenMax, Sine, Linear } from 'gsap';
 
 /// LOCAL ///
 import { DOM } from '~/_utils/DOM.js';
@@ -197,15 +197,50 @@ class Text extends HTMLElement {
         /// TITLE ///
         // const aTitleSplit = this.oOptions.sTitle.split('\n');
 
-        // for (let i = 0; i < aTitleSplit.length; i++) {
-        //   this.oTweens['aTitleSplit' + i] = TweenMax.fromTo(this.oDOMElements['domTitleSplit' + i].querySelectorAll('.domTitleCharacterSplit'), 1.500,
-        //     { css: { translateX: -15, opacity: 0.0 } }, { css: { translateX: 0, opacity: 1.0 }, delay: (i * 0.3) + 0.900, stagger: { each: 0.050, ease: Linear.easeNone }, onComplete() {
-        //       if (i === aTitleSplit.length -1) fCB();
-        //     }},
-        //   );
-        // };
+        // LOG.info(this.oDOMElements['domTitleLineOneWrapper'].children);
 
-        fCB();
+
+        this.oTweens['domProjectWrapper'] = TweenMax.to(this.oDOMElements['domProjectWrapper'], 1.200, {
+          opacity: 1.0, delay: 1.800, ease: Linear.easeNone, onComplete: function () {}.bind(this),
+        });
+
+
+
+        const nDomTitleLineOneWrapperArrayLength = this.oDOMElements['domTitleLineOneWrapper'].children.length;
+        let targetX;
+        for (let i = 0; i < nDomTitleLineOneWrapperArrayLength; i++) {
+          if (i === 0) { targetX = '-30%'; }
+          else if (i === 1) { targetX = '-40%'; }
+          else if (i === 2) { targetX = '-50%'; }
+          else if (i === 3) { targetX = '-60%'; }
+          else if (i === 4) { targetX = '-70%'; }
+          this.oTweens['domTitleLineOneWrapper' + i] = TweenMax.fromTo(this.oDOMElements['domTitleLineOneWrapper'].children[i], 1.200,
+            { css: { translateX: '-250px', opacity: 0.0 } }, {
+              css: { translateX: targetX, opacity: 1.0 }, delay: 0.00 + (i * 0.1), ease: Sine.easeOut, onComplete() {
+                if (i === nDomTitleLineOneWrapperArrayLength - 1) { LOG.info('BOOOM');  }
+              },
+            },
+          );
+
+        };
+
+        const nDomTitleLineTwoWrapperArrayLength = this.oDOMElements['domTitleLineTwoWrapper'].children.length;
+        for (let i = 0; i < nDomTitleLineTwoWrapperArrayLength; i++) {
+          if (i === 0) { targetX = '-30%'; }
+          else if (i === 1) { targetX = '-40%'; }
+          else if (i === 2) { targetX = '-50%'; }
+          else if (i === 3) { targetX = '-60%'; }
+          else if (i === 4) { targetX = '-70%'; }
+
+          this.oTweens['domTitleLineTwoWrapper' + i] = TweenMax.fromTo(this.oDOMElements['domTitleLineTwoWrapper'].children[i], 1.200,
+            { css: { translateX: '-250px', opacity: 0.0 } }, {
+              css: { translateX: targetX, opacity: 1.0 }, delay: 0.300 + (i * 0.1), ease: Sine.easeOut, onComplete() {
+                if (i === nDomTitleLineTwoWrapperArrayLength - 1) { LOG.info('BOOOM2'); fCB(); }
+              },
+            },
+          );
+
+        };
 
       }.bind(this),
     ], function (err, results) {

@@ -34,10 +34,10 @@ import anotherWorldAwaits_LOD0 from './assets/another-world-awaits_LOD0.glb';
 import anotherWorldAwaits_LOD1 from './assets/another-world-awaits_LOD1.glb';
 
 /// SHADERS WEBGL ///
-import sReflectorFragment from './shaders/sReflectorFragment.glsl';
+import reflectorFragment from './shaders/three/reflector/reflectorFragment.glsl';
 
 // THREE Reflector shader override
-Reflector['ReflectorShader'].fragmentShader = sReflectorFragment;
+Reflector['ReflectorShader'].fragmentShader = reflectorFragment;
 
 
 /////////////////
@@ -190,7 +190,9 @@ class WebGL extends HTMLElement {
   /////////////////////////
 
   /// ANIMATE ///
-  intro(fCB) {
+  intro(fCB, nDelay) {
+    if (nDelay === undefined) nDelay = 0.00;
+
     LOG.info('~/pages/_common/components/webgl/WebGL :: intro');
 
     this.createIntervals();
@@ -203,11 +205,11 @@ class WebGL extends HTMLElement {
       x: this.aPositions[0].camera.posX / 3, y: this.aPositions[0].camera.posY / 3, z: this.aPositions[0].camera.posZ / 3,
     }, {
       x: this.aPositions[0].camera.posX, y: this.aPositions[0].camera.posY, z: this.aPositions[0].camera.posZ,
-      ease: Sine.easeOut, onComplete: function() {}.bind(this),
+      delay: nDelay, ease: Sine.easeOut, onComplete: function() {}.bind(this),
     });
 
     this.oTweens['domCanvasIntro'] = TweenMax.to(this.domCanvas, 2.000, {
-      opacity: 1.0, delay: 0.00, ease: Linear.easeNone, onComplete: function() {
+      opacity: 1.0, delay: nDelay, ease: Linear.easeNone, onComplete: function() {
         LOG.info('~/pages/_common/components/webgl/WebGL :: intro (complete)');
 
         this.controls.enabled = true;
@@ -352,6 +354,8 @@ class WebGL extends HTMLElement {
       this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
     };
+
+
   };
 
   createControls() {
@@ -717,8 +721,8 @@ class WebGL extends HTMLElement {
     if (this.controlsTargetOptions) this.controlsTargetOptions.z = this.controls.target.z;
 
     // update animations
-    const delta = this.clock.getDelta();
-    if (this.mixer !== null) this.mixer.update(delta);
+    // const delta = this.clock.getDelta();
+    // if (this.mixer !== null) this.mixer.update(delta);
 
     // update renderer
     this.renderer.render(this.scene, this.camera);

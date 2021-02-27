@@ -21,6 +21,8 @@
   /* as there currently is none for the last letter */
   unicode-bidi: bidi-override;
   direction: rtl;
+
+  opacity: 0;
 }
 
 /* here we use the ::first-letter selector to style the 'last' letter */
@@ -64,30 +66,32 @@
 
 .domTitleLineOneCharacter, .domTitleLineTwoCharacter {
   position: absolute;
+
+  opacity: 0.0;
 }
 
 .domTitleLineOneCharacter.One, .domTitleLineTwoCharacter.One {
   left: 0%;
-  transform: translateX(-30%) translateY(-56%);
+  transform: translateY(-56%); /* translateX is set using gsap */
 }
 
 .domTitleLineOneCharacter.Two, .domTitleLineTwoCharacter.Two {
   left: 25%;
-  transform: translateX(-40%) translateY(-56%);
+  transform: translateY(-56%); /* translateX is set using gsap */
 }
 
 .domTitleLineOneCharacter.Three, .domTitleLineTwoCharacter.Three {
   left: 50%;
-  transform: translateX(-50%) translateY(-56%);
+  transform: translateY(-56%); /* translateX is set using gsap */
 }
 
 .domTitleLineOneCharacter.Four, .domTitleLineTwoCharacter.Four {
   left: 75%;
-  transform: translateX(-60%) translateY(-56%);
+  transform: translateY(-56%); /* translateX is set using gsap */
 }
 
 .domTitleLineOneCharacter.Five, .domTitleLineTwoCharacter.Five {
   left: 100%;
-  transform: translateX(-70%) translateY(-56%);
+  transform: translateY(-56%); /* translateX is set using gsap */
 }
 
