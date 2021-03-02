@@ -101,15 +101,14 @@ class Home extends HTMLElement  {
   /// CREATE ///
   createDomElements(fCB) {
 
-    // this.oDOMElements['domNavTEST'] = DOM.create('div', { className: 'domNavTEST' });
-
     this.oDOMElements['domNavButton'] = DOM.create('div', { className: 'domNavButton' });
-    this.oDOMElements['domNavButtonCopy'] = DOM.create('div', { className: 'domNavButtonCopy' }, 'stibihxe nepo');
+
+    this.oDOMElements['domNavButtonCopy'] = DOM.create('div', { className: 'domNavButtonCopy' }, 'open exhibit');
+    this.oDOMElements['domNavButtonCopyLastChar'] = DOM.create('span', { className: 'lastChar' }, 's');
+    DOM.append(this.oDOMElements['domNavButtonCopyLastChar'], this.oDOMElements['domNavButtonCopy']);
 
     DOM.append(this.oDOMElements['domNavButtonCopy'], this.oDOMElements['domNavButton']);
     DOM.append(this.oDOMElements['domNavButton'], this.shadow);
-
-    // DOM.append(this.oDOMElements['domNavTEST'], this.shadow);
 
     fCB();
   };
@@ -136,8 +135,8 @@ class Home extends HTMLElement  {
 
     const _stream = FRP.getStream('_webglBackground:onBackgroundChange');
     // _stream({ sColor: 0xfdfbf8, nDuration: 3.500 });
-    // _stream({ sColor: 0xffffff, nDuration: 3.500 });
-    _stream({ sColor: 0xfffaf0, nDuration: 0.500 });
+    // _stream({ sColor: 0xffeac5, nDuration: 3.500 });
+    _stream({ sColor: 0xfffaf0, nDuration: 2.000 });
 
     async.parallel([
       function (fCB) { this.oComponentInstances['_webgl'].intro(fCB, 0.00); }.bind(this),

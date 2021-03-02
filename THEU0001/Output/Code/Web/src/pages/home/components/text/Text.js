@@ -103,7 +103,9 @@ class Text extends HTMLElement {
   /// CREATE ///
   createDomElements(fCB) {
     /// PROJECT ///
-    this.oDOMElements['domProjectWrapper'] = DOM.create('div', { className: 'domProjectWrapper' }, 'tcejorp');
+    this.oDOMElements['domProjectWrapper'] = DOM.create('div', { className: 'domProjectWrapper' }, 'projec');
+    this.oDOMElements['domProjectWrapperLastChar'] = DOM.create('span', { className: 'lastChar' }, 't');
+    DOM.append(this.oDOMElements['domProjectWrapperLastChar'], this.oDOMElements['domProjectWrapper']);
 
     /// GIANTESQUE ///
     this.oDOMElements['domTitleWrapper'] = DOM.create('div', { className: 'domTitleWrapper'});

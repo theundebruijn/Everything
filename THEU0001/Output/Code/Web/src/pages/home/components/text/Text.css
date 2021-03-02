@@ -16,18 +16,11 @@
   mix-blend-mode: exclusion;
   pointer-events: none;
 
-  /* cute little hack where we reverse the text order */
-  /* this allows us to the ::first-letter selector */
-  /* as there currently is none for the last letter */
-  unicode-bidi: bidi-override;
-  direction: rtl;
 
   opacity: 0;
-
 }
 
-/* here we use the ::first-letter selector to style the 'last' letter */
-.domProjectWrapper::first-letter {
+.domProjectWrapper .lastChar {
   letter-spacing: normal;
 }
 
@@ -50,7 +43,8 @@
   font-size: 228px;
   text-transform: uppercase;
   /* color: #221915; */
-  color: #ffd0d0;
+  color: #ffddeb;
+  /* color: #999b9a; */
   mix-blend-mode: difference;
 }
 

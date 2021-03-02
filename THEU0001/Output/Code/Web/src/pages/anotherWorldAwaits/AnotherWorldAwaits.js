@@ -120,7 +120,7 @@ class AnotherWorldAwaits extends HTMLElement  {
     LOG.info('~/pages/anotherWorldAwaits/AnotherWorldAwaits :: intro');
 
     const _stream = FRP.getStream('_webglBackground:onBackgroundChange');
-    _stream({ sColor: 0x0E0E14, nDuration: 3.500 });
+    _stream({ sColor: 0x0E0E14, nDuration: 2.000 });
 
     async.parallel([
       function (fCB) { this.oComponentInstances['_webgl'].intro(fCB); }.bind(this),

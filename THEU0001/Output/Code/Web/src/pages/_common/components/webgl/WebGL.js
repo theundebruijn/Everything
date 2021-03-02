@@ -85,15 +85,15 @@ class WebGL extends HTMLElement {
   };
 
   createDataStructures(fCB) {
+    this.oDOMElements = Object.create(null);
+    this.oComponentInstances = Object.create(null);
+
     this.activePage = this.oOptions.sContent;
 
-    this.resources = {};
-    this.entities = {};
-    this.entities.meshes = {};
-    this.entities.lights = {};
-    this.entities.helpers = {};
-    this.oTweens = {};
-    this.oIntervals = {};
+    this.resources = Object.create(null);
+    this.entities = { meshes: Object.create(null), lights: Object.create(null), helpers: Object.create(null) };
+    this.oTweens = Object.create(null);;
+    this.oIntervals = Object.create(null);;
     this.mixer = null;
 
     this.fAnimateToPositionInterval = null;
@@ -148,18 +148,10 @@ class WebGL extends HTMLElement {
   __init(fCB) {
     LOG.info('~/pages/_common/components/webgl/WebGL :: __init');
 
-    this.createCanvas();
-    this.createScene();
-    this.createRenderer();
-    this.createControls();
-    this.createDomObservers();
-    this.createBundledEntities();
-    this.createBundledEntityTweens();
-    if (process.env.NODE_ENV === 'development' && !this.env.bIsMobile) this.createHelpers();
-    if (process.env.NODE_ENV === 'development' && !this.env.bIsMobile) this.createGui();
-    this.createAnimationLoop();
-
     async.series([
+      function (fCB) { this.createDomElements(fCB); }.bind(this),
+      function (fCB) { this.createComponentInstances(fCB); }.bind(this),
+      function (fCB) { this.createThree(fCB); }.bind(this),
       function (fCB) { this.loadResources(fCB); }.bind(this),
       function (fCB) { this.processResources(fCB); }.bind(this),
     ], function (err, results) {
@@ -189,6 +181,25 @@ class WebGL extends HTMLElement {
   ///// CLASS METHODS /////
   /////////////////////////
 
+  createDomElements(fCB) {
+    // We create a wrapper element as the canvas tag doesn't resize based on '%' stylings.
+    this.domCanvasWrapper = DOM.create('div', { className: 'domCanvasWrapper' });
+    DOM.append(this.domCanvasWrapper, this.shadow);
+
+    this.domCanvas = DOM.create('canvas', { id: 'domCanvas', className: 'domCanvas' });
+    this.domCanvasContext = this.domCanvas.getContext('webgl', { powerPreference: 'high-performance', preserveDrawingBuffer: true });
+    DOM.append(this.domCanvas, this.domCanvasWrapper);
+
+    // TODO: move this to createDmomElements node
+    // this.oDOMElements['domNavTEST'] = DOM.create('div', { className: 'domNavTEST' });
+    this.domFilter = DOM.create('div', { className: 'domFilter' });
+    DOM.append(this.domFilter, this.shadow);
+
+    fCB();
+  };
+
+  createComponentInstances(fCB) { fCB(); };
+
   /// ANIMATE ///
   intro(fCB, nDelay) {
     if (nDelay === undefined) nDelay = 0.00;
@@ -198,6 +209,24 @@ class WebGL extends HTMLElement {
     this.createIntervals();
 
     this.camera.fov = this.aPositions[0].camera.fov;
+
+
+    let sFilterColor, nFilterOpacity;
+    if (this.activePage === 'home') {
+      // sFilterColor = '#404040'; nFilterOpacity = 1.0;
+      sFilterColor = '#191919'; nFilterOpacity = 1.0;
+    } else if (this.activePage === 'the-veil') {
+      sFilterColor = '#191919'; nFilterOpacity = 0.0;
+    } else if (this.activePage === 'the-man-in-the-wall') {
+      sFilterColor = '#191919'; nFilterOpacity = 0.0;
+    } else if (this.activePage === 'another-world-awaits') {
+      sFilterColor = '#191919'; nFilterOpacity = 0.0;
+    };
+
+    this.oTweens['domFilterIntro'] = TweenMax.to(this.domFilter, 5.000, {
+      css: { backgroundColor: sFilterColor, opacity: nFilterOpacity }, delay: nDelay, ease: Linear.easeNone, onComplete: function () {}.bind(this),
+    });
+
 
     // TODO : create a separate intro position (just for another world awaits ?)
 
@@ -225,6 +254,13 @@ class WebGL extends HTMLElement {
 
     this.controls.enabled = false;
 
+
+    this.oTweens['domFilterOutro'] = TweenMax.to(this.domFilter, 1.000, {
+      css: { opacity: 0.0 }, ease: Linear.easeNone, onComplete: function () { }.bind(this),
+    });
+
+
+
     this.oTweens['cameraOutroX'] = TweenMax.to(this.camera.position, 2.000, {
       x: this.camera.position.x * 3, ease: Sine.easeIn, onComplete: function() {}.bind(this),
     });
@@ -251,6 +287,12 @@ class WebGL extends HTMLElement {
     const stream = FRP.getStream('loader:triggerAnimation');
     stream('intro');
 
+    // const targetX = this.aPositions[nPosition].target.posX;
+    // const targetY = this.aPositions[nPosition].target.posY;
+    // const targetZ = this.aPositions[nPosition].target.posZ;
+
+    // this.controls.target.set(targetX, targetY, targetZ);
+
     this.controls.enabled = false;
 
     this.camera.fov = this.aPositions[nPosition].camera.fov;
@@ -273,47 +315,34 @@ class WebGL extends HTMLElement {
     });
   };
 
-  createCanvas() {
+  createThree(fCB) {
+    this.createScene();
+    this.createCamera();
+    this.createRenderer();
+    this.createControls();
+    this.createDomObservers();
+    this.createBundledEntities();
+    this.createBundledEntityTweens();
+    if (process.env.NODE_ENV === 'development' && !this.env.bIsMobile) this.createHelpers();
+    if (process.env.NODE_ENV === 'development' && !this.env.bIsMobile) this.createGui();
+    this.createAnimationLoop();
 
-
-
-
-
-
-    // TODO: move this to an animation handler
-    this.clock = new THREE.Clock();
-
-    // We create a wrapper element as the canvas tag doesn't resize based on '%' stylings.
-    this.domCanvasWrapper = DOM.create('div', { className: 'domCanvasWrapper' });
-    DOM.append(this.domCanvasWrapper, this.shadow);
-
-    this.domCanvas = DOM.create('canvas', { id: 'domCanvas', className: 'domCanvas' });
-    this.domCanvasContext = this.domCanvas.getContext('webgl', { powerPreference: 'high-performance', preserveDrawingBuffer: true });
-    DOM.append(this.domCanvas, this.domCanvasWrapper);
-
-
-    // TODO: move this to createDmomElements node
-    // this.oDOMElements['domNavTEST'] = DOM.create('div', { className: 'domNavTEST' });
-    this.domFilter = DOM.create('div', { className: 'domFilter' });
-    DOM.append(this.domFilter, this.shadow);
+    fCB();
   };
 
   createScene() {
     this.scene = new THREE.Scene();
-    this.camera = new THREE.PerspectiveCamera(45, this.domCanvas.clientWidth / this.domCanvas.clientHeight, 1, 10000);
+  };
 
+  createCamera() {
+    this.camera = new THREE.PerspectiveCamera(45, this.domCanvas.clientWidth / this.domCanvas.clientHeight, 1, 10000);
     this.camera.fov = 20;
-    this.camera.position.x = 0;
-    this.camera.position.y = 0;
-    this.camera.position.z = 0;
+    this.camera.position.set(0, 0, 0);
 
     this.camera.updateProjectionMatrix();
   };
 
   createRenderer() {
-    // Our main renderer.
-    // NOTE: We don't utilise the THREE.EffectComposer as we're not planning on any postprocessing effects.
-    //       We'll stick to material shader effects and skip the overhead of the composor chain.
     this.renderer = new THREE.WebGLRenderer({
       canvas: this.domCanvas,
       context: this.domCanvasContext,
@@ -334,39 +363,24 @@ class WebGL extends HTMLElement {
 
     // TODO : can we detect recent iPads specifically?
     // TODO : what does the M1 report?
-
     if (this.env.bIsMobile) {
-
       if (this.env.bIsRecentAppleGPU) {
-
         this.renderer.setPixelRatio(1.0);
         this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
       } else {
-
         this.renderer.setPixelRatio(1.0);
         this.renderer.shadowMap.type = THREE.PCFShadowMap;
-
       }
-
     } else if (this.env.nGPUTier === 1) { // tier 1 GPUs (intel integrated etc)
-
       this.renderer.setPixelRatio(0.8);
       this.renderer.shadowMap.type = THREE.BasicShadowMap;
-
     } else if (this.env.nGPUTier === 2) {
-
       this.renderer.setPixelRatio(1.0);
       this.renderer.shadowMap.type = THREE.PCFShadowMap;
-
     } else { // high end || anything outside the spec but hitting decent fps
-
       this.renderer.setPixelRatio(1.5);
       this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
     };
-
-
   };
 
   createControls() {
@@ -377,7 +391,6 @@ class WebGL extends HTMLElement {
 
     if (process.env.NODE_ENV === 'production') {
       this.controls.enablePan = false;
-      // this.controls.enableZoom = false;
     };
 
     this.controls.enabled = false;
@@ -389,7 +402,11 @@ class WebGL extends HTMLElement {
     // NOTE: We call this before creating the scene and camera to guarantee correct sizings.
     //       The ResizeObserver makes sure we handle subsequent resizes of the domCanvasWrapper.
     this.canvasWrapperResizeObserver = new ResizeObserver(function (entries) {
-      this.onCanvasWrapperResize(entries[0].contentRect.width, entries[0].contentRect.height);
+
+      // TODO: see if we can grab the values from the rezise observer
+      // this.onCanvasWrapperResize(entries[0].contentRect.width, entries[0].contentRect.height);
+      this.onCanvasWrapperResize(window.innerWidth, window.innerHeight);
+
     }.bind(this));
 
     this.canvasWrapperResizeObserver.observe(this.domCanvasWrapper);
@@ -755,6 +772,9 @@ class WebGL extends HTMLElement {
   //////////////////////////////
 
   onCanvasWrapperResize(updatedWidth, updatedHeight) {
+    LOG.warn('ERERE')
+    LOG.warn(updatedWidth)
+    LOG.warn(updatedHeight)
     this.domCanvas.style.width = updatedWidth + 'px';
     this.domCanvas.style.height = updatedHeight + 'px';
 

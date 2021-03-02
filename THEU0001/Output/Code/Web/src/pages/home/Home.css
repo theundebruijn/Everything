@@ -27,30 +27,8 @@
   text-transform: uppercase;
   letter-spacing: 10px;
   color: white;
-
-  /* cute little hack where we reverse the text order */
-  /* this allows us to the ::first-letter selector */
-  /* as there currently is none for the last letter */
-  unicode-bidi: bidi-override;
-  direction: rtl;
 }
 
-/* here we use the ::first-letter selector to style the 'last' letter */
-.domNavButton .domNavButtonCopy::first-letter {
+.domNavButton .domNavButtonCopy .lastChar {
   letter-spacing: normal;
 }
-
-
-/* .domNavTEST {
-  position: absolute;
-  z-index: 1;
-  top: 0;
-  left: 50%;
-  width: 50%;
-  height: 100%;
-
-  background-color: white;
-  mix-blend-mode: exclusion;
-
-  pointer-events: none;
-} */

@@ -183,7 +183,11 @@ class WebGLBackground extends HTMLElement {
     // NOTE: We call this before creating the scene and camera to guarantee correct sizings.
     //       The ResizeObserver makes sure we handle subsequent resizes of the domCanvasWrapper.
     this.canvasWrapperResizeObserver = new ResizeObserver(function (entries) {
-      this.onCanvasWrapperResize(entries[0].contentRect.width, entries[0].contentRect.height);
+
+      // TODO: see if we can grab the values from the rezise observer
+      // this.onCanvasWrapperResize(entries[0].contentRect.width, entries[0].contentRect.height);
+      this.onCanvasWrapperResize(window.innerWidth, window.innerHeight);
+
     }.bind(this));
 
     this.canvasWrapperResizeObserver.observe(this.domCanvasWrapper);

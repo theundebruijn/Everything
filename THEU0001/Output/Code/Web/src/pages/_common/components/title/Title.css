@@ -36,7 +36,8 @@
   letter-spacing: 40px;
   pointer-events: none;
 
-  color: #000000;
+  color: #ffddeb;
+  /* color: #999b9a; */
   mix-blend-mode: difference;
 }
 

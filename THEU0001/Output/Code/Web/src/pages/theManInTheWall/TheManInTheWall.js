@@ -121,7 +121,8 @@ class TheManInTheWall extends HTMLElement  {
     LOG.info('~/pages/theManInTheWall/TheManInTheWall :: intro');
 
     const _stream = FRP.getStream('_webglBackground:onBackgroundChange');
-    _stream({ sColor: 0xa08b68, nDuration: 3.500 });
+    // _stream({ sColor: 0xa08b68, nDuration: 3.500 });
+    _stream({ sColor: 0xfffaf0, nDuration: 2.000 });
 
     async.parallel([
       function (fCB) { this.oComponentInstances['_webgl'].intro(fCB); }.bind(this),
