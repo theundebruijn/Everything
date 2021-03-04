@@ -102,7 +102,7 @@ class TheVeil extends HTMLElement  {
   createComponentInstances(fCB) {
 
     async.series([
-      function (fCB) {  this.oComponentInstances['_title'] = new Title({ sChapter: 'part . one', sTitle: 'the veil', sColor: '#ffffff' }, fCB); }.bind(this),
+      function (fCB) { this.oComponentInstances['_title'] = new Title({ sChapter: 'part . one', sTitle: 'the veil', sColor: '#ffddeb' }, fCB); }.bind(this),
       function (fCB) {  this.oComponentInstances['_webgl'] = new WebGL({ sType: 'page', sContent: 'the-veil' }, fCB); }.bind(this),
     ], function (err, results) {
 
@@ -122,6 +122,7 @@ class TheVeil extends HTMLElement  {
     const _stream = FRP.getStream('webglBackground:onchange');
     // _stream({ sColor: 0xa08b68, nDuration: 3.500 });
     _stream({ sColor: 0xe6e1d7, nDuration: 2.000 });
+    // _stream({ sColor: 0xE6E1D7, nDuration: 2.000 });
 
     async.parallel([
       function (fCB) { this.oComponentInstances['_webgl'].intro(fCB); }.bind(this),

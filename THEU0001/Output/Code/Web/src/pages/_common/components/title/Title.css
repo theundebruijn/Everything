@@ -14,6 +14,7 @@
   letter-spacing: 50px;
   pointer-events: none;
 
+  mix-blend-mode: difference;
   opacity: 0.0;
 }
 
@@ -36,8 +37,6 @@
   letter-spacing: 40px;
   pointer-events: none;
 
-  color: #ffddeb;
-  /* color: #999b9a; */
   mix-blend-mode: difference;
 }
 

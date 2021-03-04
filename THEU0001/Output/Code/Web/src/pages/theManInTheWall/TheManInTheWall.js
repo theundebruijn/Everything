@@ -103,7 +103,7 @@ class TheManInTheWall extends HTMLElement  {
   createComponentInstances(fCB) {
 
     async.series([
-      function (fCB) {  this.oComponentInstances['_title'] = new Title({ sChapter: 'part . two', sTitle: 'the man\nin the\nwall', sColor: '#ffffff' }, fCB); }.bind(this),
+      function (fCB) { this.oComponentInstances['_title'] = new Title({ sChapter: 'part . two', sTitle: 'the man\nin the\nwall', sColor: '#ffddeb' }, fCB); }.bind(this),
       function (fCB) {  this.oComponentInstances['_webgl'] = new WebGL({ sType: 'page', sContent: 'the-man-in-the-wall' }, fCB); }.bind(this),
     ], function (err, results) {
 
@@ -122,7 +122,8 @@ class TheManInTheWall extends HTMLElement  {
 
     const _stream = FRP.getStream('webglBackground:onchange');
     // _stream({ sColor: 0xa08b68, nDuration: 3.500 });
-    _stream({ sColor: 0xfffaf0, nDuration: 2.000 });
+    // _stream({ sColor: 0xfffaf0, nDuration: 2.000 });
+    _stream({ sColor: 0xe6e1d7, nDuration: 2.000 });
 
     async.parallel([
       function (fCB) { this.oComponentInstances['_webgl'].intro(fCB); }.bind(this),

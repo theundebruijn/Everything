@@ -149,26 +149,37 @@ class WebGL extends HTMLElement {
   __init(fCB) {
     LOG.info('~/pages/_common/components/webgl/WebGL :: __init');
 
-    async.series([
-      function (fCB) { this.createDomElements(fCB); }.bind(this),
-      function (fCB) { this.createComponentInstances(fCB); }.bind(this),
-      function (fCB) { this.createThree(fCB); }.bind(this),
-      function (fCB) { this.loadResources(fCB); }.bind(this),
-      function (fCB) { this.processResources(fCB); }.bind(this),
-    ], function (err, results) {
-      LOG.info('~/pages/_common/components/webgl/WebGL :: __init (complete)');
-      if (err) { return LOG['error'](err); }
+    async.series(
+      [
+        function (fCB) { this.createDomElements(fCB); }.bind(this),
+        function (fCB) { this.createComponentInstances(fCB); }.bind(this),
+        function (fCB) { this.createThree(fCB); }.bind(this),
+        function (fCB) { this.loadResources(fCB); }.bind(this),
+        function (fCB) { this.processResources(fCB); }.bind(this),
+      ], function (err, results) {
+        LOG.info('~/pages/_common/components/webgl/WebGL :: __init (complete)');
+        if (err) { return LOG['error'](err); }
 
-      this.createLoadedEntities();
-      this.createLoadedEntityTweens();
-      this.createEventStreams();
+        // NOTE: here we check if we didn't end up here while we've already desotroyed this class
+        // this can happen with the series running while navigating to antoher page
+        // TODO: see if there's a more elegant way of doing this
+        // can we break the series calls upon destroy?
+        if (this.renderer === null) {
+          this.destroy();
+          return;
+        };
 
-      // set intital sizes
-      this.setElementSizes(window.innerWidth, window.innerHeight);
+        this.createLoadedEntities();
+        this.createLoadedEntityTweens();
+        this.createEventStreams();
 
-      fCB();
+        // set intital sizes
+        this.setElementSizes(window.innerWidth, window.innerHeight);
 
-    }.bind(this));
+        fCB();
+
+      }.bind(this)
+    );
   };
 
   destroy() {
@@ -195,12 +206,6 @@ class WebGL extends HTMLElement {
       this.setElementSizes(window.innerWidth, window.innerHeight);
     }.bind(this));
 
-  };
-
-  removeEventStreams() {
-    for (const stream in this.oStreamListeners) {
-       FRP.destroyStreamListener(this.oStreamListeners[stream]);
-    };
   };
 
   createDomElements(fCB) {
@@ -231,6 +236,7 @@ class WebGL extends HTMLElement {
     this.createIntervals();
 
     this.camera.fov = this.aPositions[0].camera.fov;
+    this.camera.updateProjectionMatrix();
 
 
     let sFilterColor, nFilterOpacity;
@@ -268,7 +274,6 @@ class WebGL extends HTMLElement {
         fCB();
       }.bind(this),
     });
-
   };
 
   outro(fCB) {
@@ -741,6 +746,8 @@ class WebGL extends HTMLElement {
   };
 
   tick() {
+
+    // LOG.info(this.camera.fov)
     // update controls
     this.controls.update();
 
@@ -774,12 +781,9 @@ class WebGL extends HTMLElement {
 
   //////////////////////////////
   ///// DOM EVENT HANDLERS /////
-  //////////////////////////////
+  ////////////////////////////  //
 
   setElementSizes(updatedWidth, updatedHeight) {
-    // LOG.warn('ERERE')
-    // LOG.warn(updatedWidth)
-    // LOG.warn(updatedHeight)
     this.domCanvasWrapper.style.width = updatedWidth + 'px';
     this.domCanvasWrapper.style.height = updatedHeight + 'px';
 
@@ -795,18 +799,30 @@ class WebGL extends HTMLElement {
   ///////////////////
 
   removeAnimationLoop() {
-    LOG.warn('111')
     this.renderer.setAnimationLoop(null);
   };
 
   removeTweens() {
     for (const tween in this.oTweens) { this.oTweens[tween].kill(); };
+
+    this.oTweens = null;
   };
 
   removeIntervals() {
     for (const interval in this.oIntervals) {
       clearInterval(this.oIntervals[interval]);
     };
+
+    this.oIntervals = null;
+  };
+
+  removeEventStreams() {
+    for (const stream in this.oStreamListeners) {
+      FRP.destroyStreamListener(this.oStreamListeners[stream]);
+      this.oStreamListeners[stream] = null;
+    };
+
+    this.oStreamListeners = null;
   };
 
   removeGui() {
@@ -818,18 +834,29 @@ class WebGL extends HTMLElement {
   };
 
   removeThree() {
-    LOG.warn('222')
-    if (this.scene) {
-      for (let i = this.scene.children.length - 1; i >= 0; i--) {
-        if (this.scene.children[i] instanceof THREE.Mesh) {
-          this.scene.children[i]['geometry'].dispose();
-          this.scene.children[i]['material'].dispose();
-        }
-        this.scene.remove(this.scene.children[i]);
+
+    const disposeMaterial = function(oMaterial) {
+      for (const key of Object.keys(oMaterial)) {
+        const value = oMaterial[key]
+        if (value && typeof value === 'object' && 'minFilter' in value) { value.dispose() } // texture
       };
 
+      oMaterial.dispose();
+    };
+
+    if (this.scene) {
+
+      this.scene.traverse(function(oChild) {
+        if (oChild instanceof THREE.Mesh) {
+          if (oChild.geometry) { oChild.geometry.dispose() };
+          if (oChild.material instanceof THREE.Material) { disposeMaterial(oChild.material) }
+          else if (typeof oChild.material === 'object') {
+            for (const material of oChild.material) disposeMaterial(material)
+          };
+        };
+      });
+
       this.renderer.dispose();
-      this.renderer.forceContextLoss();
       this.scene = null;
       this.camera = null;
       this.renderer = null;

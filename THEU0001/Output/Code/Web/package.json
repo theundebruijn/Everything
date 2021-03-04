@@ -40,7 +40,7 @@
   "license": "",
   "engines": {
     "node": "15.11.0",
-    "npm": "7.6.0"
+    "npm": "7.6.1"
   },
   "scripts": {
     "start": "./node_modules/.bin/rollup --config './_meta/rollup/rollup.dev.js' --watch",

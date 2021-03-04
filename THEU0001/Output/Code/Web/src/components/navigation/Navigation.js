@@ -13,6 +13,7 @@ import { LOG } from '~/_utils/LOG.js';
 
 /// ASSETS CSS ///
 import sCSS from './Navigation.css';
+import { FloatType } from 'three';
 
 
 ///////////////////////////////
@@ -96,59 +97,65 @@ class Navigation extends HTMLElement  {
     // TODO: abstract into subclass
     this.oDOMElements['navigationWrapper'] = DOM.create('nav', { className: 'navigationWrapper' });
 
-    this.oDOMElements['linkHome'] = DOM.create('a', { className: 'link home', href: '/' }, 'home');
+    this.oDOMElements['linkHome'] = DOM.create('a', { className: 'link', href: '/' }, 'home');
+    FRP.createStream('navigation:linkhome:onclick', { target: this.oDOMElements['linkHome'], event : 'click' });
+    FRP.createStreamListener('navigation:linkhome:onclick', function(data) {
     // FRP.addStreamListener('_navigation:linkHome:onclick', { target: this.oDOMElements['linkHome'], event : 'click' }, function(data) {
-    //   data.preventDefault();
+      data.preventDefault();
 
-    //   // TODO: handle this in the router
-    //   // push a stream instead
-    //   if (window.location.pathname === '/') return;
-    //   window.history.pushState(null, 'home', '/');
-    //   const popStateEvent = new PopStateEvent('popstate', { state: null });
-    //   window.dispatchEvent(popStateEvent);
-    // });
+      // TODO: handle this in the router
+      // push a stream instead
+      if (window.location.pathname === '/') return;
+      window.history.pushState(null, 'home', '/');
+      const popStateEvent = new PopStateEvent('popstate', { state: null });
+      window.dispatchEvent(popStateEvent);
+    });
     DOM.append(this.oDOMElements['linkHome'], this.oDOMElements['navigationWrapper']);
 
+    this.oDOMElements['linkTheVeil'] = DOM.create('a', { className: 'link', href: '/the-veil/' }, 'the veil');
+    FRP.createStream('navigation:linkTheVeil:onclick', { target: this.oDOMElements['linkTheVeil'], event: 'click' });
+    FRP.createStreamListener('navigation:linkTheVeil:onclick', function(data) {
+      data.preventDefault();
 
-    this.oDOMElements['linkTheVeil'] = DOM.create('a', { className: 'link about', href: '/the-veil/' }, 'the veil');
-    // FRP.addStreamListener('_navigation:linkTheVeil:click', { target: this.oDOMElements['linkTheVeil'], event: 'click' }, function(data) {
-    //   data.preventDefault();
-
-    //   // TODO: handle this in the router
-    //   // push a stream instead
-    //   if (window.location.pathname === '/the-veil/') return;
-    //   window.history.pushState(null, 'about', '/the-veil/');
-    //   const popStateEvent = new PopStateEvent('popstate', { state: null });
-    //   window.dispatchEvent(popStateEvent);
-    // });
+      // TODO: handle this in the router
+      // push a stream instead
+      if (window.location.pathname === '/the-veil/') return;
+      window.history.pushState(null, 'about', '/the-veil/');
+      const popStateEvent = new PopStateEvent('popstate', { state: null });
+      window.dispatchEvent(popStateEvent);
+    });
     DOM.append(this.oDOMElements['linkTheVeil'], this.oDOMElements['navigationWrapper']);
 
 
-    this.oDOMElements['linkTheManInTheWall'] = DOM.create('a', { className: 'link about', href: '/the-man-in-the-wall/' }, 'the man in the wall');
+    this.oDOMElements['linkTheManInTheWall'] = DOM.create('a', { className: 'link', href: '/the-man-in-the-wall/' }, 'the man in the wall');
+    FRP.createStream('navigation:linkTheManInTheWall:onclick', { target: this.oDOMElements['linkTheManInTheWall'], event: 'click' });
+    FRP.createStreamListener('navigation:linkTheManInTheWall:onclick', function (data) {
     // FRP.addStreamListener('_navigation:linkTheManInTheWall:click', { target: this.oDOMElements['linkTheManInTheWall'], event: 'click' }, function(data) {
-    //   data.preventDefault();
+      data.preventDefault();
 
-    //   // TODO: handle this in the router
-    //   // push a stream instead
-    //   if (window.location.pathname === '/the-man-in-the-wall/') return;
-    //   window.history.pushState(null, 'about', '/the-man-in-the-wall/');
-    //   const popStateEvent = new PopStateEvent('popstate', { state: null });
-    //   window.dispatchEvent(popStateEvent);
-    // });
+      // TODO: handle this in the router
+      // push a stream instead
+      if (window.location.pathname === '/the-man-in-the-wall/') return;
+      window.history.pushState(null, 'about', '/the-man-in-the-wall/');
+      const popStateEvent = new PopStateEvent('popstate', { state: null });
+      window.dispatchEvent(popStateEvent);
+    });
     DOM.append(this.oDOMElements['linkTheManInTheWall'], this.oDOMElements['navigationWrapper']);
 
 
-    this.oDOMElements['linkAnotherWorldAwaits'] = DOM.create('a', { className: 'link about', href: '/another-world-awaits/' }, 'another world awaits');
+    this.oDOMElements['linkAnotherWorldAwaits'] = DOM.create('a', { className: 'link', href: '/another-world-awaits/' }, 'another world awaits');
+    FRP.createStream('navigation:linkAnotherWorldAwaits:onclick', { target: this.oDOMElements['linkAnotherWorldAwaits'], event: 'click' });
+    FRP.createStreamListener('navigation:linkAnotherWorldAwaits:onclick', function (data) {
     // FRP.addStreamListener('_navigation:linkAnotherWorldAwaits:click', { target: this.oDOMElements['linkAnotherWorldAwaits'], event: 'click' }, function(data) {
-    //   data.preventDefault();
+      data.preventDefault();
 
-    //   // TODO: handle this in the router
-    //   // push a stream instead
-    //   if (window.location.pathname === '/another-world-awaits/') return;
-    //   window.history.pushState(null, 'about', '/another-world-awaits/');
-    //   const popStateEvent = new PopStateEvent('popstate', { state: null });
-    //   window.dispatchEvent(popStateEvent);
-    // });
+      // TODO: handle this in the router
+      // push a stream instead
+      if (window.location.pathname === '/another-world-awaits/') return;
+      window.history.pushState(null, 'about', '/another-world-awaits/');
+      const popStateEvent = new PopStateEvent('popstate', { state: null });
+      window.dispatchEvent(popStateEvent);
+    });
     DOM.append(this.oDOMElements['linkAnotherWorldAwaits'], this.oDOMElements['navigationWrapper']);
 
     DOM.append(this.oDOMElements['navigationWrapper'], this.shadow);
@@ -213,3 +220,4 @@ export default Navigation;
 ////////////////////                     ///////////////////
 //////////////// . ... .. ..    ...    .. .. ///////////////
 ////....................................................////
+

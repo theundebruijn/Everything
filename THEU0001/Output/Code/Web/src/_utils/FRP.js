@@ -44,7 +44,11 @@ FRP.createStreamListener = function(sName, fCB) {
 };
 
 FRP.destroyStreamListener = function(fStream) {
-  fStream.end();
+  fStream.end(true);
+};
+
+FRP.destroyStream = function (sName) {
+  this.oStreams[sName].end();
 };
 
 // returns a stream
