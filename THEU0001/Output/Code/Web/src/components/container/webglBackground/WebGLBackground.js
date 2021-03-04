@@ -315,17 +315,28 @@ class WebGLBackground extends HTMLElement {
   removeLoaders() {};
 
   removeThree() {
-    if (this.scene) {
-      for (let i = this.scene.children.length - 1; i >= 0; i--) {
-        if (this.scene.children[i] instanceof THREE.Mesh) {
-          this.scene.children[i]['geometry'].dispose();
-          this.scene.children[i]['material'].dispose();
-        }
-        this.scene.remove(this.scene.children[i]);
+    const disposeMaterial = function(oMaterial) {
+      for (const key of Object.keys(oMaterial)) {
+        const value = oMaterial[key];
+        if (value && typeof value === 'object' && 'minFilter' in value) { value.dispose(); } // texture
       };
 
+      oMaterial.dispose();
+    };
+
+    if (this.scene) {
+
+      this.scene.traverse(function(oChild) {
+        if (oChild instanceof THREE.Mesh) {
+          if (oChild.geometry) { oChild.geometry.dispose(); };
+          if (oChild.material instanceof THREE.Material) { disposeMaterial(oChild.material); }
+          else if (typeof oChild.material === 'object') {
+            for (const material of oChild.material) disposeMaterial(material);
+          };
+        };
+      });
+
       this.renderer.dispose();
-      this.renderer.forceContextLoss();
       this.scene = null;
       this.camera = null;
       this.renderer = null;

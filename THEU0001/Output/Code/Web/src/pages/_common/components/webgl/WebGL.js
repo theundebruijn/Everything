@@ -834,11 +834,10 @@ class WebGL extends HTMLElement {
   };
 
   removeThree() {
-
     const disposeMaterial = function(oMaterial) {
       for (const key of Object.keys(oMaterial)) {
-        const value = oMaterial[key]
-        if (value && typeof value === 'object' && 'minFilter' in value) { value.dispose() } // texture
+        const value = oMaterial[key];
+        if (value && typeof value === 'object' && 'minFilter' in value) { value.dispose(); } // texture
       };
 
       oMaterial.dispose();
@@ -848,10 +847,10 @@ class WebGL extends HTMLElement {
 
       this.scene.traverse(function(oChild) {
         if (oChild instanceof THREE.Mesh) {
-          if (oChild.geometry) { oChild.geometry.dispose() };
-          if (oChild.material instanceof THREE.Material) { disposeMaterial(oChild.material) }
+          if (oChild.geometry) { oChild.geometry.dispose(); };
+          if (oChild.material instanceof THREE.Material) { disposeMaterial(oChild.material); }
           else if (typeof oChild.material === 'object') {
-            for (const material of oChild.material) disposeMaterial(material)
+            for (const material of oChild.material) disposeMaterial(material);
           };
         };
       });

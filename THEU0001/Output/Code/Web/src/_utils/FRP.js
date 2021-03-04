@@ -29,17 +29,14 @@ FRP.createStream = function(sName, oDomEvent = null) {
   this.oStreams[sName] = flyd.stream();
 
   if (oDomEvent !== null) {
-    oDomEvent.target.addEventListener(oDomEvent.event, this.oStreams[sName])
+    oDomEvent.target.addEventListener(oDomEvent.event, this.oStreams[sName]);
   };
 };
 
-// FRP.addEventListenerToStream = function(name, target, event) {
-//   target.addEventListener(event, this.streams[name]);
-// };
-
+// creates a _new_ stream that we can safely end without breaking other listeners
+// see: https://github.com/paldepind/flyd/issues/155
 FRP.createStreamListener = function(sName, fCB) {
-  // this creates a _new_ stream that we can safely end without breaking other listeners
-  // see: https://github.com/paldepind/flyd/issues/155
+
   return flyd.on(function (data) { fCB(data); }, this.oStreams[sName]);
 };
 
