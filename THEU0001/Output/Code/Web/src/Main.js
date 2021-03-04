@@ -93,9 +93,9 @@ class Main {
 
     async.series([
       function (fCB) { ENV.detectGPU(fCB); }.bind(this),
+      function (fCB) { this.createEventStreams(fCB); }.bind(this),
       function (fCB) { this.createComponentInstances(fCB); }.bind(this),
       function (fCB) { this.handleRouterEvents(fCB); }.bind(this),
-      function (fCB) { this.handleWindowBlurEvents(fCB); }.bind(this),
     ], function (err, results) {
       LOG.info('~/Main :: __init (complete)');
 
@@ -136,24 +136,28 @@ class Main {
 
   /// EVENT HANDLERS
   handleRouterEvents(fCB) {
-    FRP.addStreamListener('router:onNewPage', null, function(sPageName) {
-
-      // update the queued page every time we get a router event
+    const _streamListener = FRP.createStreamListener('router:onNewPage', function (sPageName) {
       this.sQueuedPage = sPageName;
       DOM.updateMetadata(this.sQueuedPage);
 
       async.series([
         function (fCB) { this.removeActivePage(fCB); }.bind(this),
         function (fCB) { this.createNewPage(fCB); }.bind(this),
-      ], function (err, results) {}.bind(this));
+      ], function (err, results) { }.bind(this));
 
     }.bind(this));
+    // FRP.addStreamListener('router:onNewPage', null, function(sPageName) {
+
+    // update the queued page every time we get a router event
+
+
+    // }.bind(this));
 
     fCB();
   };
 
   removeActivePage(fCB) {
-    const stream = FRP.getStream('loader:triggerAnimation');
+    const stream = FRP.getStream('loader:onchange');
     stream('intro');
 
     // happens on first page load
@@ -193,7 +197,7 @@ class Main {
       }.bind(this),
 
     ], function (err, results) {
-      const stream = FRP.getStream('loader:triggerAnimation');
+      const stream = FRP.getStream('loader:onchange');
       stream('outro');
 
       DOM.append(this.cActivePage, this.oComponentInstances['_container'].oDOMElements.domPageWrapper);
@@ -202,13 +206,16 @@ class Main {
     }.bind(this));
   };
 
-  handleWindowBlurEvents(cB) {
-
+  createEventStreams(fCB) {
     const domIcon = document.querySelector('link[rel="icon"]');
     const domAppleTouchIcon = document.querySelector('link[rel="apple-touch-icon"]');
 
-    FRP.addStreamListener('window:onfocus', { target: window, event: 'focus' }, function(data) {
+    /// WINDOW RESIZE ///
+    FRP.createStream('window:onresize', { target: window, event: 'resize' });
 
+    /// WINDOW FOCUS ///
+    FRP.createStream('window:onfocus', { target: window, event: 'focus' });
+    const _streamlistener1 = FRP.createStreamListener('window:onfocus', function () {
       if (process.env.NODE_ENV === 'production') {
         domIcon.setAttribute('href', '/static/icons/favicon-giantesque.png?' + process.env.BUILD_UUID);
         domAppleTouchIcon.setAttribute('href', '/static/icons/favicon-giantesque.png?' + process.env.BUILD_UUID);
@@ -218,7 +225,9 @@ class Main {
       };
     });
 
-    FRP.addStreamListener('window:onblur', { target: window, event: 'blur' }, function (data) {
+    /// WINDOW BLUR ///
+    FRP.createStream('window:onblur', { target: window, event: 'blur' });
+    const _streamlistener2 = FRP.createStreamListener('window:onblur', function () {
       if (process.env.NODE_ENV === 'production') {
         domIcon.setAttribute('href', '/static/icons/favicon-giantesque_inactive.png?' + process.env.BUILD_UUID);
         domAppleTouchIcon.setAttribute('href', '/static/icons/favicon-giantesque_inactive.png?' + process.env.BUILD_UUID);
@@ -228,8 +237,7 @@ class Main {
       };
     });
 
-    cB();
-
+    fCB();
   };
 };
 

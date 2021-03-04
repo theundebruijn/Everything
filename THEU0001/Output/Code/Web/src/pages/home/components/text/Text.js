@@ -202,7 +202,7 @@ class Text extends HTMLElement {
           this.oTweens['domTitleLineOneWrapperIntro' + i] = TweenMax.fromTo(this.oDOMElements['domTitleLineOneWrapper'].children[i], 1.200,
             { css: { translateX: '-200px', opacity: 0.0 } }, {
               css: { translateX: targetX, opacity: 1.0 }, delay: 0.200 + (i * 0.09), ease: Sine.easeOut, onComplete() {
-                if (i === nDomTitleLineOneWrapperArrayLength - 1) { LOG.info('BOOOM');  }
+                if (i === nDomTitleLineOneWrapperArrayLength - 1) {}
               },
             },
           );
@@ -221,7 +221,7 @@ class Text extends HTMLElement {
           this.oTweens['domTitleLineTwoWrapperIntro' + i] = TweenMax.fromTo(this.oDOMElements['domTitleLineTwoWrapper'].children[i], 1.200,
             { css: { translateX: '-200px', opacity: 0.0 } }, {
               css: { translateX: targetX, opacity: 1.0 }, delay: 0.600 + (i * 0.09), ease: Sine.easeOut, onComplete() {
-                if (i === nDomTitleLineTwoWrapperArrayLength - 1) { LOG.info('BOOOM2'); fCB(); }
+                if (i === nDomTitleLineTwoWrapperArrayLength - 1) { fCB(); }
               },
             },
           );

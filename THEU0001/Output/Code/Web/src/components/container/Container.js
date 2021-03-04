@@ -14,6 +14,7 @@ import WebGLBackground from './webglBackground/WebGLBackground.js';
 
 /// ASSETS CSS ///
 import sCSS from './Container.css';
+import { FRP } from '~/_utils/FRP.js';
 
 
 /////////////////
@@ -85,6 +86,7 @@ class Container extends HTMLElement  {
     ], function (err, results) {
       LOG.info('~/components/container/Container :: __init (complete)');
 
+      // this.setDomShadowSize(window.innerWidth, window.innerWidth);
       this.createDomObservers();
 
       fCB();
@@ -132,24 +134,32 @@ class Container extends HTMLElement  {
   // hhhm, https://bugs.webkit.org/show_bug.cgi?id=170595
   createDomObservers() {
 
+    // FRP.addStreamListener('window:onresize', { target: window, event: 'resize' }, function() {
+    //   this.setDomShadowSize(window.innerWidth, window.innerHeight);
+    // }.bind(this));
+
     // Handler to set size of the domCanvasWrapper and its domCanvas child
     // NOTE: We call this before creating the scene and camera to guarantee correct sizings.
     //       The ResizeObserver makes sure we handle subsequent resizes of the domCanvasWrapper.
-    this.resizeObserver = new ResizeObserver(function(entries) {
+    // this.resizeObserver = new ResizeObserver(function(entries) {
 
-      // LOG.info('contentRect.width : ' + Math.round(entries[0].contentRect.width));
-      // LOG.info('window.innerWidth : ' + window.innerWidth);
-      // LOG.info('contentRect.width : ' +  Math.round(entries[0].contentRect.height));
-      // LOG.info('window.innerHeight : ' + window.innerHeight);
+    //   // LOG.info('contentRect.width : ' + Math.round(entries[0].contentRect.width));
+    //   // LOG.info('window.innerWidth : ' + window.innerWidth);
+    //   // LOG.info('contentRect.width : ' +  Math.round(entries[0].contentRect.height));
+    //   // LOG.info('window.innerHeight : ' + window.innerHeight);
 
-      this.onDocumentBodyResize(Math.round(entries[0].contentRect.width), Math.round(entries[0].contentRect.height));
+    //   // TODO: see if we can grab the values from the rezise observer
+    //   // this.onDocumentBodyResize(entries[0].contentRect.width, entries[0].contentRect.height);
+    //   this.onDocumentBodyResize(window.innerWidth, window.innerHeight);
 
-    }.bind(this));
 
-    this.resizeObserver.observe(document.body);
+
+    // }.bind(this));
+
+    // this.resizeObserver.observe(document.body);
   };
 
-  onDocumentBodyResize(updatedWidth, updatedHeight) {
+  setDomShadowSize(updatedWidth, updatedHeight) {
 
     this.shadow.host['style'].width = updatedWidth + 'px';
     this.shadow.host['style'].height = updatedHeight + 'px';

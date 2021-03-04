@@ -87,6 +87,7 @@ class WebGL extends HTMLElement {
   createDataStructures(fCB) {
     this.oDOMElements = Object.create(null);
     this.oComponentInstances = Object.create(null);
+    this.oStreamListeners = Object.create(null);
 
     this.activePage = this.oOptions.sContent;
 
@@ -160,6 +161,10 @@ class WebGL extends HTMLElement {
 
       this.createLoadedEntities();
       this.createLoadedEntityTweens();
+      this.createEventStreams();
+
+      // set intital sizes
+      this.setElementSizes(window.innerWidth, window.innerHeight);
 
       fCB();
 
@@ -168,18 +173,35 @@ class WebGL extends HTMLElement {
 
   destroy() {
     this.removeAnimationLoop();
-    this.removeDomObservers();
     this.removeLoaders();
     this.removeTweens();
+    this.removeEventStreams();
     this.removeIntervals();
     if (process.env.NODE_ENV === 'development' && !this.env.bIsMobile) this.removeGui();
     this.removeThree();
+
   };
 
 
   /////////////////////////
   ///// CLASS METHODS /////
   /////////////////////////
+
+
+  createEventStreams() {
+
+    /// WINDOW RESIZE ///
+    this.oStreamListeners['window:onresize'] = FRP.createStreamListener('window:onresize', function () {
+      this.setElementSizes(window.innerWidth, window.innerHeight);
+    }.bind(this));
+
+  };
+
+  removeEventStreams() {
+    for (const stream in this.oStreamListeners) {
+       FRP.destroyStreamListener(this.oStreamListeners[stream]);
+    };
+  };
 
   createDomElements(fCB) {
     // We create a wrapper element as the canvas tag doesn't resize based on '%' stylings.
@@ -284,7 +306,7 @@ class WebGL extends HTMLElement {
   };
 
   animateToPosition(nPosition) {
-    const stream = FRP.getStream('loader:triggerAnimation');
+    const stream = FRP.getStream('loader:onchange');
     stream('intro');
 
     // const targetX = this.aPositions[nPosition].target.posX;
@@ -306,7 +328,7 @@ class WebGL extends HTMLElement {
       x: this.aPositions[nPosition].camera.posX, y: this.aPositions[nPosition].camera.posY, z: this.aPositions[nPosition].camera.posZ,
       ease: Sine.easeInOut, onComplete: function() {
 
-        const stream = FRP.getStream('loader:triggerAnimation');
+        const stream = FRP.getStream('loader:onchange');
         stream('outro');
 
         this.controls.enabled = true;
@@ -320,7 +342,6 @@ class WebGL extends HTMLElement {
     this.createCamera();
     this.createRenderer();
     this.createControls();
-    this.createDomObservers();
     this.createBundledEntities();
     this.createBundledEntityTweens();
     if (process.env.NODE_ENV === 'development' && !this.env.bIsMobile) this.createHelpers();
@@ -394,22 +415,6 @@ class WebGL extends HTMLElement {
     };
 
     this.controls.enabled = false;
-  };
-
-  createDomObservers() {
-
-    // Handler to set size of the domCanvasWrapper and its domCanvas child
-    // NOTE: We call this before creating the scene and camera to guarantee correct sizings.
-    //       The ResizeObserver makes sure we handle subsequent resizes of the domCanvasWrapper.
-    this.canvasWrapperResizeObserver = new ResizeObserver(function (entries) {
-
-      // TODO: see if we can grab the values from the rezise observer
-      // this.onCanvasWrapperResize(entries[0].contentRect.width, entries[0].contentRect.height);
-      this.onCanvasWrapperResize(window.innerWidth, window.innerHeight);
-
-    }.bind(this));
-
-    this.canvasWrapperResizeObserver.observe(this.domCanvasWrapper);
   };
 
   createBundledEntities() {
@@ -771,12 +776,12 @@ class WebGL extends HTMLElement {
   ///// DOM EVENT HANDLERS /////
   //////////////////////////////
 
-  onCanvasWrapperResize(updatedWidth, updatedHeight) {
-    LOG.warn('ERERE')
-    LOG.warn(updatedWidth)
-    LOG.warn(updatedHeight)
-    this.domCanvas.style.width = updatedWidth + 'px';
-    this.domCanvas.style.height = updatedHeight + 'px';
+  setElementSizes(updatedWidth, updatedHeight) {
+    // LOG.warn('ERERE')
+    // LOG.warn(updatedWidth)
+    // LOG.warn(updatedHeight)
+    this.domCanvasWrapper.style.width = updatedWidth + 'px';
+    this.domCanvasWrapper.style.height = updatedHeight + 'px';
 
     this.renderer.setSize(updatedWidth, updatedHeight);
 
@@ -790,17 +795,12 @@ class WebGL extends HTMLElement {
   ///////////////////
 
   removeAnimationLoop() {
+    LOG.warn('111')
     this.renderer.setAnimationLoop(null);
-  };
-
-  removeDomObservers() {
-    this.canvasWrapperResizeObserver.unobserve(this.domCanvasWrapper);
-    this.canvasWrapperResizeObserver.disconnect();
   };
 
   removeTweens() {
     for (const tween in this.oTweens) { this.oTweens[tween].kill(); };
-
   };
 
   removeIntervals() {
@@ -818,6 +818,7 @@ class WebGL extends HTMLElement {
   };
 
   removeThree() {
+    LOG.warn('222')
     if (this.scene) {
       for (let i = this.scene.children.length - 1; i >= 0; i--) {
         if (this.scene.children[i] instanceof THREE.Mesh) {

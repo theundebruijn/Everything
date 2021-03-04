@@ -56,6 +56,8 @@ class Loader extends HTMLElement {
   };
 
   createDataStructures(fCB) {
+    this.oStreamListeners = Object.create(null);
+
     this.activePage = this.oOptions.sContent;
 
     this.resources = {};
@@ -105,14 +107,14 @@ class Loader extends HTMLElement {
         this.createScene();
         this.createRenderer();
         this.createControls();
-        this.createDomObservers();
+
         this.createBundledEntities();
         this.createBundledEntityTweens();
         if (process.env.NODE_ENV === 'development') this.createHelpers();
         if (process.env.NODE_ENV === 'development') this.createGui();
         this.createAnimationLoop();
 
-        this.createEventListeners();
+        this.createEventStreams();
 
         callback();
       }.bind(this),
@@ -132,6 +134,9 @@ class Loader extends HTMLElement {
       this.createLoadedEntities();
       this.createLoadedEntityTweens();
 
+        // TODO: rename this? move this?
+        this.setElementSizes(100, 125);
+
       LOG.info('~/components/loader/Loader :: __init (complete)');
       fCB();
 
@@ -143,7 +148,6 @@ class Loader extends HTMLElement {
     // this timeout prevents a white flash when we immediately remove the draw calls
     setTimeout(function () {
       this.removeAnimationLoop();
-      this.removeDomObservers();
       this.removeLoaders();
       this.removeTweens();
       if (process.env.NODE_ENV === 'development') this.removeGui();
@@ -265,17 +269,19 @@ class Loader extends HTMLElement {
 
   createControls() {};
 
-  createDomObservers() {
+  // createDomObservers() {
 
-    // Handler to set size of the domCanvasWrapper and its domCanvas child
-    // NOTE: We call this before creating the scene and camera to guarantee correct sizings.
-    //       The ResizeObserver makes sure we handle subsequent resizes of the domCanvasWrapper.
-    this.canvasWrapperResizeObserver = new ResizeObserver(function (entries) {
-      this.onCanvasWrapperResize(entries[0].contentRect.width, entries[0].contentRect.height);
-    }.bind(this));
+  //   this.onWindowResize(100, 125);
 
-    this.canvasWrapperResizeObserver.observe(this.domCanvasWrapper);
-  };
+  //   // Handler to set size of the domCanvasWrapper and its domCanvas child
+  //   // NOTE: We call this before creating the scene and camera to guarantee correct sizings.
+  //   //       The ResizeObserver makes sure we handle subsequent resizes of the domCanvasWrapper.
+  //   // this.canvasWrapperResizeObserver = new ResizeObserver(function (entries) {
+  //   //   this.onCanvasWrapperResize(entries[0].contentRect.width, entries[0].contentRect.height);
+  //   // }.bind(this));
+
+  //   // this.canvasWrapperResizeObserver.observe(this.domCanvasWrapper);
+  // };
 
   createBundledEntities() {
     // LINK: https://en.wikipedia.org/wiki/Lux
@@ -393,11 +399,13 @@ class Loader extends HTMLElement {
   ///// EVENT HANDLERS /////
   //////////////////////////
 
-  createEventListeners() {
-    FRP.addStreamListener('loader:triggerAnimation', null, function(sType) {
+  createEventStreams() {
 
-      if (sType === 'intro') { this.intro(); }
-      else if (sType === 'outro') { this.outro(); }
+    /// LOADER CHANGE ///
+    FRP.createStream('loader:onchange');
+    this.oStreamListeners['loader:onchange'] = FRP.createStreamListener('loader:onchange', function(data) {
+      if (data === 'intro') { this.intro(); }
+      else if (data === 'outro') { this.outro(); }
 
     }.bind(this));
   };
@@ -407,7 +415,7 @@ class Loader extends HTMLElement {
   ///// DOM EVENT HANDLERS /////
   //////////////////////////////
 
-  onCanvasWrapperResize(updatedWidth, updatedHeight) {
+  setElementSizes(updatedWidth, updatedHeight) {
     this.domCanvas.style.width = updatedWidth + 'px';
     this.domCanvas.style.height = updatedHeight + 'px';
 
@@ -424,11 +432,6 @@ class Loader extends HTMLElement {
 
   removeAnimationLoop() {
     this.renderer.setAnimationLoop(null);
-  };
-
-  removeDomObservers() {
-    this.canvasWrapperResizeObserver.unobserve(this.domCanvasWrapper);
-    this.canvasWrapperResizeObserver.disconnect();
   };
 
   removeTweens() {

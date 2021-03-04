@@ -21,12 +21,17 @@ class Router {
   /////////////////////////
 
   createStreams() {
-    // FRP.createStream('router:onPopState');
-    FRP.addStreamListener('router:onNewPage', null, null);
+    // FRP.addStreamListener('router:onNewPage', null, null);
 
-    FRP.addStreamListener('router:onPopState', { target: window, event: 'popstate'}, function(data) {
+    FRP.createStream('router:onNewPage');
+    FRP.createStream('router:onPopState', { target: window, event: 'popstate' });
+    const _streamlistener1 = FRP.createStreamListener('router:onPopState', function () {
       this.onNewPage();
     }.bind(this));
+
+    // FRP.addStreamListener('router:onPopState', { target: window, event: 'popstate'}, function(data) {
+    //   this.onNewPage();
+    // }.bind(this));
   };
 
   /**

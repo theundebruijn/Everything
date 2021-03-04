@@ -17,49 +17,62 @@ const FRP = Object.create(null);
 ///// OBJ PROPERTIES /////
 //////////////////////////
 
-FRP.streams = Object.create(null);
+FRP.oStreams = Object.create(null);
 
 
 ///////////////////////
 ///// OBJ METHODS /////
 ///////////////////////
 
-// FRP.createStream = function(name, type, target, event) {
-//   if (this.streams[name]) throw new Error('stream already defined');
-//   this.streams[name] = flyd.stream();
-// };
+FRP.createStream = function(sName, oDomEvent = null) {
+  if (this.oStreams[sName]) throw new Error('stream already defined');
+  this.oStreams[sName] = flyd.stream();
 
-FRP.getStream = function(sName) {
-  return this.streams[sName];
+  if (oDomEvent !== null) {
+    oDomEvent.target.addEventListener(oDomEvent.event, this.oStreams[sName])
+  };
 };
 
 // FRP.addEventListenerToStream = function(name, target, event) {
 //   target.addEventListener(event, this.streams[name]);
 // };
 
-// FRP.listenToStream = function(name, callback) {
-//   flyd.on(function(data) { callback(data); }, this.streams[name]);
-// };
-
-// aggregate method - can be used as an all in one
-FRP.addStreamListener = function(sName, oEventListener, callback) {
-  // create new stream if it doesn't exist
-  if (!this.streams[sName]) this.streams[sName] = flyd.stream();
-
-  // attach the event listener to the stream if present
-
-  // TODO: test if aleady exist to prevent double calls
-
-
-  if (oEventListener !== null) {
-    oEventListener.target.addEventListener(oEventListener.event, this.streams[sName]);
-  };
-
-  // subscrive to the stream
-  if (callback !== null) {
-    flyd.on(function (data) { callback(data); }, this.streams[sName]);
-  };
+FRP.createStreamListener = function(sName, fCB) {
+  // this creates a _new_ stream that we can safely end without breaking other listeners
+  // see: https://github.com/paldepind/flyd/issues/155
+  return flyd.on(function (data) { fCB(data); }, this.oStreams[sName]);
 };
+
+FRP.destroyStreamListener = function(fStream) {
+  fStream.end();
+};
+
+// returns a stream
+// allows you to push new values without creating additional streams
+FRP.getStream = function (sName) {
+  return this.oStreams[sName];
+};
+
+
+// // aggregate method - can be used as an all in one
+// FRP.addStreamListener = function(sName, oEventListener, fCB) {
+//   // create new stream if it doesn't exist
+//   if (!this.streams[sName]) this.streams[sName] = flyd.stream();
+
+//   // attach the event listener to the stream if present
+
+//   // TODO: test if aleady exist to prevent double calls
+
+
+//   if (oEventListener !== null) {
+//     oEventListener.target.addEventListener(oEventListener.event, this.streams[sName]);
+//   };
+
+//   // subscribe to the stream
+//   if (fCB !== null) {
+//     flyd.on(function (data) { fCB(data); }, this.streams[sName]);
+//   };
+// };
 
 //////////////////////
 ///// ES6 EXPORT /////

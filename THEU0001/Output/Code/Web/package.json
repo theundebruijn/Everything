@@ -15,7 +15,7 @@
     "gsap": "3.6.0",
     "loglevel": "1.7.1",
     "resource-loader": "3.0.1",
-    "three": "0.126.0"
+    "three": "0.126.1"
   },
   "devDependencies": {
     "@rollup/plugin-alias": "3.1.2",
@@ -24,7 +24,7 @@
     "@rollup/plugin-node-resolve": "11.2.0",
     "@rollup/plugin-url": "6.0.0",
     "@types/resize-observer-browser": "0.1.5",
-    "@types/three": "0.125.3",
+    "@types/three": "0.126.0",
     "eslint": "7.21.0",
     "html-minifier": "4.0.0",
     "npm-check-updates": "11.1.10",
@@ -39,7 +39,7 @@
   },
   "license": "",
   "engines": {
-    "node": "15.10.0",
+    "node": "15.11.0",
     "npm": "7.6.0"
   },
   "scripts": {

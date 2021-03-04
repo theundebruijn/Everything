@@ -38,7 +38,8 @@ class WebGLBackground extends HTMLElement {
   };
 
   createDataStructures(fCB) {
-    this.tweens = {};
+    this.tweens = Object.create(null);
+    this.oStreamListeners = Object.create(null);
 
     fCB();
   };
@@ -88,6 +89,7 @@ class WebGLBackground extends HTMLElement {
         callback();
       }.bind(this),
 
+
       // Async call for loading resources over XHR.
       function (callback) {
         this.loadResources(callback);
@@ -105,7 +107,10 @@ class WebGLBackground extends HTMLElement {
 
       // this.handleRouterEvents();
 
-      this.createStreamListeners();
+      this.createEventStreams();
+
+      // set intital sizes
+      this.setElementSizes(window.innerWidth, window.innerHeight);
 
       LOG.info('~/components/webglBackground/WebGLBackground :: __init (complete)');
       fCB();
@@ -179,18 +184,26 @@ class WebGLBackground extends HTMLElement {
 
   createDomObservers() {
 
+    // FRP.addStreamListener('window:onresize', { target: window, event: 'resize' }, function () {
+    //   // LOG.info(window.innerWidth)
+    //   // LOG.info(window.innerHeight)
+    //   this.onWindowResize(window.innerWidth, window.innerHeight);
+    // }.bind(this));
+
     // Handler to set size of the domCanvasWrapper and its domCanvas child
     // NOTE: We call this before creating the scene and camera to guarantee correct sizings.
     //       The ResizeObserver makes sure we handle subsequent resizes of the domCanvasWrapper.
-    this.canvasWrapperResizeObserver = new ResizeObserver(function (entries) {
+    // this.canvasWrapperResizeObserver = new ResizeObserver(function (entries) {
+    //   LOG.info(entries[0])
+    //   // TODO: see if we can grab the values from the rezise observer
+    //   this.onCanvasWrapperResize(entries[0].contentRect.width, entries[0].contentRect.height);
 
-      // TODO: see if we can grab the values from the rezise observer
-      // this.onCanvasWrapperResize(entries[0].contentRect.width, entries[0].contentRect.height);
-      this.onCanvasWrapperResize(window.innerWidth, window.innerHeight);
+    //   LOG.warn(this.domCanvasWrapper.getClientRects())
+    //   // this.onCanvasWrapperResize(window.innerWidth, window.innerHeight);
 
-    }.bind(this));
+    // }.bind(this));
 
-    this.canvasWrapperResizeObserver.observe(this.domCanvasWrapper);
+    // this.canvasWrapperResizeObserver.observe(this.domCanvasWrapper);
   };
 
   createBundledEntities() {};
@@ -216,9 +229,12 @@ class WebGLBackground extends HTMLElement {
   ///// DOM EVENT HANDLERS /////
   //////////////////////////////
 
-  onCanvasWrapperResize(updatedWidth, updatedHeight) {
-    this.domCanvas.style.width = updatedWidth + 'px';
-    this.domCanvas.style.height = updatedHeight + 'px';
+  setElementSizes(updatedWidth, updatedHeight) {
+    // this.shadow.host['style'].width = updatedWidth + 'px';
+    // this.shadow.host['style'].height = updatedHeight + 'px';
+
+    this.domCanvasWrapper.style.width = updatedWidth + 'px';
+    this.domCanvasWrapper.style.height = updatedHeight + 'px';
 
     this.renderer.setSize(updatedWidth, updatedHeight);
 
@@ -249,9 +265,17 @@ class WebGLBackground extends HTMLElement {
   //     ease: Linear.easeNone, onComplete: function () { },
   //   });
 
-  createStreamListeners() {
+  createEventStreams() {
 
-    FRP.addStreamListener('_webglBackground:onBackgroundChange', null, function(data) {
+    /// WINDOW RESIZE ///
+    this.oStreamListeners['window:onresize'] = FRP.createStreamListener('window:onresize', function () {
+      this.setElementSizes(window.innerWidth, window.innerHeight);
+    }.bind(this));
+
+    /// WEBGLBACKGROUND CHANGE ///
+    FRP.createStream('webglBackground:onchange');
+
+    this.oStreamListeners['webglBackground:onchange'] = FRP.createStreamListener('webglBackground:onchange', function(data) {
       this.updateBackgroundColor(data);
     }.bind(this));
   };
@@ -277,8 +301,8 @@ class WebGLBackground extends HTMLElement {
   };
 
   removeDomObservers() {
-    this.canvasWrapperResizeObserver.unobserve(this.domCanvasWrapper);
-    this.canvasWrapperResizeObserver.disconnect();
+    // this.canvasWrapperResizeObserver.unobserve(this.domCanvasWrapper);
+    // this.canvasWrapperResizeObserver.disconnect();
   };
 
   removeTweens() {
