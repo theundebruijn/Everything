@@ -81,7 +81,7 @@ wsl --set-default-version 2
 ```powershell
 # powershell (regular user)
 mkdir "C:\Users\Theun de Bruijn\.wsl\"
-cp "<path to file>\ubuntu-20.10-server-cloudimg-amd64-wsl.rootfs.tar.gz" "C:\Users\Theun de Bruijn\.wsl\"
+cp .\Downloads\ubuntu-20.10-server-cloudimg-amd64-wsl.rootfs.tar.gz "C:\Users\Theun de Bruijn\.wsl\"
 cd "C:\Users\Theun de Bruijn\.wsl\"
 wsl --import ubuntu-2010-wsl ubuntu-2010-wsl ubuntu-20.10-server-cloudimg-amd64-wsl.rootfs.tar.gz
 wsl -l -v
@@ -135,20 +135,17 @@ sudo apt upgrade
 sudo apt install git
 sudo apt install git-lfs
 sudo apt install zsh
-sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-# make zsh default when it asks to (if it fails run `chsh -s $(which zsh)`)
-git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/.oh-my-zsh/custom/themes/powerlevel10k
-nano ~/.zshrc
--> ZSH_THEME="powerlevel10k/powerlevel10k"
-exit
+chsh -s $(which zsh)
 exit
 ``` 
 ```powershell
 # powershell (regular user)
+cp .\Downloads\.zshrc \\wsl$\ubuntu-2010-wsl\home\theundebruijn
 wsl -d ubuntu-2010-wsl -u theundebruijn
 ```  
 ```zsh
 # zsh (theundebruijn)
+sudo chown $USER:$USER ./.zshrc
 # (run `p10k configure` if needed)
 code .
 ```
