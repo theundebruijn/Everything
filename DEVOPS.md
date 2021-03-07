@@ -146,6 +146,14 @@ wsl -d ubuntu-2010-wsl -u theundebruijn
 ```zsh
 # zsh (theundebruijn)
 sudo chown $USER:$USER ./.zshrc
+exit
+```
+```powershell
+# powershell (regular user)
+wsl -d ubuntu-2010-wsl -u theundebruijn
+```
+```zsh
+# zsh (theundebruijn)
 # (run `p10k configure` if needed)
 code .
 ```
