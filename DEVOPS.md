@@ -83,13 +83,13 @@ wsl --set-default-version 2
 mkdir "C:\Users\Theun de Bruijn\.wsl\"
 cp .\Downloads\ubuntu-20.10-server-cloudimg-amd64-wsl.rootfs.tar.gz "C:\Users\Theun de Bruijn\.wsl\"
 cd "C:\Users\Theun de Bruijn\.wsl\"
-wsl --import ubuntu-2010-wsl ubuntu-2010-wsl ubuntu-20.10-server-cloudimg-amd64-wsl.rootfs.tar.gz
+wsl --import wsl-theundebruijn wsl-theundebruijn ubuntu-20.10-server-cloudimg-amd64-wsl.rootfs.tar.gz
 wsl -l -v
 ```  
 <sup>13 / configure vm : add user
 ```powershell
 # powershell (regular user)
-wsl -d ubuntu-2010-wsl
+wsl -d wsl-theundebruijn
 ```  
 ```bash
 # bash (root user)
@@ -100,7 +100,7 @@ exit
 <sup>14 / configure vm : wsl config
 ```powershell
 # powershell (regular user)
-wsl -d ubuntu-2010-wsl -u theundebruijn
+wsl -d wsl-theundebruijn -u theundebruijn
 ```  
 ```bash
 # bash (theundebruijn)
@@ -126,7 +126,7 @@ wsl --shutdown
 <sup>15 / configure vm : updates
 ```powershell
 # powershell (regular user)
-wsl -d ubuntu-2010-wsl -u theundebruijn
+wsl -d wsl-theundebruijn -u theundebruijn
 ```  
 ```bash
 # bash (theundebruijn)
@@ -140,8 +140,8 @@ exit
 ``` 
 ```powershell
 # powershell (regular user)
-cp .\Downloads\.zshrc \\wsl$\ubuntu-2010-wsl\home\theundebruijn
-wsl -d ubuntu-2010-wsl -u theundebruijn
+cp .\Downloads\.zshrc \\wsl$\wsl-theundebruijn\home\theundebruijn
+wsl -d wsl-theundebruijn -u theundebruijn
 ```  
 ```zsh
 # zsh (theundebruijn)
@@ -150,7 +150,7 @@ exit
 ```
 ```powershell
 # powershell (regular user)
-wsl -d ubuntu-2010-wsl -u theundebruijn
+wsl -d wsl-theundebruijn -u theundebruijn
 ```
 ```zsh
 # zsh (theundebruijn)
@@ -179,7 +179,7 @@ exit
 ``` 
 ```powershell
 # powershell (regular user)
-wsl -d ubuntu-2010-wsl -u theundebruijn
+wsl -d wsl-theundebruijn -u theundebruijn
 ```  
 ```zsh
 # zsh (theundebruijn)
@@ -204,7 +204,7 @@ exit
 ```powershell
 # powershell (regular user)
 wsl --shutdown
-wsl -d ubuntu-2010-wsl -u theundebruijn
+wsl -d wsl-theundebruijn -u theundebruijn
 ```    
  ```zsh
 # zsh (theundebruijn)
@@ -228,7 +228,7 @@ exit
 <sup>18 / install additional software
 ```powershell
 # powershell (regular user)
-wsl -d ubuntu-2010-wsl -u theundebruijn
+wsl -d wsl-theundebruijn -u theundebruijn
 ```  
 ```zsh
 # zsh (theundebruijn)
