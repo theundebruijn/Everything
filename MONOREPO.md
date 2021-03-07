@@ -33,7 +33,7 @@ a wsl2 vm configured using the [devops readme](DEVOPS.md)
 <sup>1/ install Cloud SDK — https://cloud.google.com/sdk/docs/install#deb</sup>  
 ```powershell
 # powershell (regular user)
-wsl -d ubuntu-2010-wsl -u theundebruijn
+wsl -d wsl-theundebruijn -u theundebruijn
 ``` 
 ```zsh
 # zsh (theundebruijn)
@@ -81,16 +81,6 @@ lfs-folderstore --version
 # setup automounting of the gcp storage bucket — https://cloud.google.com/storage
 
 mkdir ~/.gcsfuse_mountpoint
-
-nano ~/.zshrc
-
-# add the following :
-RUNNING=`ps aux | grep gcsfuse | grep -v grep`
-if [ -z "$RUNNING" ]; then
-  gcsfuse everything-storage-bucket-uswest1-0001 ~/.gcsfuse_mountpoint > /dev/null 2>&1 &
-  disown
-fi
-
 exit
 ```
 ```zsh
