@@ -42,7 +42,7 @@ see: https://stackoverflow.com/a/20627988
 
 ```powershell
 # powershell (regular user)
-wsl -d ubuntu-2010-wsl -u theundebruijn
+wsl -d wsl-theundebruijn -u theundebruijn
 ```
 ```zsh
 # zsh (theundebruijn)
