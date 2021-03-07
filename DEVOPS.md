@@ -173,14 +173,8 @@ Host github.com-theundebruijn
     IdentitiesOnly yes
     IdentityFile /home/theundebruijn/.ssh/id_ed25519_github.com_theun@theundebruijn.com
 
-cp /mnt/c/<path to folder with downloaded ssh keys>/SSH/* ~/.ssh/
+cp /mnt/c/Users/Theun\ de\ Bruijn/Downloads/SSH/* ~/.ssh/
 chmod 600 ~/.ssh/id_ed25519_github.com_theun@theundebruijn.com
-nano ~/.zshrc
-    
-# add the following : 
-{ eval $(ssh-agent) } &>/dev/null
-{ ssh-add ~/.ssh/id_ed25519_github.com_theun@theundebruijn.com } &>/dev/null
-
 exit
 ``` 
 ```powershell
