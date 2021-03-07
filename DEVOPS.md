@@ -217,15 +217,6 @@ sudo visudo
     
 # add the following :
 theundebruijn ALL=(ALL) NOPASSWD: /usr/bin/dockerd
-
-nano ~/.zshrc
-
-# add the following :
-RUNNING=`ps aux | grep dockerd | grep -v grep`
-if [ -z "$RUNNING" ]; then
-  sudo dockerd > /dev/null 2>&1 &
-  disown
-fi
     
 # workaround for iptables issue
 (see: https://forums.docker.com/t/failing-to-start-dockerd-failed-to-create-nat-chain-docker/78269)
