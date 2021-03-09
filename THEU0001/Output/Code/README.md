@@ -58,7 +58,7 @@ ip -4 addr show eth0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}' > "/home/theundebruij
 ```
 ```powershell
 # powershell (administrator)
-powershell.exe -ExecutionPolicy Bypass -File "\\wsl$\ubuntu-2010-wsl\home\theundebruijn\Work\Theun de Bruijn\Everything\THEU0001\Output\Code\DevOps\_win10\update_windows_hosts.ps1"
+powershell.exe -ExecutionPolicy Bypass -File "\\wsl$\wsl-theundebruijn\home\theundebruijn\Work\Theun de Bruijn\Everything\THEU0001\Output\Code\DevOps\_win10\update_windows_hosts.ps1"
 ```
 <sup>3 / setup local docker web instance(s) (wsl2)</sup>
 
