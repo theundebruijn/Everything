@@ -15,6 +15,9 @@
 *.blend filter=lfs diff=lfs merge=lfs -text
 *.blend linguist-detectable=false
 
+*.chitubox filter=lfs diff=lfs merge=lfs -text
+*.chitubox linguist-detectable=false
+
 *.glb filter=lfs diff=lfs merge=lfs -text
 *.glb linguist-detectable=false
 
