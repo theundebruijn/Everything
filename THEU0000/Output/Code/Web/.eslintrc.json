@@ -5,7 +5,7 @@
     "node": false
   },
   "parserOptions": {
-    "ecmaVersion": 6,
+    "ecmaVersion": 2020,
     "sourceType": "module",
     "ecmaFeatures": {
       "jsx": false
@@ -23,7 +23,6 @@
     "quotes": ["warn", "single"],
     "no-duplicate-imports": ["error"],
     "no-dupe-class-members": ["error"],
-    "new-cap": ["warn"],
     "new-parens": ["warn"],
     "no-var": ["error"],
     "prefer-const": ["warn"]

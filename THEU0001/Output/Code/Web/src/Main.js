@@ -116,7 +116,7 @@ class Main {
   /// CREATE ///
   createComponentInstances(fCB) {
 
-    async.parallel([
+    async.series([
       function (fCB) { this.oComponentInstances['_navigation'] = new Navigation(fCB); }.bind(this),
       function (fCB) { this.oComponentInstances['_container'] = new Container(fCB); }.bind(this),
       function (fCB) { this.oComponentInstances['_loader'] = new Loader({ sType: 'loader', sContent: 'loader' }, fCB); }.bind(this),

@@ -6,9 +6,9 @@ LABEL maintainer="theun@theundebruijn.com"
 
 # install node
 # https://nodejs.org/en/
-ENV NODE_VERSION 15.6.0
+ENV NODE_VERSION 15.12.0
 # https://github.com/npm/cli/releases
-ENV NPM_VERSION 7.4.1
+ENV NPM_VERSION 7.6.3
 
 # install dependencies
 RUN apt-get update && \

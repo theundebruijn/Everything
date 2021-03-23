@@ -573,7 +573,7 @@ class WebGL extends HTMLElement {
 
     };
 
-    resourceLoader.use(function (resource, next) {
+    resourceLoader.use(function(resource, next) {
 
       if (resource.extension === 'glb') {
         gltfLoader.parse(resource.data, '', function (gltf) {
@@ -584,7 +584,7 @@ class WebGL extends HTMLElement {
       }
     }.bind(this));
 
-    resourceLoader.load(function (resourceLoader, resources) {
+    resourceLoader.load(function(resourceLoader, resources) {
       fCB();
     }.bind(this));
   };

@@ -11,6 +11,7 @@ import json from '@rollup/plugin-json';
 import { string } from 'rollup-plugin-string';
 import copy from 'rollup-plugin-copy';
 import serve from 'rollup-plugin-serve';
+import injectProcessEnv from 'rollup-plugin-inject-process-env';
 
 export default {
   input: './src/Main.js',
@@ -22,7 +23,7 @@ export default {
     sourcemap: true,
   },
   manualChunks: {
-    vendor: [ 'gsap' ],
+    vendor: ['gsap', 'resource-loader'],
   },
   cache: true,
   watch: {
@@ -40,7 +41,7 @@ export default {
       include: ['**/*.css'],
     }),
     url({
-      include: ['**/*.jpg', '**/*.woff2', '**/*.glb'],
+      include: ['**/*.jpg', '**/*.woff2'],
       limit: 0,
       fileName: '../assets/[name][extname]',
     }),
@@ -48,11 +49,18 @@ export default {
     alias({
       entries: { '~': './src' },
     }),
+    injectProcessEnv({
+      NODE_ENV: 'development',
+    }),
     copy({
       targets: [
         {
           src: './_meta/assets/templates/index.html',
           dest: './_dev',
+        },
+        {
+          src: './_meta/assets/icons/',
+          dest: './_dev/static',
         },
       ],
     }),

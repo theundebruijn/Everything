@@ -27,36 +27,44 @@
 Microsoft Windows 10 `(x64)` `(enterprise)` — `version 20H2`, `build 19042.685`
 a wsl2 vm configured using the devops readme
 monorepo checkout configured using the monorepo readme
+
+notes:
+While we use strict ES6/ES2020 code that we _don't_ transpile this poses a couple gotchas. Especially in relation to VS Code's intellisense.
+A big one is that bound function calls (.bind()) aren't properly handled by the interpreter. One solution is to move to fat arrow calls (=>)
+but considering those still impose a hefty performance penalty let's try and avoid these.
+see: https://stackoverflow.com/a/20627988
 </sup>
+
+
 
 ##### DevOps
 <sup>1 / setup local docker env (wsl2)</sup>
 
 ```powershell
 # powershell (regular user)
-wsl -d ubuntu-2010-wsl -u theundebruijn
+wsl -d wsl-theundebruijn -u theundebruijn
 ```
 ```zsh
 # zsh (theundebruijn)
-cd ~/Everything/THEU0000/Output/Code/DevOps/
+cd "/home/theundebruijn/Work/Theun de Bruijn/Everything/THEU0000/Output/Code/DevOps/"
 ./local-env.sh start
 ```
 <sup>2 / configure network routing (wsl2 + win10)</sup>
 
 ```zsh
 # zsh (theundebruijn)
-mkdir -p ~/Everything/THEU0000/Output/Code/DevOps/_tmp/
-ip -4 addr show eth0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}' > ~/Everything/THEU0000/Output/Code/DevOps/_tmp/ip_addr.txt
+mkdir -p "/home/theundebruijn/Work/Theun de Bruijn/Everything/THEU0000/Output/Code/DevOps/_tmp/"
+ip -4 addr show eth0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}' > "/home/theundebruijn/Work/Theun de Bruijn/Everything/THEU0000/Output/Code/DevOps/_tmp/ip_addr.txt"
 ```
 ```powershell
 # powershell (administrator)
-powershell.exe -ExecutionPolicy Bypass -File \\wsl$\ubuntu-2010-wsl\home\theundebruijn\Everything\THEU0000\Output\Code\DevOps\_win10\update_windows_hosts.ps1
+powershell.exe -ExecutionPolicy Bypass -File "\\wsl$\wsl-theundebruijn\home\theundebruijn\Work\Theun de Bruijn\Everything\THEU0000\Output\Code\DevOps\_win10\update_windows_hosts.ps1"
 ```
 <sup>3 / setup local docker web instance(s) (wsl2)</sup>
 
 ```zsh
 # zsh (theundebruijn)
-cd ~/Everything/THEU0000/Output/Code/DevOps/
+cd "/home/theundebruijn/Work/Theun de Bruijn/Everything/THEU0000/Output/Code/DevOps/"
 ./local-web.sh install
 ./local-web.sh update
 ./local-web.sh upgrade

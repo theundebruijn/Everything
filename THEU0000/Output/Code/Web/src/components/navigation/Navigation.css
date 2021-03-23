@@ -1,0 +1,14 @@
+:host {
+  position: absolute;
+  z-index: 1;
+}
+
+.navigationWrapper {
+}
+
+.navigationWrapper a {
+  margin-right: 20px;
+  text-decoration: none;
+  text-transform: uppercase;
+  color: lightgrey;
+}

@@ -1,8 +1,8 @@
 # copyright © 2020-present, Theun de Bruijn. all rights reserved.
 
-Write-Host 'reading WSL2 ip address from: \\wsl$\ubuntu-2010-wsl\home\theundebruijn\Everything\THEU0000\Output\Code\DevOps\_tmp\ip_addr.txt'
+Write-Host 'reading WSL2 ip address from: "\\wsl$\wsl-theundebruijn\home\theundebruijn\Work\Theun de Bruijn\Everything\THEU0000\Output\Code\DevOps\_tmp\ip_addr.txt"'
 
-$my_ip = Get-Content \\wsl$\ubuntu-2010-wsl\home\theundebruijn\Everything\THEU0000\Output\Code\DevOps\_tmp\ip_addr.txt -totalcount 1
+$my_ip = Get-Content "\\wsl$\wsl-theundebruijn\home\theundebruijn\Work\Theun de Bruijn\Everything\THEU0000\Output\Code\DevOps\_tmp\ip_addr.txt" -totalcount 1
 Write-Host 'ip address found:'$my_ip''
 
 # code for updateing the host file: https://stackoverflow.com/a/42843058

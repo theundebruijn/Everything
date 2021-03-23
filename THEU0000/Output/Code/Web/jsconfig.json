@@ -1,10 +1,11 @@
 {
   "compilerOptions": {
-    "target": "es6",
     "baseUrl": "./",
-    "paths": {
-      "~/*": ["./src/*"]
-    }
+    "paths": { "~/*": ["src/*"] },
+    "moduleResolution": "node",
+    "target": "es2020",
+    "checkJs": true
   },
-  "exclude": ["node_modules", "_dist"]
+  "include":  ["src/**/*", "_meta/types/**/*"],
+  "exclude": ["node_modules", "_dev", "_dist", "_tmp"]
 }
