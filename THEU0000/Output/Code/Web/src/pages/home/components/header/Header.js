@@ -207,8 +207,8 @@ class Header extends HTMLElement {
       // this.setElementSizes(window.innerWidth, window.innerHeight);
       // LOG.info(e)
 
-      if (this.oTweens['hoveMove']) this.oTweens['hoveMove'].kill();
-      this.oTweens['hoveMove'] = TweenMax.to(this.oDOMElements['hover'], 0.300, {
+      if (this.oTweens['hoverMove']) this.oTweens['hoverMove'].kill();
+      this.oTweens['hoverMove'] = TweenMax.to(this.oDOMElements['hover'], 0.300, {
         css: { x: e.clientX, y: e.clientY }, delay: 0, ease: Sine.easeOut, onComplete: function () {}.bind(this),
       });
 

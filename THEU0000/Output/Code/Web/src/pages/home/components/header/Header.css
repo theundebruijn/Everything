@@ -10,6 +10,12 @@
 
 }
 
+@media only screen and (max-width: 600px) {
+  .wrapper {
+    height: 400px;
+  }
+}
+
 .wrapper .header_bg {
   position: absolute;
   top: 0;
@@ -40,10 +46,11 @@
   width: 1px;
   height: 1px;
   border-radius: 50%;
-  background-color: #ffddeb;
-  box-shadow: 0 0 250px 250px #ffddeb;
 
-  mix-blend-mode: hard-light;
+  background-color: rgba(255, 226, 211, 1.0);
+  box-shadow: 0 0 250px 250px rgba(255, 226, 211, 1.0);
+
+   mix-blend-mode: hard-light;
 }
 
 .wrapper .title {
@@ -60,4 +67,12 @@
   font-weight: normal;
   font-style: italic;
   font-size: 85px;
+}
+
+@media only screen and (max-width: 600px) {
+  .wrapper .title  {
+    bottom: 26px;
+    width: 292px;
+    font-size: 27px;
+  }
 }
