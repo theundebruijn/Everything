@@ -140,7 +140,7 @@ exit
 ``` 
 ```powershell
 # powershell (regular user)
-cp .\Downloads\.zshrc \\wsl$\wsl-theundebruijn\home\theundebruijn
+cp ..\Downloads\.zshrc \\wsl$\wsl-theundebruijn\home\theundebruijn
 wsl -d wsl-theundebruijn -u theundebruijn
 ```  
 ```zsh
